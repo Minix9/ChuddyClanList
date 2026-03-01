@@ -1,763 +1,1406 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chuddy List</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg:           #09090b;
-    --surface:      #111114;
-    --surface2:     #1a1a1f;
-    --surface3:     #222228;
-    --border:       rgba(255,255,255,0.07);
-    --border-hover: rgba(255,255,255,0.14);
-    --accent:       #e8433a;
-    --accent2:      #ff6535;
-    --accent-glow:  rgba(232,67,58,0.25);
-    --text:         #ececf4;
-    --text-dim:     #a0a0b8;
-    --text-muted:   #58586a;
-    --gold:         #f5c842;
-    --silver:       #b8c4d4;
-    --bronze:       #d4885a;
-    --green:        #4ade80;
-  }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Chuddy List</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --bg: #09090b;
+                --surface: #111114;
+                --surface2: #1a1a1f;
+                --surface3: #222228;
+                --border: rgba(255, 255, 255, 0.07);
+                --border-hover: rgba(255, 255, 255, 0.14);
+                --accent: #e8433a;
+                --accent2: #ff6535;
+                --accent-glow: rgba(232, 67, 58, 0.25);
+                --text: #ececf4;
+                --text-dim: #a0a0b8;
+                --text-muted: #58586a;
+                --gold: #f5c842;
+                --silver: #b8c4d4;
+                --bronze: #d4885a;
+                --green: #4ade80;
+            }
 
-  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
 
-  html { scroll-behavior: smooth; }
+            html {
+                scroll-behavior: smooth;
+            }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+            body {
+                background: var(--bg);
+                color: var(--text);
+                font-family: "DM Sans", sans-serif;
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
 
-  /* Subtle noise texture */
-  body::after {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-    opacity: 0.022;
-    pointer-events: none;
-    z-index: 9998;
-  }
+            /* Subtle noise texture */
+            body::after {
+                content: "";
+                position: fixed;
+                inset: 0;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+                opacity: 0.022;
+                pointer-events: none;
+                z-index: 9998;
+            }
 
-  /* ── HEADER ─────────────────────────────────────── */
-  header {
-    position: sticky; top: 0; z-index: 200;
-    height: 58px;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 1.5rem;
-    background: rgba(9,9,11,0.8);
-    backdrop-filter: blur(24px) saturate(1.4);
-    border-bottom: 1px solid var(--border);
-  }
+            /* ── HEADER ─────────────────────────────────────── */
+            header {
+                position: sticky;
+                top: 0;
+                z-index: 200;
+                height: 58px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 1.5rem;
+                background: rgba(9, 9, 11, 0.8);
+                backdrop-filter: blur(24px) saturate(1.4);
+                border-bottom: 1px solid var(--border);
+            }
 
-  .logo {
-    display: flex; align-items: center; gap: 10px;
-    text-decoration: none; cursor: pointer;
-  }
+            .logo {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                text-decoration: none;
+                cursor: pointer;
+            }
 
-  .logo-mark {
-    width: 30px; height: 30px;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-    border-radius: 7px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; flex-shrink: 0;
-    box-shadow: 0 0 12px var(--accent-glow);
-  }
+            .logo-mark {
+                width: 30px;
+                height: 30px;
+                background: linear-gradient(
+                    135deg,
+                    var(--accent) 0%,
+                    var(--accent2) 100%
+                );
+                border-radius: 7px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 15px;
+                flex-shrink: 0;
+                box-shadow: 0 0 12px var(--accent-glow);
+            }
 
-  .logo-wordmark {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.35rem;
-    letter-spacing: 0.1em;
-    color: var(--text);
-  }
-  .logo-wordmark em { color: var(--accent); font-style: normal; }
+            .logo-wordmark {
+                font-family: "Bebas Neue", sans-serif;
+                font-size: 1.35rem;
+                letter-spacing: 0.1em;
+                color: var(--text);
+            }
+            .logo-wordmark em {
+                color: var(--accent);
+                font-style: normal;
+            }
 
-  nav { display: flex; gap: 2px; }
+            nav {
+                display: flex;
+                gap: 2px;
+            }
 
-  .nav-btn {
-    background: none; border: none;
-    color: var(--text-muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem; font-weight: 600;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    padding: 5px 13px; border-radius: 6px;
-    cursor: pointer; transition: color 0.15s, background 0.15s;
-    position: relative;
-  }
-  .nav-btn:hover { color: var(--text-dim); background: var(--border); }
-  .nav-btn.active {
-    color: var(--text);
-    background: var(--surface2);
-  }
-  .nav-btn.active::after {
-    content: '';
-    position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
-    width: 18px; height: 2px;
-    background: var(--accent); border-radius: 99px;
-  }
+            .nav-btn {
+                background: none;
+                border: none;
+                color: var(--text-muted);
+                font-family: "DM Sans", sans-serif;
+                font-size: 0.78rem;
+                font-weight: 600;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                padding: 5px 13px;
+                border-radius: 6px;
+                cursor: pointer;
+                transition:
+                    color 0.15s,
+                    background 0.15s;
+                position: relative;
+            }
+            .nav-btn:hover {
+                color: var(--text-dim);
+                background: var(--border);
+            }
+            .nav-btn.active {
+                color: var(--text);
+                background: var(--surface2);
+            }
+            .nav-btn.active::after {
+                content: "";
+                position: absolute;
+                bottom: -1px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 18px;
+                height: 2px;
+                background: var(--accent);
+                border-radius: 99px;
+            }
 
-  /* ── LAYOUT ─────────────────────────────────────── */
-  .app-body {
-    display: grid;
-    grid-template-columns: 272px 1fr;
-    height: calc(100vh - 58px);
-  }
+            /* ── LAYOUT ─────────────────────────────────────── */
+            .app-body {
+                display: grid;
+                grid-template-columns: 272px 1fr;
+                height: calc(100vh - 58px);
+            }
 
-  /* ── SIDEBAR ────────────────────────────────────── */
-  .sidebar {
-    border-right: 1px solid var(--border);
-    background: var(--surface);
-    display: flex; flex-direction: column;
-    overflow: hidden;
-  }
+            /* ── SIDEBAR ────────────────────────────────────── */
+            .sidebar {
+                border-right: 1px solid var(--border);
+                background: var(--surface);
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
 
-  .sidebar-top {
-    padding: 1rem;
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-  }
+            .sidebar-top {
+                padding: 1rem;
+                border-bottom: 1px solid var(--border);
+                flex-shrink: 0;
+            }
 
-  .search-wrap {
-    position: relative;
-  }
-  .search-icon {
-    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
-    color: var(--text-muted); font-size: 0.85rem; pointer-events: none;
-  }
-  .sidebar-search {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 7px 10px 7px 30px;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.83rem;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .sidebar-search:focus { border-color: var(--border-hover); }
-  .sidebar-search::placeholder { color: var(--text-muted); }
+            .search-wrap {
+                position: relative;
+            }
+            .search-icon {
+                position: absolute;
+                left: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-muted);
+                font-size: 0.85rem;
+                pointer-events: none;
+            }
+            .sidebar-search {
+                width: 100%;
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                padding: 7px 10px 7px 30px;
+                color: var(--text);
+                font-family: "DM Sans", sans-serif;
+                font-size: 0.83rem;
+                outline: none;
+                transition: border-color 0.15s;
+            }
+            .sidebar-search:focus {
+                border-color: var(--border-hover);
+            }
+            .sidebar-search::placeholder {
+                color: var(--text-muted);
+            }
 
-  .demon-list-wrap { overflow-y: auto; flex: 1; }
+            .demon-list-wrap {
+                overflow-y: auto;
+                flex: 1;
+            }
 
-  .demon-list { list-style: none; padding: 6px 0; }
+            .demon-list {
+                list-style: none;
+                padding: 6px 0;
+            }
 
-  .demon-item {
-    display: flex; align-items: center; gap: 9px;
-    padding: 7px 1rem;
-    cursor: pointer;
-    border-left: 2px solid transparent;
-    transition: background 0.1s, border-color 0.1s;
-  }
-  .demon-item:hover { background: var(--surface2); }
-  .demon-item.active {
-    background: var(--surface2);
-    border-left-color: var(--accent);
-  }
+            .demon-item {
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                padding: 7px 1rem;
+                cursor: pointer;
+                border-left: 2px solid transparent;
+                transition:
+                    background 0.1s,
+                    border-color 0.1s;
+            }
+            .demon-item:hover {
+                background: var(--surface2);
+            }
+            .demon-item.active {
+                background: var(--surface2);
+                border-left-color: var(--accent);
+            }
 
-  .d-rank {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    width: 26px; text-align: right; flex-shrink: 0;
-  }
-  .demon-item:nth-child(1)  .d-rank { color: var(--gold); }
-  .demon-item:nth-child(2)  .d-rank { color: var(--silver); }
-  .demon-item:nth-child(3)  .d-rank { color: var(--bronze); }
-  .demon-item:nth-child(-n+10) .d-rank { color: var(--accent); }
-  .demon-item:nth-child(1)  .d-rank,
-  .demon-item:nth-child(2)  .d-rank,
-  .demon-item:nth-child(3)  .d-rank { /* override back to medal colors */ }
+            .d-rank {
+                font-family: "DM Mono", monospace;
+                font-size: 0.7rem;
+                color: var(--text-muted);
+                width: 26px;
+                text-align: right;
+                flex-shrink: 0;
+            }
+            .demon-item:nth-child(1) .d-rank {
+                color: var(--gold);
+            }
+            .demon-item:nth-child(2) .d-rank {
+                color: var(--silver);
+            }
+            .demon-item:nth-child(3) .d-rank {
+                color: var(--bronze);
+            }
+            .demon-item:nth-child(-n + 10) .d-rank {
+                color: var(--accent);
+            }
+            .demon-item:nth-child(1) .d-rank,
+            .demon-item:nth-child(2) .d-rank,
+            .demon-item:nth-child(3) .d-rank {
+                /* override back to medal colors */
+            }
 
-  .d-name {
-    font-size: 0.84rem; font-weight: 500;
-    flex: 1; white-space: nowrap;
-    overflow: hidden; text-overflow: ellipsis;
-  }
+            .d-name {
+                font-size: 0.84rem;
+                font-weight: 500;
+                flex: 1;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
 
-  .d-completions {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    font-family: 'DM Mono', monospace;
-    flex-shrink: 0;
-  }
+            .d-completions {
+                font-size: 0.7rem;
+                color: var(--text-muted);
+                font-family: "DM Mono", monospace;
+                flex-shrink: 0;
+            }
 
-  /* ── MAIN ───────────────────────────────────────── */
-  .main-area { overflow-y: auto; }
+            /* ── MAIN ───────────────────────────────────────── */
+            .main-area {
+                overflow-y: auto;
+            }
 
-  /* ── EMPTY STATE ────────────────────────────────── */
-  .empty-state {
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    min-height: 70vh; gap: 1rem;
-    text-align: center; padding: 2rem;
-    animation: fadeUp 0.3s ease;
-  }
-  .empty-icon { font-size: 3.5rem; opacity: 0.3; }
-  .empty-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem; letter-spacing: 0.06em;
-    color: var(--text-dim);
-  }
-  .empty-sub { font-size: 0.88rem; color: var(--text-muted); max-width: 260px; line-height: 1.6; }
+            /* ── EMPTY STATE ────────────────────────────────── */
+            .empty-state {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 70vh;
+                gap: 1rem;
+                text-align: center;
+                padding: 2rem;
+                animation: fadeUp 0.3s ease;
+            }
+            .empty-icon {
+                font-size: 3.5rem;
+                opacity: 0.3;
+            }
+            .empty-title {
+                font-family: "Bebas Neue", sans-serif;
+                font-size: 2rem;
+                letter-spacing: 0.06em;
+                color: var(--text-dim);
+            }
+            .empty-sub {
+                font-size: 0.88rem;
+                color: var(--text-muted);
+                max-width: 260px;
+                line-height: 1.6;
+            }
 
-  /* ── DEMON DETAIL ───────────────────────────────── */
-  .demon-detail { animation: fadeUp 0.22s ease; }
+            /* ── DEMON DETAIL ───────────────────────────────── */
+            .demon-detail {
+                animation: fadeUp 0.22s ease;
+            }
 
-  @keyframes fadeUp {
-    from { opacity:0; transform: translateY(10px); }
-    to   { opacity:1; transform: translateY(0); }
-  }
+            @keyframes fadeUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
 
-  /* Hero */
-  .hero {
-    height: 280px; position: relative; overflow: hidden;
-    background: var(--surface);
-  }
-  .hero-bg {
-    position: absolute; inset: 0;
-    background-size: cover; background-position: center;
-    filter: brightness(0.3) saturate(1.3);
-    transform: scale(1.06);
-    transition: transform 10s ease;
-  }
-  .hero:hover .hero-bg { transform: scale(1.12); }
-  .hero-vignette {
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, var(--bg) 0%, rgba(9,9,11,0.4) 55%, transparent 100%);
-  }
-  .hero-side-vignette {
-    position: absolute; inset: 0;
-    background: linear-gradient(to right, rgba(9,9,11,0.5) 0%, transparent 40%);
-  }
-  .hero-rank-watermark {
-    position: absolute; top: 0.8rem; right: 1.5rem;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 7rem; line-height: 1;
-    color: rgba(255,255,255,0.04);
-    letter-spacing: -0.02em;
-    user-select: none; pointer-events: none;
-  }
-  .hero-content {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    padding: 1.8rem 2rem;
-    display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem;
-  }
-  .hero-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 3rem; letter-spacing: 0.02em; line-height: 1;
-    text-shadow: 0 2px 24px rgba(0,0,0,0.9);
-  }
-  .hero-chips {
-    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; align-items: center;
-  }
-  .chip {
-    font-size: 0.7rem; font-weight: 600;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    padding: 3px 8px; border-radius: 4px;
-  }
-  .chip-rank  { background: rgba(245,200,66,0.12); color: var(--gold); }
-  .chip-creator { background: rgba(232,67,58,0.12); color: #ff7a72; }
-  .chip-count { background: rgba(255,255,255,0.07); color: var(--text-dim); }
+            /* Hero */
+            .hero {
+                height: 280px;
+                position: relative;
+                overflow: hidden;
+                background: var(--surface);
+            }
+            .hero-bg {
+                position: absolute;
+                inset: 0;
+                background-size: cover;
+                background-position: center;
+                filter: brightness(0.3) saturate(1.3);
+                transform: scale(1.06);
+                transition: transform 10s ease;
+            }
+            .hero:hover .hero-bg {
+                transform: scale(1.12);
+            }
+            .hero-vignette {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(
+                    to top,
+                    var(--bg) 0%,
+                    rgba(9, 9, 11, 0.4) 55%,
+                    transparent 100%
+                );
+            }
+            .hero-side-vignette {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(
+                    to right,
+                    rgba(9, 9, 11, 0.5) 0%,
+                    transparent 40%
+                );
+            }
+            .hero-rank-watermark {
+                position: absolute;
+                top: 0.8rem;
+                right: 1.5rem;
+                font-family: "Bebas Neue", sans-serif;
+                font-size: 7rem;
+                line-height: 1;
+                color: rgba(255, 255, 255, 0.04);
+                letter-spacing: -0.02em;
+                user-select: none;
+                pointer-events: none;
+            }
+            .hero-content {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 1.8rem 2rem;
+                display: flex;
+                align-items: flex-end;
+                justify-content: space-between;
+                gap: 1rem;
+            }
+            .hero-title {
+                font-family: "Bebas Neue", sans-serif;
+                font-size: 3rem;
+                letter-spacing: 0.02em;
+                line-height: 1;
+                text-shadow: 0 2px 24px rgba(0, 0, 0, 0.9);
+            }
+            .hero-chips {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                margin-top: 6px;
+                align-items: center;
+            }
+            .chip {
+                font-size: 0.7rem;
+                font-weight: 600;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                padding: 3px 8px;
+                border-radius: 4px;
+            }
+            .chip-rank {
+                background: rgba(245, 200, 66, 0.12);
+                color: var(--gold);
+            }
+            .chip-creator {
+                background: rgba(232, 67, 58, 0.12);
+                color: #ff7a72;
+            }
+            .chip-count {
+                background: rgba(255, 255, 255, 0.07);
+                color: var(--text-dim);
+            }
 
-  .watch-btn {
-    flex-shrink: 0;
-    display: flex; align-items: center; gap: 7px;
-    background: var(--accent);
-    color: #fff; font-family: 'DM Sans', sans-serif;
-    font-size: 0.82rem; font-weight: 600;
-    padding: 9px 18px; border-radius: 8px;
-    text-decoration: none; border: none; cursor: pointer;
-    transition: background 0.15s, transform 0.1s, box-shadow 0.2s;
-    box-shadow: 0 2px 12px var(--accent-glow);
-    white-space: nowrap;
-  }
-  .watch-btn:hover {
-    background: var(--accent2);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 20px var(--accent-glow);
-  }
+            .watch-btn {
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                gap: 7px;
+                background: var(--accent);
+                color: #fff;
+                font-family: "DM Sans", sans-serif;
+                font-size: 0.82rem;
+                font-weight: 600;
+                padding: 9px 18px;
+                border-radius: 8px;
+                text-decoration: none;
+                border: none;
+                cursor: pointer;
+                transition:
+                    background 0.15s,
+                    transform 0.1s,
+                    box-shadow 0.2s;
+                box-shadow: 0 2px 12px var(--accent-glow);
+                white-space: nowrap;
+            }
+            .watch-btn:hover {
+                background: var(--accent2);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 20px var(--accent-glow);
+            }
 
-  /* Detail body */
-  .detail-body {
-    padding: 2rem;
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 2rem;
-    align-items: start;
-  }
+            /* Detail body */
+            .detail-body {
+                padding: 2rem;
+                display: grid;
+                grid-template-columns: 1fr 320px;
+                gap: 2rem;
+                align-items: start;
+            }
 
-  .section-label {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1rem; letter-spacing: 0.12em;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 8px; margin-bottom: 14px;
-  }
+            .section-label {
+                font-family: "Bebas Neue", sans-serif;
+                font-size: 1rem;
+                letter-spacing: 0.12em;
+                color: var(--text-muted);
+                border-bottom: 1px solid var(--border);
+                padding-bottom: 8px;
+                margin-bottom: 14px;
+            }
 
-  /* Video */
-  .video-container {
-    border-radius: 12px; overflow: hidden;
-    aspect-ratio: 16/9;
-    border: 1px solid var(--border);
-    background: #000;
-  }
-  .video-container iframe {
-    width: 100%; height: 100%;
-    display: block; border: none;
-  }
+            /* Video */
+            .video-container {
+                border-radius: 12px;
+                overflow: hidden;
+                aspect-ratio: 16/9;
+                border: 1px solid var(--border);
+                background: #000;
+            }
+            .video-container iframe {
+                width: 100%;
+                height: 100%;
+                display: block;
+                border: none;
+            }
 
-  /* Records */
-  .records-col { display: flex; flex-direction: column; }
+            /* Records */
+            .records-col {
+                display: flex;
+                flex-direction: column;
+            }
 
-  .records-list { display: flex; flex-direction: column; gap: 3px; }
+            .records-list {
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+            }
 
-  .record-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 11px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    transition: border-color 0.12s, background 0.12s;
-  }
-  .record-row:hover { border-color: var(--border-hover); background: var(--surface2); }
+            .record-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 8px 11px;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 7px;
+                transition:
+                    border-color 0.12s,
+                    background 0.12s;
+            }
+            .record-row:hover {
+                border-color: var(--border-hover);
+                background: var(--surface2);
+            }
 
-  .record-left { display: flex; align-items: center; gap: 8px; }
-  .rec-flag { font-size: 1rem; }
-  .rec-player { font-size: 0.84rem; font-weight: 500; }
+            .record-left {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .rec-flag {
+                font-size: 1rem;
+            }
+            .rec-player {
+                font-size: 0.84rem;
+                font-weight: 500;
+            }
 
-  .rec-pct {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.78rem; font-weight: 500;
-    color: var(--accent);
-  }
-  .rec-pct.full { color: var(--green); }
+            .rec-pct {
+                font-family: "DM Mono", monospace;
+                font-size: 0.78rem;
+                font-weight: 500;
+                color: var(--accent);
+            }
+            .rec-pct.full {
+                color: var(--green);
+            }
 
-  .no-records {
-    text-align: center; padding: 2rem 1rem;
-    color: var(--text-muted); font-size: 0.85rem;
-    background: var(--surface);
-    border: 1px dashed var(--border);
-    border-radius: 8px;
-  }
+            .no-records {
+                text-align: center;
+                padding: 2rem 1rem;
+                color: var(--text-muted);
+                font-size: 0.85rem;
+                background: var(--surface);
+                border: 1px dashed var(--border);
+                border-radius: 8px;
+            }
 
-  /* ── LEADERBOARD VIEW ───────────────────────────── */
-  .lb-view, .roulette-view {
-    display: none; padding: 2.5rem 2rem;
-    animation: fadeUp 0.22s ease;
-    max-width: 860px;
-  }
-  .lb-view.visible, .roulette-view.visible { display: block; }
+            /* ── LEADERBOARD VIEW ───────────────────────────── */
+            .lb-view {
+                display: none;
+                padding: 2.5rem 2.5rem;
+                animation: fadeUp 0.22s ease;
+            }
+            .roulette-view {
+                display: none;
+                padding: 2.5rem 2rem;
+                animation: fadeUp 0.22s ease;
+                max-width: 860px;
+            }
+            .lb-view.visible,
+            .roulette-view.visible {
+                display: block;
+            }
 
-  .page-heading {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.8rem; letter-spacing: 0.05em;
-    margin-bottom: 0.3rem;
-  }
-  .page-heading span { color: var(--accent); }
-  .page-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 2rem; }
+            .lb-inner {
+                display: grid;
+                grid-template-columns: 1fr 340px;
+                gap: 2rem;
+                align-items: start;
+            }
 
-  .stats-row {
-    display: flex; gap: 12px; flex-wrap: wrap;
-    margin-bottom: 2rem;
-  }
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 20px; min-width: 110px;
-  }
-  .stat-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem; color: var(--accent); line-height: 1;
-  }
-  .stat-lbl {
-    font-size: 0.68rem; font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--text-muted); margin-top: 2px;
-  }
+            .lb-header-row {
+                grid-column: 1 / -1;
+                display: flex;
+                align-items: flex-end;
+                justify-content: space-between;
+                margin-bottom: 0.5rem;
+            }
 
-  .lb-table { width: 100%; border-collapse: collapse; }
-  .lb-table th {
-    text-align: left;
-    padding: 10px 14px;
-    font-size: 0.68rem; font-weight: 700;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border);
-  }
-  .lb-table td {
-    padding: 10px 14px; font-size: 0.88rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .lb-table tbody tr { transition: background 0.1s; }
-  .lb-table tbody tr:hover td { background: var(--surface2); }
+            .page-heading {
+                font-family: "Bebas Neue", sans-serif;
+                font-size: 2.8rem;
+                letter-spacing: 0.05em;
+                margin-bottom: 0.3rem;
+            }
+            .page-heading span {
+                color: var(--accent);
+            }
+            .page-sub {
+                font-size: 0.85rem;
+                color: var(--text-muted);
+                margin-bottom: 0;
+            }
 
-  .lb-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.78rem; color: var(--text-muted);
-  }
-  .lb-num.gold   { color: var(--gold);   font-weight: 600; }
-  .lb-num.silver { color: var(--silver); font-weight: 600; }
-  .lb-num.bronze { color: var(--bronze); font-weight: 600; }
+            .stats-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 12px;
+                margin-bottom: 1.5rem;
+            }
+            .stat-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 18px 20px;
+            }
+            .stat-val {
+                font-family: "Bebas Neue", sans-serif;
+                font-size: 2rem;
+                color: var(--accent);
+                line-height: 1;
+            }
+            .stat-lbl {
+                font-size: 0.68rem;
+                font-weight: 600;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                margin-top: 2px;
+            }
 
-  .lb-player { display: flex; align-items: center; gap: 8px; font-weight: 500; }
-  .lb-pts {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.85rem; color: var(--accent);
-  }
-  .lb-comps { font-size: 0.8rem; color: var(--text-muted); }
+            .lb-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            .lb-table th {
+                text-align: left;
+                padding: 10px 14px;
+                font-size: 0.68rem;
+                font-weight: 700;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                border-bottom: 1px solid var(--border);
+            }
+            .lb-table td {
+                padding: 10px 14px;
+                font-size: 0.88rem;
+                border-bottom: 1px solid var(--border);
+            }
+            .lb-table tbody tr {
+                transition: background 0.1s;
+            }
+            .lb-table tbody tr:hover td {
+                background: var(--surface2);
+            }
 
-  /* ── ROULETTE ───────────────────────────────────── */
-  .roulette-wrap { max-width: 540px; margin: 0 auto; text-align: center; }
+            .lb-num {
+                font-family: "DM Mono", monospace;
+                font-size: 0.78rem;
+                color: var(--text-muted);
+            }
+            .lb-num.gold {
+                color: var(--gold);
+                font-weight: 600;
+            }
+            .lb-num.silver {
+                color: var(--silver);
+                font-weight: 600;
+            }
+            .lb-num.bronze {
+                color: var(--bronze);
+                font-weight: 600;
+            }
 
-  .roulette-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 3rem 2rem 2.5rem;
-    margin: 2rem 0 1.5rem;
-    position: relative; overflow: hidden;
-    min-height: 220px;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 10px;
-  }
-  .roulette-card::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 50% 100%, rgba(232,67,58,0.08) 0%, transparent 65%);
-    pointer-events: none;
-  }
+            .lb-player {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 500;
+            }
+            .lb-pts {
+                font-family: "DM Mono", monospace;
+                font-size: 0.85rem;
+                color: var(--accent);
+            }
+            .lb-comps {
+                font-size: 0.8rem;
+                color: var(--text-muted);
+            }
 
-  .roulette-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 5.5rem; line-height: 1;
-    color: var(--accent);
-    transition: all 0.18s ease;
-  }
-  .roulette-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.2rem; letter-spacing: 0.04em;
-    line-height: 1.1;
-    transition: all 0.18s ease;
-  }
-  .roulette-by {
-    font-size: 0.85rem; color: var(--text-muted);
-    transition: all 0.18s ease;
-  }
+            /* ── ROULETTE ───────────────────────────────────── */
+            .roulette-wrap {
+                max-width: 540px;
+                margin: 0 auto;
+                text-align: center;
+            }
 
-  @keyframes popIn {
-    0%  { transform: scale(0.9); opacity: 0.4; }
-    60% { transform: scale(1.04); }
-    100%{ transform: scale(1); opacity: 1; }
-  }
-  .pop { animation: popIn 0.28s cubic-bezier(.34,1.56,.64,1) forwards; }
+            .roulette-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                padding: 3rem 2rem 2.5rem;
+                margin: 2rem 0 1.5rem;
+                position: relative;
+                overflow: hidden;
+                min-height: 220px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
+            .roulette-card::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: radial-gradient(
+                    ellipse at 50% 100%,
+                    rgba(232, 67, 58, 0.08) 0%,
+                    transparent 65%
+                );
+                pointer-events: none;
+            }
 
-  .spin-btn {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border: none; color: #fff;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem; letter-spacing: 0.1em;
-    padding: 14px 44px; border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 0 4px 22px var(--accent-glow);
-    transition: transform 0.12s, box-shadow 0.2s;
-  }
-  .spin-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--accent-glow); }
-  .spin-btn:active { transform: scale(0.97); }
+            .roulette-num {
+                font-family: "Bebas Neue", sans-serif;
+                font-size: 5.5rem;
+                line-height: 1;
+                color: var(--accent);
+                transition: all 0.18s ease;
+            }
+            .roulette-name {
+                font-family: "Bebas Neue", sans-serif;
+                font-size: 2.2rem;
+                letter-spacing: 0.04em;
+                line-height: 1.1;
+                transition: all 0.18s ease;
+            }
+            .roulette-by {
+                font-size: 0.85rem;
+                color: var(--text-muted);
+                transition: all 0.18s ease;
+            }
 
-  .spin-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 10px; }
+            @keyframes popIn {
+                0% {
+                    transform: scale(0.9);
+                    opacity: 0.4;
+                }
+                60% {
+                    transform: scale(1.04);
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+            .pop {
+                animation: popIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1)
+                    forwards;
+            }
 
-  /* ── LOADING / STATUS ───────────────────────────── */
-  .status-bar {
-    display: none;
-    position: fixed; bottom: 1.2rem; left: 50%; transform: translateX(-50%);
-    background: var(--surface3); border: 1px solid var(--border-hover);
-    border-radius: 8px; padding: 8px 16px;
-    font-size: 0.8rem; color: var(--text-dim);
-    z-index: 999; gap: 8px; align-items: center;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-  }
-  .status-bar.show { display: flex; }
-  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-  .status-dot.live { animation: pulse 1.5s ease infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+            .spin-btn {
+                background: linear-gradient(
+                    135deg,
+                    var(--accent),
+                    var(--accent2)
+                );
+                border: none;
+                color: #fff;
+                font-family: "Bebas Neue", sans-serif;
+                font-size: 1.4rem;
+                letter-spacing: 0.1em;
+                padding: 14px 44px;
+                border-radius: 10px;
+                cursor: pointer;
+                box-shadow: 0 4px 22px var(--accent-glow);
+                transition:
+                    transform 0.12s,
+                    box-shadow 0.2s;
+            }
+            .spin-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 30px var(--accent-glow);
+            }
+            .spin-btn:active {
+                transform: scale(0.97);
+            }
 
-  /* ── SCROLLBAR ──────────────────────────────────── */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 99px; }
+            .spin-hint {
+                font-size: 0.78rem;
+                color: var(--text-muted);
+                margin-top: 10px;
+            }
 
-  /* ── RESPONSIVE ─────────────────────────────────── */
-  @media (max-width: 860px) {
-    .detail-body { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 680px) {
-    .app-body { grid-template-columns: 1fr; }
-    .sidebar {
-      position: fixed; left: -280px; top: 58px;
-      width: 272px; height: calc(100vh - 58px);
-      z-index: 100; transition: left 0.25s ease;
-    }
-    .sidebar.open { left: 0; box-shadow: 8px 0 40px rgba(0,0,0,0.6); }
-    .mob-toggle { display: flex !important; }
-  }
-  .mob-toggle {
-    display: none;
-    background: none; border: 1px solid var(--border);
-    color: var(--text-dim); padding: 5px 9px;
-    border-radius: 6px; cursor: pointer; font-size: 1rem;
-  }
-</style>
-</head>
-<body>
+            /* ── LOADING / STATUS ───────────────────────────── */
+            .status-bar {
+                display: none;
+                position: fixed;
+                bottom: 1.2rem;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--surface3);
+                border: 1px solid var(--border-hover);
+                border-radius: 8px;
+                padding: 8px 16px;
+                font-size: 0.8rem;
+                color: var(--text-dim);
+                z-index: 999;
+                gap: 8px;
+                align-items: center;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            }
+            .status-bar.show {
+                display: flex;
+            }
+            .status-dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: var(--accent);
+            }
+            .status-dot.live {
+                animation: pulse 1.5s ease infinite;
+            }
+            @keyframes pulse {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.3;
+                }
+            }
 
-<!-- STATUS BAR -->
-<div class="status-bar" id="statusBar">
-  <div class="status-dot live" id="statusDot"></div>
-  <span id="statusMsg">Connecting to Supabase…</span>
-</div>
+            /* ── SCROLLBAR ──────────────────────────────────── */
+            ::-webkit-scrollbar {
+                width: 4px;
+            }
+            ::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: var(--border-hover);
+                border-radius: 99px;
+            }
 
-<!-- HEADER -->
-<header>
-  <div class="logo">
-    <div class="logo-mark">💀</div>
-    <span class="logo-wordmark">CHUDDY <em>LIST</em></span>
-  </div>
-  <nav>
-    <button class="nav-btn active" onclick="setTab('list')">List</button>
-    <button class="nav-btn" onclick="setTab('leaderboard')">Leaderboard</button>
-    <button class="nav-btn" onclick="setTab('roulette')">Roulette</button>
-  </nav>
-  <button class="mob-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
-</header>
-
-<!-- BODY -->
-<div class="app-body">
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-top">
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input class="sidebar-search" id="searchInput" type="text"
-          placeholder="Search demons…" oninput="filterList(this.value)">
-      </div>
-    </div>
-    <div class="demon-list-wrap">
-      <ul class="demon-list" id="demonList"></ul>
-    </div>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <div class="main-area" id="mainArea">
-
-    <!-- LIST TAB -->
-    <div id="listTab">
-      <div class="empty-state" id="emptyState">
-        <div class="empty-icon">☠️</div>
-        <div class="empty-title">Select a Demon</div>
-        <div class="empty-sub">Pick any level from the sidebar to see its details, video verification, and player records.</div>
-      </div>
-      <div id="demonDetail" style="display:none;"></div>
-    </div>
-
-    <!-- LEADERBOARD TAB -->
-    <div class="lb-view" id="lbTab">
-      <div class="page-heading">Leader<span>board</span></div>
-      <p class="page-sub">Ranked by points earned from completed demons</p>
-      <div class="stats-row" id="lbStats"></div>
-      <table class="lb-table">
-        <thead>
-          <tr>
-            <th style="width:44px">#</th>
-            <th>Player</th>
-            <th>Points</th>
-            <th>Completions</th>
-          </tr>
-        </thead>
-        <tbody id="lbBody"></tbody>
-      </table>
-    </div>
-
-    <!-- ROULETTE TAB -->
-    <div class="roulette-view" id="rouletteTab">
-      <div class="roulette-wrap">
-        <div class="page-heading" style="text-align:center;">Level <span>Roulette</span></div>
-        <p class="page-sub" style="text-align:center;">Get a random demon challenge from the full Chuddy List</p>
-        <div class="roulette-card" id="rouletteCard">
-          <div class="roulette-num" id="rNum">?</div>
-          <div class="roulette-name" id="rName">Spin to begin</div>
-          <div class="roulette-by" id="rBy">—</div>
+            /* ── RESPONSIVE ─────────────────────────────────── */
+            @media (max-width: 860px) {
+                .detail-body {
+                    grid-template-columns: 1fr;
+                }
+            }
+            @media (max-width: 680px) {
+                .app-body {
+                    grid-template-columns: 1fr;
+                }
+                .sidebar {
+                    position: fixed;
+                    left: -280px;
+                    top: 58px;
+                    width: 272px;
+                    height: calc(100vh - 58px);
+                    z-index: 100;
+                    transition: left 0.25s ease;
+                }
+                .sidebar.open {
+                    left: 0;
+                    box-shadow: 8px 0 40px rgba(0, 0, 0, 0.6);
+                }
+                .mob-toggle {
+                    display: flex !important;
+                }
+            }
+            .mob-toggle {
+                display: none;
+                background: none;
+                border: 1px solid var(--border);
+                color: var(--text-dim);
+                padding: 5px 9px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 1rem;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- STATUS BAR -->
+        <div class="status-bar" id="statusBar">
+            <div class="status-dot live" id="statusDot"></div>
+            <span id="statusMsg">Connecting to Supabase…</span>
         </div>
-        <button class="spin-btn" onclick="spinRoulette()">🎲 SPIN</button>
-        <p class="spin-hint">Each roll picks a random demon from the full list</p>
-      </div>
-    </div>
 
-  </div><!-- /main-area -->
-</div><!-- /app-body -->
+        <!-- HEADER -->
+        <header>
+            <div class="logo">
+                <div class="logo-mark">💀</div>
+                <span class="logo-wordmark">CHUDDY <em>LIST</em></span>
+            </div>
+            <nav>
+                <button class="nav-btn active" onclick="setTab('list')">
+                    List
+                </button>
+                <button class="nav-btn" onclick="setTab('leaderboard')">
+                    Leaderboard
+                </button>
+                <button class="nav-btn" onclick="setTab('roulette')">
+                    Roulette
+                </button>
+            </nav>
+            <button
+                class="mob-toggle"
+                onclick="
+                    document.getElementById('sidebar').classList.toggle('open')
+                "
+            >
+                ☰
+            </button>
+        </header>
 
-<!-- ── CONFIG ── Replace with your Supabase credentials ─────────────── -->
-<script>
-const SUPABASE_URL = 'https://jyfbiefopcrhbkkinzyn.supabase.co';      // e.g. https://xyzabc.supabase.co
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmJpZWZvcGNyaGJra2luenluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTkzNzMsImV4cCI6MjA4Nzg5NTM3M30.-Ek6fL3lHZGtjDitQu1pDGI0vGXOQlzRKNW1v0O-TII';      // public anon key (safe to expose)
-</script>
+        <!-- BODY -->
+        <div class="app-body">
+            <!-- SIDEBAR -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-top">
+                    <div class="search-wrap">
+                        <span class="search-icon">🔍</span>
+                        <input
+                            class="sidebar-search"
+                            id="searchInput"
+                            type="text"
+                            placeholder="Search demons…"
+                            oninput="filterList(this.value)"
+                        />
+                    </div>
+                </div>
+                <div class="demon-list-wrap">
+                    <ul class="demon-list" id="demonList"></ul>
+                </div>
+            </aside>
 
-<script>
-// ═══════════════════════════════════════════════════════════════════════════════
-// PLACEHOLDER DATA — used when Supabase is not yet configured
-// ═══════════════════════════════════════════════════════════════════════════════
-const PLACEHOLDER = [
-  { rank:1,  name:"Sakupen Hell",        creator:"NoctaFly",      video:"xCjm6Guo5DY", records:[{player:"Nhelv",pct:100,flag:"🇸🇪"},{player:"Trick",pct:100,flag:"🇺🇸"},{player:"Doggie",pct:81,flag:"🇦🇺"}] },
-  { rank:2,  name:"Bloodbath",           creator:"Riot",          video:"pxibXH-Bs7Q", records:[{player:"Sunix",pct:100,flag:"🇩🇪"},{player:"Doggie",pct:100,flag:"🇦🇺"},{player:"Knobbelboy",pct:72,flag:"🇳🇱"}] },
-  { rank:3,  name:"Yatagarasu",          creator:"Ggb0y",         video:"CQ2bhxLG-bw", records:[{player:"Giron",pct:100,flag:"🇧🇷"},{player:"Exen",pct:100,flag:"🇺🇸"}] },
-  { rank:4,  name:"Erebus",              creator:"Temporum",      video:"m0V-XwSxoHk", records:[{player:"Quasar",pct:100,flag:"🇺🇸"},{player:"Sunix",pct:78,flag:"🇩🇪"}] },
-  { rank:5,  name:"The Hell Factory",    creator:"Neptunes",      video:"xF2BUW8YQCI", records:[{player:"Sunix",pct:100,flag:"🇩🇪"}] },
-  { rank:6,  name:"Necropolis",          creator:"Nox",           video:"w3z5jrnRbRs", records:[{player:"Knobbelboy",pct:100,flag:"🇳🇱"},{player:"Sunix",pct:85,flag:"🇩🇪"}] },
-  { rank:7,  name:"Athanatos",           creator:"Pennutoh",      video:"5EFCNyU0P3w", records:[{player:"Doggie",pct:100,flag:"🇦🇺"}] },
-  { rank:8,  name:"Artificial Ascent",   creator:"Knobbelboy",    video:"f2u-VhEt42Q", records:[{player:"Nhelv",pct:100,flag:"🇸🇪"},{player:"Exen",pct:91,flag:"🇺🇸"}] },
-  { rank:9,  name:"Avernus",             creator:"Mulpan",        video:"IpCOPOeUQtY", records:[{player:"Quasar",pct:100,flag:"🇺🇸"}] },
-  { rank:10, name:"Firework",            creator:"RealEternus",   video:"hT_oPBe43II", records:[{player:"Sunix",pct:100,flag:"🇩🇪"},{player:"Giron",pct:96,flag:"🇧🇷"}] },
-  { rank:11, name:"Phobos",              creator:"Vismuth",       video:"xoqb7Fzrmoo", records:[{player:"Nhelv",pct:100,flag:"🇸🇪"}] },
-  { rank:12, name:"Sonic Wave Infinity", creator:"APTeamOfficial",video:"nrxw2j-z_v4", records:[{player:"Doggie",pct:100,flag:"🇦🇺"},{player:"Trick",pct:88,flag:"🇺🇸"}] },
-  { rank:13, name:"Zodiac",              creator:"TrusTa",        video:"5KrMjFFBNJU", records:[{player:"Sunix",pct:100,flag:"🇩🇪"}] },
-  { rank:14, name:"Black Blizzard",      creator:"Spu7nix",       video:"GZwqhZaTZOY", records:[{player:"Giron",pct:100,flag:"🇧🇷"}] },
-  { rank:15, name:"Cataclysm",           creator:"GI_Espio",      video:"mEkRBkMisPw", records:[{player:"Exen",pct:100,flag:"🇺🇸"},{player:"Quasar",pct:77,flag:"🇺🇸"}] },
-];
+            <!-- MAIN CONTENT -->
+            <div class="main-area" id="mainArea">
+                <!-- LIST TAB -->
+                <div id="listTab">
+                    <div class="empty-state" id="emptyState">
+                        <div class="empty-icon">☠️</div>
+                        <div class="empty-title">Select a Demon</div>
+                        <div class="empty-sub">
+                            Pick any level from the sidebar to see its details,
+                            video verification, and player records.
+                        </div>
+                    </div>
+                    <div id="demonDetail" style="display: none"></div>
+                </div>
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════════════════════════════════
-let DEMONS = [];
-let filtered = [];
-let currentRank = null;
-let usingSupabase = false;
+                <!-- LEADERBOARD TAB -->
+                <div class="lb-view" id="lbTab">
+                    <div class="lb-inner">
+                        <!-- Left: heading + stats + table -->
+                        <div>
+                            <div class="page-heading">
+                                Leader<span>board</span>
+                            </div>
+                            <p class="page-sub" style="margin-bottom: 1.5rem">
+                                Ranked by points earned from completed demons
+                            </p>
+                            <div class="stats-row" id="lbStats"></div>
+                            <table class="lb-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 44px">#</th>
+                                        <th>Player</th>
+                                        <th>Points</th>
+                                        <th>Completions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lbBody"></tbody>
+                            </table>
+                        </div>
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// SUPABASE FETCH  (gracefully falls back to placeholder)
-// ═══════════════════════════════════════════════════════════════════════════════
-async function loadData() {
-  // If creds are still placeholders, use demo data silently
-  if (SUPABASE_URL.includes('YOUR_') || SUPABASE_ANON_KEY.includes('YOUR_')) {
-    DEMONS = PLACEHOLDER;
-    filtered = [...DEMONS];
-    return;
-  }
+                        <!-- Right: top 3 podium + activity -->
+                        <div
+                            style="
+                                display: flex;
+                                flex-direction: column;
+                                gap: 1.2rem;
+                            "
+                        >
+                            <!-- Podium -->
+                            <div
+                                style="
+                                    background: var(--surface);
+                                    border: 1px solid var(--border);
+                                    border-radius: 12px;
+                                    padding: 1.4rem;
+                                "
+                            >
+                                <div
+                                    style="
+                                        font-family:
+                                            &quot;Bebas Neue&quot;, sans-serif;
+                                        font-size: 0.9rem;
+                                        letter-spacing: 0.12em;
+                                        color: var(--text-muted);
+                                        border-bottom: 1px solid var(--border);
+                                        padding-bottom: 8px;
+                                        margin-bottom: 1rem;
+                                    "
+                                >
+                                    🏆 Top 3
+                                </div>
+                                <div
+                                    id="podium"
+                                    style="
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: 8px;
+                                    "
+                                ></div>
+                            </div>
 
-  showStatus('Connecting to Supabase…', true);
-  try {
-    // Fetch demons + their records in two calls, then join client-side
-    const [demRes, recRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/demons?select=*&order=rank.asc`, {
-        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
-      }),
-      fetch(`${SUPABASE_URL}/rest/v1/records?select=*,players(name,flag)`, {
-        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
-      })
-    ]);
+                            <!-- Most completed demons -->
+                            <div
+                                style="
+                                    background: var(--surface);
+                                    border: 1px solid var(--border);
+                                    border-radius: 12px;
+                                    padding: 1.4rem;
+                                "
+                            >
+                                <div
+                                    style="
+                                        font-family:
+                                            &quot;Bebas Neue&quot;, sans-serif;
+                                        font-size: 0.9rem;
+                                        letter-spacing: 0.12em;
+                                        color: var(--text-muted);
+                                        border-bottom: 1px solid var(--border);
+                                        padding-bottom: 8px;
+                                        margin-bottom: 1rem;
+                                    "
+                                >
+                                    💀 Most Completed
+                                </div>
+                                <div
+                                    id="mostCompleted"
+                                    style="
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: 6px;
+                                    "
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    if (!demRes.ok || !recRes.ok) throw new Error('API error');
+                <!-- ROULETTE TAB -->
+                <div class="roulette-view" id="rouletteTab">
+                    <div class="roulette-wrap">
+                        <div class="page-heading" style="text-align: center">
+                            Level <span>Roulette</span>
+                        </div>
+                        <p class="page-sub" style="text-align: center">
+                            Get a random demon challenge from the full Chuddy
+                            List
+                        </p>
+                        <div class="roulette-card" id="rouletteCard">
+                            <div class="roulette-num" id="rNum">?</div>
+                            <div class="roulette-name" id="rName">
+                                Spin to begin
+                            </div>
+                            <div class="roulette-by" id="rBy">—</div>
+                        </div>
+                        <button class="spin-btn" onclick="spinRoulette()">
+                            🎲 SPIN
+                        </button>
+                        <p class="spin-hint">
+                            Each roll picks a random demon from the full list
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- /main-area -->
+        </div>
+        <!-- /app-body -->
 
-    const demons  = await demRes.json();
-    const records = await recRes.json();
+        <!-- ── CONFIG ── Replace with your Supabase credentials ─────────────── -->
+        <script>
+            const SUPABASE_URL = "https://jyfbiefopcrhbkkinzyn.supabase.co"; // e.g. https://xyzabc.supabase.co
+            const SUPABASE_ANON_KEY =
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5ZmJpZWZvcGNyaGJra2luenluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMTkzNzMsImV4cCI6MjA4Nzg5NTM3M30.-Ek6fL3lHZGtjDitQu1pDGI0vGXOQlzRKNW1v0O-TII"; // public anon key (safe to expose)
+        </script>
 
-    DEMONS = demons.map(d => ({
-      rank:    d.rank,
-      name:    d.name,
-      creator: d.creator,
-      video:   d.video_id,
-      records: records
-        .filter(r => r.demon_id === d.id)
-        .map(r => ({ player: r.players.name, pct: r.percentage, flag: r.players.flag || '🌐' }))
-        .sort((a,b) => b.pct - a.pct)
-    }));
+        <script>
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // PLACEHOLDER DATA — used when Supabase is not yet configured
+            // ═══════════════════════════════════════════════════════════════════════════════
+            const PLACEHOLDER = [
+                {
+                    rank: 1,
+                    name: "Sakupen Hell",
+                    creator: "NoctaFly",
+                    video: "xCjm6Guo5DY",
+                    records: [
+                        { player: "Nhelv", pct: 100, flag: "🇸🇪" },
+                        { player: "Trick", pct: 100, flag: "🇺🇸" },
+                        { player: "Doggie", pct: 81, flag: "🇦🇺" },
+                    ],
+                },
+                {
+                    rank: 2,
+                    name: "Bloodbath",
+                    creator: "Riot",
+                    video: "pxibXH-Bs7Q",
+                    records: [
+                        { player: "Sunix", pct: 100, flag: "🇩🇪" },
+                        { player: "Doggie", pct: 100, flag: "🇦🇺" },
+                        { player: "Knobbelboy", pct: 72, flag: "🇳🇱" },
+                    ],
+                },
+                {
+                    rank: 3,
+                    name: "Yatagarasu",
+                    creator: "Ggb0y",
+                    video: "CQ2bhxLG-bw",
+                    records: [
+                        { player: "Giron", pct: 100, flag: "🇧🇷" },
+                        { player: "Exen", pct: 100, flag: "🇺🇸" },
+                    ],
+                },
+                {
+                    rank: 4,
+                    name: "Erebus",
+                    creator: "Temporum",
+                    video: "m0V-XwSxoHk",
+                    records: [
+                        { player: "Quasar", pct: 100, flag: "🇺🇸" },
+                        { player: "Sunix", pct: 78, flag: "🇩🇪" },
+                    ],
+                },
+                {
+                    rank: 5,
+                    name: "The Hell Factory",
+                    creator: "Neptunes",
+                    video: "xF2BUW8YQCI",
+                    records: [{ player: "Sunix", pct: 100, flag: "🇩🇪" }],
+                },
+                {
+                    rank: 6,
+                    name: "Necropolis",
+                    creator: "Nox",
+                    video: "w3z5jrnRbRs",
+                    records: [
+                        { player: "Knobbelboy", pct: 100, flag: "🇳🇱" },
+                        { player: "Sunix", pct: 85, flag: "🇩🇪" },
+                    ],
+                },
+                {
+                    rank: 7,
+                    name: "Athanatos",
+                    creator: "Pennutoh",
+                    video: "5EFCNyU0P3w",
+                    records: [{ player: "Doggie", pct: 100, flag: "🇦🇺" }],
+                },
+                {
+                    rank: 8,
+                    name: "Artificial Ascent",
+                    creator: "Knobbelboy",
+                    video: "f2u-VhEt42Q",
+                    records: [
+                        { player: "Nhelv", pct: 100, flag: "🇸🇪" },
+                        { player: "Exen", pct: 91, flag: "🇺🇸" },
+                    ],
+                },
+                {
+                    rank: 9,
+                    name: "Avernus",
+                    creator: "Mulpan",
+                    video: "IpCOPOeUQtY",
+                    records: [{ player: "Quasar", pct: 100, flag: "🇺🇸" }],
+                },
+                {
+                    rank: 10,
+                    name: "Firework",
+                    creator: "RealEternus",
+                    video: "hT_oPBe43II",
+                    records: [
+                        { player: "Sunix", pct: 100, flag: "🇩🇪" },
+                        { player: "Giron", pct: 96, flag: "🇧🇷" },
+                    ],
+                },
+                {
+                    rank: 11,
+                    name: "Phobos",
+                    creator: "Vismuth",
+                    video: "xoqb7Fzrmoo",
+                    records: [{ player: "Nhelv", pct: 100, flag: "🇸🇪" }],
+                },
+                {
+                    rank: 12,
+                    name: "Sonic Wave Infinity",
+                    creator: "APTeamOfficial",
+                    video: "nrxw2j-z_v4",
+                    records: [
+                        { player: "Doggie", pct: 100, flag: "🇦🇺" },
+                        { player: "Trick", pct: 88, flag: "🇺🇸" },
+                    ],
+                },
+                {
+                    rank: 13,
+                    name: "Zodiac",
+                    creator: "TrusTa",
+                    video: "5KrMjFFBNJU",
+                    records: [{ player: "Sunix", pct: 100, flag: "🇩🇪" }],
+                },
+                {
+                    rank: 14,
+                    name: "Black Blizzard",
+                    creator: "Spu7nix",
+                    video: "GZwqhZaTZOY",
+                    records: [{ player: "Giron", pct: 100, flag: "🇧🇷" }],
+                },
+                {
+                    rank: 15,
+                    name: "Cataclysm",
+                    creator: "GI_Espio",
+                    video: "mEkRBkMisPw",
+                    records: [
+                        { player: "Exen", pct: 100, flag: "🇺🇸" },
+                        { player: "Quasar", pct: 77, flag: "🇺🇸" },
+                    ],
+                },
+            ];
 
-    filtered = [...DEMONS];
-    usingSupabase = true;
-    showStatus('Live data loaded ✓', false, 2500);
-  } catch(e) {
-    console.warn('Supabase unavailable, using placeholder data.', e);
-    DEMONS = PLACEHOLDER;
-    filtered = [...DEMONS];
-    showStatus('Using demo data (Supabase not configured)', false, 3000);
-  }
-}
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // STATE
+            // ═══════════════════════════════════════════════════════════════════════════════
+            let DEMONS = [];
+            let filtered = [];
+            let currentRank = null;
+            let usingSupabase = false;
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// SIDEBAR
-// ═══════════════════════════════════════════════════════════════════════════════
-function renderSidebar(list) {
-  document.getElementById('demonList').innerHTML = list.map((d, idx) => `
-    <li class="demon-item ${currentRank === d.rank ? 'active' : ''}"
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // SUPABASE FETCH  (gracefully falls back to placeholder)
+            // ═══════════════════════════════════════════════════════════════════════════════
+            async function loadData() {
+                // If creds are still placeholders, use demo data silently
+                if (
+                    SUPABASE_URL.includes("YOUR_") ||
+                    SUPABASE_ANON_KEY.includes("YOUR_")
+                ) {
+                    DEMONS = PLACEHOLDER;
+                    filtered = [...DEMONS];
+                    return;
+                }
+
+                showStatus("Connecting to Supabase…", true);
+                try {
+                    // Fetch demons + their records in two calls, then join client-side
+                    const [demRes, recRes] = await Promise.all([
+                        fetch(
+                            `${SUPABASE_URL}/rest/v1/demons?select=*&order=rank.asc`,
+                            {
+                                headers: {
+                                    apikey: SUPABASE_ANON_KEY,
+                                    Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+                                },
+                            },
+                        ),
+                        fetch(
+                            `${SUPABASE_URL}/rest/v1/records?select=*,players(name,flag)`,
+                            {
+                                headers: {
+                                    apikey: SUPABASE_ANON_KEY,
+                                    Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+                                },
+                            },
+                        ),
+                    ]);
+
+                    if (!demRes.ok || !recRes.ok) throw new Error("API error");
+
+                    const demons = await demRes.json();
+                    const records = await recRes.json();
+
+                    DEMONS = demons.map((d) => ({
+                        rank: d.rank,
+                        name: d.name,
+                        creator: d.creator,
+                        video: d.video_id,
+                        records: records
+                            .filter((r) => r.demon_id === d.id)
+                            .map((r) => ({
+                                player: r.players.name,
+                                pct: r.percentage,
+                                flag: r.players.flag || "🌐",
+                            }))
+                            .sort((a, b) => b.pct - a.pct),
+                    }));
+
+                    filtered = [...DEMONS];
+                    usingSupabase = true;
+                    showStatus("Live data loaded ✓", false, 2500);
+                } catch (e) {
+                    console.warn(
+                        "Supabase unavailable, using placeholder data.",
+                        e,
+                    );
+                    DEMONS = PLACEHOLDER;
+                    filtered = [...DEMONS];
+                    showStatus(
+                        "Using demo data (Supabase not configured)",
+                        false,
+                        3000,
+                    );
+                }
+            }
+
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // SIDEBAR
+            // ═══════════════════════════════════════════════════════════════════════════════
+            function renderSidebar(list) {
+                document.getElementById("demonList").innerHTML = list
+                    .map(
+                        (d, idx) => `
+    <li class="demon-item ${currentRank === d.rank ? "active" : ""}"
         onclick="selectDemon(${d.rank})" style="--i:${idx}">
       <span class="d-rank">#${d.rank}</span>
       <span class="d-name">${d.name}</span>
-      <span class="d-completions">${d.records.filter(r=>r.pct===100).length}✓</span>
+      <span class="d-completions">${d.records.filter((r) => r.pct === 100).length}✓</span>
     </li>
-  `).join('');
-}
+  `,
+                    )
+                    .join("");
+            }
 
-function filterList(q) {
-  const v = q.trim().toLowerCase();
-  filtered = v ? DEMONS.filter(d =>
-    d.name.toLowerCase().includes(v) || d.creator.toLowerCase().includes(v)
-  ) : [...DEMONS];
-  renderSidebar(filtered);
-}
+            function filterList(q) {
+                const v = q.trim().toLowerCase();
+                filtered = v
+                    ? DEMONS.filter(
+                          (d) =>
+                              d.name.toLowerCase().includes(v) ||
+                              d.creator.toLowerCase().includes(v),
+                      )
+                    : [...DEMONS];
+                renderSidebar(filtered);
+            }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// DEMON DETAIL
-// ═══════════════════════════════════════════════════════════════════════════════
-const HERO_GRADIENTS = [
-  'linear-gradient(135deg,#7a0000,#1a0000)',
-  'linear-gradient(135deg,#5c0000,#120000)',
-  'linear-gradient(135deg,#3d0808,#0e0505)',
-  'linear-gradient(135deg,#2a0a0a,#0a0808)',
-  'linear-gradient(135deg,#1a1a0a,#080808)',
-];
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // DEMON DETAIL
+            // ═══════════════════════════════════════════════════════════════════════════════
+            const HERO_GRADIENTS = [
+                "linear-gradient(135deg,#7a0000,#1a0000)",
+                "linear-gradient(135deg,#5c0000,#120000)",
+                "linear-gradient(135deg,#3d0808,#0e0505)",
+                "linear-gradient(135deg,#2a0a0a,#0a0808)",
+                "linear-gradient(135deg,#1a1a0a,#080808)",
+            ];
 
-function selectDemon(rank) {
-  currentRank = rank;
-  const d = DEMONS.find(x => x.rank === rank);
-  if (!d) return;
+            function selectDemon(rank) {
+                currentRank = rank;
+                const d = DEMONS.find((x) => x.rank === rank);
+                if (!d) return;
 
-  // Update sidebar active
-  document.querySelectorAll('.demon-item').forEach(el => {
-    const r = parseInt(el.querySelector('.d-rank').textContent.replace('#',''));
-    el.classList.toggle('active', r === rank);
-  });
+                // Update sidebar active
+                document.querySelectorAll(".demon-item").forEach((el) => {
+                    const r = parseInt(
+                        el
+                            .querySelector(".d-rank")
+                            .textContent.replace("#", ""),
+                    );
+                    el.classList.toggle("active", r === rank);
+                });
 
-  document.getElementById('emptyState').style.display = 'none';
-  const detail = document.getElementById('demonDetail');
-  detail.style.display = 'block';
+                document.getElementById("emptyState").style.display = "none";
+                const detail = document.getElementById("demonDetail");
+                detail.style.display = "block";
 
-  const gi = Math.min(Math.floor((rank-1)/3), HERO_GRADIENTS.length-1);
-  const rankColor = rank===1?'var(--gold)':rank<=3?'var(--accent)':rank<=10?'var(--accent2)':'var(--text-dim)';
-  const completes = d.records.filter(r=>r.pct===100).length;
+                const gi = Math.min(
+                    Math.floor((rank - 1) / 3),
+                    HERO_GRADIENTS.length - 1,
+                );
+                const rankColor =
+                    rank === 1
+                        ? "var(--gold)"
+                        : rank <= 3
+                          ? "var(--accent)"
+                          : rank <= 10
+                            ? "var(--accent2)"
+                            : "var(--text-dim)";
+                const completes = d.records.filter((r) => r.pct === 100).length;
 
-  const recsHTML = d.records.length
-    ? d.records.map(r=>`
+                const recsHTML = d.records.length
+                    ? d.records
+                          .map(
+                              (r) => `
       <div class="record-row">
         <span class="record-left">
           <span class="rec-flag">${r.flag}</span>
           <span class="rec-player">${r.player}</span>
         </span>
-        <span class="rec-pct ${r.pct===100?'full':''}">${r.pct}%</span>
-      </div>`).join('')
-    : `<div class="no-records">No records yet — be the first!</div>`;
+        <span class="rec-pct ${r.pct === 100 ? "full" : ""}">${r.pct}%</span>
+      </div>`,
+                          )
+                          .join("")
+                    : `<div class="no-records">No records yet — be the first!</div>`;
 
-  detail.innerHTML = `
+                detail.innerHTML = `
     <div class="hero">
       <div class="hero-bg" style="background:${HERO_GRADIENTS[gi]};"></div>
       <div class="hero-vignette"></div>
@@ -769,7 +1412,7 @@ function selectDemon(rank) {
           <div class="hero-chips">
             <span class="chip chip-rank" style="color:${rankColor}">Rank #${rank}</span>
             <span class="chip chip-creator">by ${d.creator}</span>
-            <span class="chip chip-count">${completes} completion${completes!==1?'s':''}</span>
+            <span class="chip chip-count">${completes} completion${completes !== 1 ? "s" : ""}</span>
           </div>
         </div>
         <a class="watch-btn" href="https://youtu.be/${d.video}" target="_blank" rel="noopener">
@@ -792,120 +1435,217 @@ function selectDemon(rank) {
     </div>
   `;
 
-  // Scroll top on mobile
-  document.getElementById('mainArea').scrollTop = 0;
-}
+                // Scroll top on mobile
+                document.getElementById("mainArea").scrollTop = 0;
+            }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// LEADERBOARD
-// ═══════════════════════════════════════════════════════════════════════════════
-function buildLeaderboard() {
-  const map = {};
-  DEMONS.forEach(d => {
-    d.records.forEach(r => {
-      const pts = Math.max(1, Math.round((DEMONS.length - d.rank + 1) * 10 * (r.pct / 100)));
-      if (!map[r.player]) map[r.player] = { name:r.player, flag:r.flag, pts:0, comps:0 };
-      map[r.player].pts  += pts;
-      if (r.pct===100) map[r.player].comps++;
-    });
-  });
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // LEADERBOARD
+            // ═══════════════════════════════════════════════════════════════════════════════
+            function buildLeaderboard() {
+                const map = {};
+                DEMONS.forEach((d) => {
+                    d.records.forEach((r) => {
+                        const pts = Math.max(
+                            1,
+                            Math.round(
+                                (DEMONS.length - d.rank + 1) *
+                                    10 *
+                                    (r.pct / 100),
+                            ),
+                        );
+                        if (!map[r.player])
+                            map[r.player] = {
+                                name: r.player,
+                                flag: r.flag,
+                                pts: 0,
+                                comps: 0,
+                            };
+                        map[r.player].pts += pts;
+                        if (r.pct === 100) map[r.player].comps++;
+                    });
+                });
 
-  const sorted = Object.values(map).sort((a,b)=>b.pts-a.pts);
-  const totalComps = DEMONS.reduce((s,d)=>s+d.records.filter(r=>r.pct===100).length,0);
+                const sorted = Object.values(map).sort((a, b) => b.pts - a.pts);
+                const totalComps = DEMONS.reduce(
+                    (s, d) => s + d.records.filter((r) => r.pct === 100).length,
+                    0,
+                );
 
-  document.getElementById('lbStats').innerHTML = `
+                document.getElementById("lbStats").innerHTML = `
     <div class="stat-card"><div class="stat-val">${DEMONS.length}</div><div class="stat-lbl">Demons Listed</div></div>
     <div class="stat-card"><div class="stat-val">${sorted.length}</div><div class="stat-lbl">Ranked Players</div></div>
     <div class="stat-card"><div class="stat-val">${totalComps}</div><div class="stat-lbl">Total Completions</div></div>
   `;
 
-  document.getElementById('lbBody').innerHTML = sorted.map((p,i)=>{
-    const cls = i===0?'gold':i===1?'silver':i===2?'bronze':'';
-    return `<tr>
-      <td><span class="lb-num ${cls}">${i+1}</span></td>
+                document.getElementById("lbBody").innerHTML = sorted
+                    .map((p, i) => {
+                        const cls =
+                            i === 0
+                                ? "gold"
+                                : i === 1
+                                  ? "silver"
+                                  : i === 2
+                                    ? "bronze"
+                                    : "";
+                        return `<tr>
+      <td><span class="lb-num ${cls}">${i + 1}</span></td>
       <td><span class="lb-player"><span>${p.flag}</span>${p.name}</span></td>
       <td><span class="lb-pts">${p.pts}</span></td>
       <td><span class="lb-comps">${p.comps} complete</span></td>
     </tr>`;
-  }).join('');
-}
+                    })
+                    .join("");
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// ROULETTE
-// ═══════════════════════════════════════════════════════════════════════════════
-let spinning = false;
-function spinRoulette() {
-  if (spinning || !DEMONS.length) return;
-  spinning = true;
-  let t = 0, max = 22;
-  const rNum = document.getElementById('rNum');
-  const rName = document.getElementById('rName');
-  const rBy   = document.getElementById('rBy');
+                // Podium — top 3
+                const podiumColors = [
+                    "var(--gold)",
+                    "var(--silver)",
+                    "var(--bronze)",
+                ];
+                const podiumEmojis = ["🥇", "🥈", "🥉"];
+                document.getElementById("podium").innerHTML =
+                    sorted
+                        .slice(0, 3)
+                        .map(
+                            (p, i) => `
+    <div style="display:flex;align-items:center;justify-content:space-between;
+      padding:10px 14px;border-radius:8px;
+      background:var(--surface2);border:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:1.3rem;">${podiumEmojis[i]}</span>
+        <span style="font-size:0.9rem;">${p.flag}</span>
+        <span style="font-weight:600;font-size:0.9rem;">${p.name}</span>
+      </div>
+      <span style="font-family:'DM Mono',monospace;font-size:0.82rem;color:${podiumColors[i]};font-weight:600;">${p.pts} pts</span>
+    </div>
+  `,
+                        )
+                        .join("") ||
+                    '<div style="color:var(--text-muted);font-size:0.85rem;">No data yet</div>';
 
-  const iv = setInterval(() => {
-    const d = DEMONS[Math.floor(Math.random()*DEMONS.length)];
-    rNum.textContent  = `#${d.rank}`;
-    rName.textContent = d.name;
-    rBy.textContent   = `by ${d.creator}`;
-    t++;
-    if (t >= max) {
-      clearInterval(iv);
-      const final = DEMONS[Math.floor(Math.random()*DEMONS.length)];
-      rNum.textContent  = `#${final.rank}`;
-      rName.textContent = final.name;
-      rBy.textContent   = `by ${final.creator}`;
-      // Pop animation
-      const card = document.getElementById('rouletteCard');
-      card.classList.remove('pop');
-      void card.offsetWidth;
-      card.classList.add('pop');
-      spinning = false;
-    }
-  }, 55);
-}
+                // Most completed demons
+                const demonComps = DEMONS.map((d) => ({
+                    name: d.name,
+                    rank: d.rank,
+                    count: d.records.filter((r) => r.pct === 100).length,
+                }))
+                    .filter((d) => d.count > 0)
+                    .sort((a, b) => b.count - a.count)
+                    .slice(0, 5);
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// TAB SWITCHING
-// ═══════════════════════════════════════════════════════════════════════════════
-function setTab(tab) {
-  document.querySelectorAll('.nav-btn').forEach((b,i)=>{
-    b.classList.toggle('active', ['list','leaderboard','roulette'][i]===tab);
-  });
+                document.getElementById("mostCompleted").innerHTML =
+                    demonComps
+                        .map(
+                            (d) => `
+    <div style="display:flex;align-items:center;justify-content:space-between;
+      padding:8px 12px;border-radius:7px;
+      background:var(--surface2);border:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text-muted);">#${d.rank}</span>
+        <span style="font-size:0.84rem;font-weight:500;">${d.name}</span>
+      </div>
+      <span style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--green);">${d.count}✓</span>
+    </div>
+  `,
+                        )
+                        .join("") ||
+                    '<div style="color:var(--text-muted);font-size:0.85rem;">No completions yet</div>';
+            }
 
-  document.getElementById('listTab').style.display     = tab==='list'?'block':'none';
-  document.getElementById('sidebar').style.display     = tab==='list'?'':'none';
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // ROULETTE
+            // ═══════════════════════════════════════════════════════════════════════════════
+            let spinning = false;
+            function spinRoulette() {
+                if (spinning || !DEMONS.length) return;
+                spinning = true;
+                let t = 0,
+                    max = 22;
+                const rNum = document.getElementById("rNum");
+                const rName = document.getElementById("rName");
+                const rBy = document.getElementById("rBy");
 
-  const lbEl  = document.getElementById('lbTab');
-  const rlEl  = document.getElementById('rouletteTab');
-  lbEl.className  = 'lb-view'      + (tab==='leaderboard'?' visible':'');
-  rlEl.className  = 'roulette-view'+ (tab==='roulette'   ?' visible':'');
+                const iv = setInterval(() => {
+                    const d = DEMONS[Math.floor(Math.random() * DEMONS.length)];
+                    rNum.textContent = `#${d.rank}`;
+                    rName.textContent = d.name;
+                    rBy.textContent = `by ${d.creator}`;
+                    t++;
+                    if (t >= max) {
+                        clearInterval(iv);
+                        const final =
+                            DEMONS[Math.floor(Math.random() * DEMONS.length)];
+                        rNum.textContent = `#${final.rank}`;
+                        rName.textContent = final.name;
+                        rBy.textContent = `by ${final.creator}`;
+                        // Pop animation
+                        const card = document.getElementById("rouletteCard");
+                        card.classList.remove("pop");
+                        void card.offsetWidth;
+                        card.classList.add("pop");
+                        spinning = false;
+                    }
+                }, 55);
+            }
 
-  if (tab==='leaderboard') buildLeaderboard();
-}
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // TAB SWITCHING
+            // ═══════════════════════════════════════════════════════════════════════════════
+            function setTab(tab) {
+                document.querySelectorAll(".nav-btn").forEach((b, i) => {
+                    b.classList.toggle(
+                        "active",
+                        ["list", "leaderboard", "roulette"][i] === tab,
+                    );
+                });
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// STATUS BAR HELPER
-// ═══════════════════════════════════════════════════════════════════════════════
-function showStatus(msg, live=false, autohide=0) {
-  const bar  = document.getElementById('statusBar');
-  const dot  = document.getElementById('statusDot');
-  const msgEl= document.getElementById('statusMsg');
-  msgEl.textContent = msg;
-  dot.classList.toggle('live', live);
-  bar.classList.add('show');
-  if (autohide) setTimeout(()=>bar.classList.remove('show'), autohide);
-}
+                const isList = tab === "list";
+                document.getElementById("listTab").style.display = isList
+                    ? "block"
+                    : "none";
+                document.getElementById("sidebar").style.display = isList
+                    ? ""
+                    : "none";
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════════════════════════════
-async function init() {
-  await loadData();
-  renderSidebar(DEMONS);
-  document.getElementById('listTab').style.display = 'block';
-}
+                // Collapse the grid column when sidebar is hidden so content fills full width
+                document.querySelector(".app-body").style.gridTemplateColumns =
+                    isList ? "272px 1fr" : "1fr";
 
-init();
-</script>
-</body>
+                const lbEl = document.getElementById("lbTab");
+                const rlEl = document.getElementById("rouletteTab");
+                lbEl.className =
+                    "lb-view" + (tab === "leaderboard" ? " visible" : "");
+                rlEl.className =
+                    "roulette-view" + (tab === "roulette" ? " visible" : "");
+
+                if (tab === "leaderboard") buildLeaderboard();
+            }
+
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // STATUS BAR HELPER
+            // ═══════════════════════════════════════════════════════════════════════════════
+            function showStatus(msg, live = false, autohide = 0) {
+                const bar = document.getElementById("statusBar");
+                const dot = document.getElementById("statusDot");
+                const msgEl = document.getElementById("statusMsg");
+                msgEl.textContent = msg;
+                dot.classList.toggle("live", live);
+                bar.classList.add("show");
+                if (autohide)
+                    setTimeout(() => bar.classList.remove("show"), autohide);
+            }
+
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // INIT
+            // ═══════════════════════════════════════════════════════════════════════════════
+            async function init() {
+                await loadData();
+                renderSidebar(DEMONS);
+                document.getElementById("listTab").style.display = "block";
+            }
+
+            init();
+        </script>
+    </body>
 </html>
