@@ -1594,6 +1594,7 @@
                                 pct: r.percentage,
                                 flag: r.players.flag || "🌐",
                                 attempts: r.attempts || null,
+                                video: r.video_id || null,   // player's own completion video
                                 createdAt: r.created_at,
                             }))
                             .sort((a, b) => b.pct - a.pct);
@@ -1721,7 +1722,10 @@
           ${r.isFirstVictor ? '<span class="first-victor-badge" title="First to beat this level">👑 1st</span>' : ""}
           ${r.attempts ? `<span class="rec-attempts">${r.attempts.toLocaleString()} attempts</span>` : ""}
         </span>
-        <span class="rec-pct ${r.pct === 100 ? "full" : ""}">${r.pct}%</span>
+        <span style="display:flex;align-items:center;gap:6px;">
+          ${r.video ? `<button class="watch-icon-btn" onclick="event.stopPropagation();openVideoLightbox('${r.video}','${d.name.replace(/'/g,"\\'")} — ${r.player.replace(/'/g,"\\'")}')" title="Watch completion">▶</button>` : ""}
+          <span class="rec-pct ${r.pct === 100 ? "full" : ""}">${r.pct}%</span>
+        </span>
       </div>`,
                           )
                           .join("")
@@ -2031,7 +2035,7 @@
 
                 function levelRow(d, statusClass, badgeClass, badgeText, showWatch, rec) {
                     const watchBtn = showWatch
-                        ? `<button class="watch-icon-btn" onclick="event.stopPropagation();openVideoLightbox('${d.video}','${d.name.replace(/'/g, "\\'")}')" title="Watch verification">▶</button>`
+                        ? `<button class="watch-icon-btn" onclick="event.stopPropagation();openVideoLightbox('${rec?.video || d.video}','${d.name.replace(/'/g, "\\'")}')" title="${rec?.video ? "Watch completion" : "Watch verification"}">▶</button>`
                         : "";
                     const crown =
                         rec && rec.isFirstVictor
