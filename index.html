@@ -4,8 +4,6 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Chuddy List</title>
-
-        <link rel="icon" href="/chuddy-clan-demon-list/list_icon.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
             href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap"
@@ -520,6 +518,7 @@
                 display: flex;
                 align-items: center;
                 gap: 8px;
+                flex-wrap: wrap;
             }
             .rec-flag {
                 font-size: 1rem;
@@ -527,6 +526,32 @@
             .rec-player {
                 font-size: 0.84rem;
                 font-weight: 500;
+                cursor: pointer;
+                transition: color 0.12s;
+            }
+            .rec-player:hover {
+                color: var(--accent2);
+                text-decoration: underline;
+            }
+
+            .first-victor-badge {
+                font-size: 0.62rem;
+                font-weight: 700;
+                letter-spacing: 0.03em;
+                text-transform: uppercase;
+                padding: 1px 7px;
+                border-radius: 4px;
+                background: rgba(245, 200, 66, 0.15);
+                color: var(--gold);
+                border: 1px solid rgba(245, 200, 66, 0.3);
+                white-space: nowrap;
+            }
+
+            .rec-attempts {
+                font-size: 0.72rem;
+                color: var(--text-muted);
+                font-family: "DM Mono", monospace;
+                white-space: nowrap;
             }
 
             .rec-pct {
@@ -560,10 +585,6 @@
                 padding: 2.5rem 2rem;
                 animation: fadeUp 0.22s ease;
                 max-width: 860px;
-                margin: auto;
-                /*position: relative;
-                top: 50%;
-                transform: translateY(-50%);*/
             }
             .lb-view.visible,
             .roulette-view.visible {
@@ -618,6 +639,8 @@
                 color: var(--accent);
                 line-height: 1;
             }
+            .stat-val.gold { color: var(--gold); }
+            .stat-val.green { color: var(--green); }
             .stat-lbl {
                 font-size: 0.68rem;
                 font-weight: 600;
@@ -648,6 +671,7 @@
             }
             .lb-table tbody tr {
                 transition: background 0.1s;
+                cursor: pointer;
             }
             .lb-table tbody tr:hover td {
                 background: var(--surface2);
@@ -685,6 +709,273 @@
             .lb-comps {
                 font-size: 0.8rem;
                 color: var(--text-muted);
+            }
+
+            /* ── PLAYER PROFILE PAGE ───────────────────────── */
+            .profile-view {
+                display: none;
+                padding: 2.5rem 2.5rem;
+                animation: fadeUp 0.22s ease;
+                max-width: 1200px;
+            }
+            .profile-view.visible {
+                display: block;
+            }
+
+            .back-btn {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                color: var(--text-dim);
+                font-family: "DM Sans", sans-serif;
+                font-size: 0.8rem;
+                font-weight: 600;
+                padding: 7px 14px;
+                border-radius: 8px;
+                cursor: pointer;
+                margin-bottom: 1.5rem;
+                transition: border-color 0.15s, color 0.15s;
+            }
+            .back-btn:hover {
+                color: var(--text);
+                border-color: var(--border-hover);
+            }
+
+            .profile-page-header {
+                display: flex;
+                align-items: center;
+                gap: 1.4rem;
+                margin-bottom: 1.6rem;
+            }
+            .profile-page-avatar {
+                width: 72px;
+                height: 72px;
+                border-radius: 18px;
+                background: linear-gradient(135deg, var(--surface3), var(--surface2));
+                border: 1px solid var(--border-hover);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2.6rem;
+                flex-shrink: 0;
+            }
+            .profile-page-name {
+                font-family: "Bebas Neue", sans-serif;
+                font-size: 2.6rem;
+                letter-spacing: 0.04em;
+                line-height: 1;
+            }
+            .profile-page-sub {
+                font-size: 0.85rem;
+                color: var(--text-muted);
+                margin-top: 5px;
+            }
+
+            .profile-page-stats {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 12px;
+                margin-bottom: 2rem;
+            }
+
+            .profile-page-columns {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.5rem;
+            }
+            .profile-page-col {
+                min-width: 0;
+            }
+
+            .section-label .count {
+                font-size: 0.75rem;
+                font-weight: 400;
+                letter-spacing: normal;
+                color: var(--text-muted);
+                background: var(--surface2);
+                border-radius: 4px;
+                padding: 1px 7px;
+                margin-left: 6px;
+                font-family: "DM Mono", monospace;
+            }
+
+            .profile-level-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                max-height: 560px;
+                overflow-y: auto;
+                padding-right: 4px;
+            }
+            .profile-level-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 9px 12px;
+                border-radius: 8px;
+                border: 1px solid var(--border);
+                background: var(--surface);
+                cursor: pointer;
+                transition: border-color 0.12s, background 0.12s;
+            }
+            .profile-level-row:hover {
+                background: var(--surface2);
+                border-color: var(--border-hover);
+            }
+            .profile-level-row.completed {
+                border-left: 3px solid var(--green);
+            }
+            .profile-level-row.partial {
+                border-left: 3px solid var(--accent);
+            }
+            .profile-level-row.unbeaten {
+                border-left: 3px solid var(--surface3);
+                opacity: 0.55;
+            }
+            .profile-level-left {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                min-width: 0;
+            }
+            .profile-level-rank {
+                font-family: "DM Mono", monospace;
+                font-size: 0.7rem;
+                color: var(--text-muted);
+                width: 26px;
+                flex-shrink: 0;
+            }
+            .profile-level-name {
+                font-size: 0.85rem;
+                font-weight: 500;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .profile-level-creator {
+                font-size: 0.74rem;
+                color: var(--text-muted);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .profile-level-badge {
+                font-family: "DM Mono", monospace;
+                font-size: 0.75rem;
+                font-weight: 600;
+                padding: 2px 8px;
+                border-radius: 4px;
+                flex-shrink: 0;
+                margin-left: 8px;
+            }
+            .badge-complete {
+                background: rgba(74, 222, 128, 0.1);
+                color: var(--green);
+            }
+            .badge-partial {
+                background: rgba(232, 67, 58, 0.1);
+                color: var(--accent);
+            }
+            .badge-none {
+                background: var(--surface3);
+                color: var(--text-muted);
+            }
+
+            .profile-level-right {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                flex-shrink: 0;
+            }
+            .watch-icon-btn {
+                background: var(--accent);
+                border: none;
+                color: #fff;
+                width: 24px;
+                height: 24px;
+                border-radius: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.6rem;
+                cursor: pointer;
+                transition: background 0.15s, transform 0.1s;
+                flex-shrink: 0;
+            }
+            .watch-icon-btn:hover {
+                background: var(--accent2);
+                transform: scale(1.1);
+            }
+
+            /* ── VIDEO LIGHTBOX ─────────────────────────────── */
+            .video-lightbox-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85);
+                backdrop-filter: blur(6px);
+                z-index: 400;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+            }
+            .video-lightbox-overlay.open {
+                display: flex;
+            }
+            .video-lightbox-modal {
+                position: relative;
+                width: 100%;
+                max-width: 860px;
+            }
+            .video-lightbox-title {
+                font-family: "Bebas Neue", sans-serif;
+                font-size: 1.3rem;
+                letter-spacing: 0.04em;
+                color: var(--text);
+                margin-bottom: 0.7rem;
+                padding-right: 40px;
+            }
+            .video-lightbox-frame {
+                width: 100%;
+                aspect-ratio: 16/9;
+                border-radius: 12px;
+                overflow: hidden;
+                background: #000;
+                border: 1px solid var(--border-hover);
+            }
+            .video-lightbox-frame iframe {
+                width: 100%;
+                height: 100%;
+                border: none;
+                display: block;
+            }
+            .lightbox-close {
+                position: absolute;
+                top: -2px;
+                right: 0;
+                background: var(--surface);
+                border: 1px solid var(--border-hover);
+                color: var(--text);
+                font-size: 0.95rem;
+                width: 30px;
+                height: 30px;
+                border-radius: 8px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.15s;
+            }
+            .lightbox-close:hover {
+                background: var(--surface2);
+            }
+
+            @media (max-width: 900px) {
+                .profile-page-columns {
+                    grid-template-columns: 1fr;
+                }
+                .profile-page-stats {
+                    grid-template-columns: repeat(2, 1fr);
+                }
             }
 
             /* ── ROULETTE ───────────────────────────────────── */
@@ -893,15 +1184,7 @@
         <!-- HEADER -->
         <header>
             <div class="logo">
-                <img
-                    src="list_icon.png"
-                    style="
-                        width: 30px;
-                        height: 30px;
-                        object-fit: contain;
-                        border-radius: 7px;
-                    "
-                />
+                <div class="logo-mark">💀</div>
                 <span class="logo-wordmark">CHUDDY <em>LIST</em></span>
             </div>
             <nav>
@@ -1088,10 +1371,21 @@
                         </p>
                     </div>
                 </div>
+                <!-- PLAYER PROFILE PAGE -->
+                <div class="profile-view" id="profileTab"></div>
             </div>
             <!-- /main-area -->
         </div>
         <!-- /app-body -->
+
+        <!-- VIDEO LIGHTBOX (used by player profile "watch" buttons) -->
+        <div class="video-lightbox-overlay" id="videoLightbox" onclick="closeVideoLightbox(event)">
+            <div class="video-lightbox-modal">
+                <button class="lightbox-close" onclick="closeVideoLightboxDirect()">✕</button>
+                <div class="video-lightbox-title" id="lightboxTitle"></div>
+                <div class="video-lightbox-frame" id="lightboxFrame"></div>
+            </div>
+        </div>
 
         <!-- ── CONFIG ── Replace with your Supabase credentials ─────────────── -->
         <script>
@@ -1111,8 +1405,8 @@
                     creator: "NoctaFly",
                     video: "xCjm6Guo5DY",
                     records: [
-                        { player: "Nhelv", pct: 100, flag: "🇸🇪" },
-                        { player: "Trick", pct: 100, flag: "🇺🇸" },
+                        { player: "Nhelv", pct: 100, flag: "🇸🇪", attempts: 12400, isFirstVictor: true },
+                        { player: "Trick", pct: 100, flag: "🇺🇸", attempts: 18900 },
                         { player: "Doggie", pct: 81, flag: "🇦🇺" },
                     ],
                 },
@@ -1122,8 +1416,8 @@
                     creator: "Riot",
                     video: "pxibXH-Bs7Q",
                     records: [
-                        { player: "Sunix", pct: 100, flag: "🇩🇪" },
-                        { player: "Doggie", pct: 100, flag: "🇦🇺" },
+                        { player: "Sunix", pct: 100, flag: "🇩🇪", attempts: 7600, isFirstVictor: true },
+                        { player: "Doggie", pct: 100, flag: "🇦🇺", attempts: 9100 },
                         { player: "Knobbelboy", pct: 72, flag: "🇳🇱" },
                     ],
                 },
@@ -1133,8 +1427,8 @@
                     creator: "Ggb0y",
                     video: "CQ2bhxLG-bw",
                     records: [
-                        { player: "Giron", pct: 100, flag: "🇧🇷" },
-                        { player: "Exen", pct: 100, flag: "🇺🇸" },
+                        { player: "Giron", pct: 100, flag: "🇧🇷", attempts: 5300, isFirstVictor: true },
+                        { player: "Exen", pct: 100, flag: "🇺🇸", attempts: 6800 },
                     ],
                 },
                 {
@@ -1292,20 +1586,37 @@
                     const demons = await demRes.json();
                     const records = await recRes.json();
 
-                    DEMONS = demons.map((d) => ({
-                        rank: d.rank,
-                        name: d.name,
-                        creator: d.creator,
-                        video: d.video_id,
-                        records: records
+                    DEMONS = demons.map((d) => {
+                        const demonRecords = records
                             .filter((r) => r.demon_id === d.id)
                             .map((r) => ({
                                 player: r.players.name,
                                 pct: r.percentage,
                                 flag: r.players.flag || "🌐",
+                                attempts: r.attempts || null,
+                                createdAt: r.created_at,
                             }))
-                            .sort((a, b) => b.pct - a.pct),
-                    }));
+                            .sort((a, b) => b.pct - a.pct);
+
+                        // Mark the earliest 100% completion as the first victor
+                        const fullClears = demonRecords.filter(
+                            (r) => r.pct === 100 && r.createdAt,
+                        );
+                        if (fullClears.length) {
+                            const earliest = fullClears.reduce((a, b) =>
+                                new Date(a.createdAt) < new Date(b.createdAt) ? a : b,
+                            );
+                            earliest.isFirstVictor = true;
+                        }
+
+                        return {
+                            rank: d.rank,
+                            name: d.name,
+                            creator: d.creator,
+                            video: d.video_id,
+                            records: demonRecords,
+                        };
+                    });
 
                     filtered = [...DEMONS];
                     usingSupabase = true;
@@ -1406,7 +1717,9 @@
       <div class="record-row">
         <span class="record-left">
           <span class="rec-flag">${r.flag}</span>
-          <span class="rec-player">${r.player}</span>
+          <span class="rec-player" onclick="gotoProfile('${r.player.replace(/'/g, "\\'")}')">${r.player}</span>
+          ${r.isFirstVictor ? '<span class="first-victor-badge" title="First to beat this level">👑 1st</span>' : ""}
+          ${r.attempts ? `<span class="rec-attempts">${r.attempts.toLocaleString()} attempts</span>` : ""}
         </span>
         <span class="rec-pct ${r.pct === 100 ? "full" : ""}">${r.pct}%</span>
       </div>`,
@@ -1502,7 +1815,7 @@
                                   : i === 2
                                     ? "bronze"
                                     : "";
-                        return `<tr>
+                        return `<tr onclick="gotoProfile('${p.name.replace(/'/g, "\\'")}')">
       <td><span class="lb-num ${cls}">${i + 1}</span></td>
       <td><span class="lb-player"><span>${p.flag}</span>${p.name}</span></td>
       <td><span class="lb-pts">${p.pts}</span></td>
@@ -1523,8 +1836,8 @@
                         .slice(0, 3)
                         .map(
                             (p, i) => `
-    <div style="display:flex;align-items:center;justify-content:space-between;
-      padding:10px 14px;border-radius:8px;
+    <div onclick="gotoProfile('${p.name.replace(/'/g, "\\'")}')" style="display:flex;align-items:center;justify-content:space-between;
+      padding:10px 14px;border-radius:8px;cursor:pointer;
       background:var(--surface2);border:1px solid var(--border);">
       <div style="display:flex;align-items:center;gap:10px;">
         <span style="font-size:1.3rem;">${podiumEmojis[i]}</span>
@@ -1633,7 +1946,207 @@
                 rlEl.className =
                     "roulette-view" + (tab === "roulette" ? " visible" : "");
 
+                // Always hide the profile page when switching via the main nav
+                document.getElementById("profileTab").className = "profile-view";
+
                 if (tab === "leaderboard") buildLeaderboard();
+            }
+
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // PLAYER PROFILE PAGE
+            // ═══════════════════════════════════════════════════════════════════════════════
+            let lastTab = "list";
+
+            function gotoProfile(playerName) {
+                // Remember which tab we came from so Back returns there
+                if (document.getElementById("lbTab").classList.contains("visible")) {
+                    lastTab = "leaderboard";
+                } else if (document.getElementById("rouletteTab").classList.contains("visible")) {
+                    lastTab = "roulette";
+                } else {
+                    lastTab = "list";
+                }
+
+                renderProfilePage(playerName);
+
+                // Hide every other view, collapse sidebar, show profile full-width
+                document.getElementById("listTab").style.display = "none";
+                document.getElementById("lbTab").className = "lb-view";
+                document.getElementById("rouletteTab").className = "roulette-view";
+                document.getElementById("sidebar").style.display = "none";
+                document.querySelector(".app-body").style.gridTemplateColumns = "1fr";
+                document.getElementById("profileTab").className = "profile-view visible";
+                document.querySelectorAll(".nav-btn").forEach((b) => b.classList.remove("active"));
+
+                document.getElementById("mainArea").scrollTop = 0;
+            }
+
+            function backFromProfile() {
+                document.getElementById("profileTab").className = "profile-view";
+                setTab(lastTab);
+            }
+
+            function selectDemonFromProfile(rank) {
+                setTab("list");
+                selectDemon(rank);
+            }
+
+            function renderProfilePage(playerName) {
+                // Rebuild the same points map used on the leaderboard
+                const map = {};
+                DEMONS.forEach((d) => {
+                    d.records.forEach((r) => {
+                        const pts = Math.max(
+                            1,
+                            Math.round((DEMONS.length - d.rank + 1) * 10 * (r.pct / 100)),
+                        );
+                        if (!map[r.player]) {
+                            map[r.player] = { name: r.player, flag: r.flag, pts: 0, comps: 0 };
+                        }
+                        map[r.player].pts += pts;
+                        if (r.pct === 100) map[r.player].comps++;
+                    });
+                });
+
+                const sorted = Object.values(map).sort((a, b) => b.pts - a.pts);
+                const rankPos = sorted.findIndex((p) => p.name === playerName) + 1;
+                const player = map[playerName];
+                if (!player) return;
+
+                // Every record this player has, keyed by demon rank (full record object,
+                // so we can show attempts + first-victor crown, not just the percentage)
+                const playerRecords = {};
+                DEMONS.forEach((d) => {
+                    d.records.forEach((r) => {
+                        if (r.player === playerName) playerRecords[d.rank] = r;
+                    });
+                });
+
+                const completed = DEMONS.filter((d) => playerRecords[d.rank]?.pct === 100);
+                const partial = DEMONS.filter(
+                    (d) => playerRecords[d.rank] && playerRecords[d.rank].pct < 100,
+                );
+                const unbeaten = DEMONS.filter((d) => !playerRecords[d.rank]);
+                const completionPct = Math.round((completed.length / DEMONS.length) * 100) || 0;
+
+                function levelRow(d, statusClass, badgeClass, badgeText, showWatch, rec) {
+                    const watchBtn = showWatch
+                        ? `<button class="watch-icon-btn" onclick="event.stopPropagation();openVideoLightbox('${d.video}','${d.name.replace(/'/g, "\\'")}')" title="Watch verification">▶</button>`
+                        : "";
+                    const crown =
+                        rec && rec.isFirstVictor
+                            ? `<span class="first-victor-badge" title="First to beat this level">👑 1st</span>`
+                            : "";
+                    const attemptsTxt =
+                        rec && rec.attempts
+                            ? `<span class="rec-attempts">${rec.attempts.toLocaleString()} att.</span>`
+                            : "";
+                    return `<div class="profile-level-row ${statusClass}" onclick="selectDemonFromProfile(${d.rank})">
+            <div class="profile-level-left">
+              <span class="profile-level-rank">#${d.rank}</span>
+              <div style="min-width:0;">
+                <div class="profile-level-name">${d.name}</div>
+                <div class="profile-level-creator">by ${d.creator}</div>
+              </div>
+            </div>
+            <div class="profile-level-right">
+              ${crown}
+              ${attemptsTxt}
+              ${watchBtn}
+              <span class="profile-level-badge ${badgeClass}">${badgeText}</span>
+            </div>
+          </div>`;
+                }
+
+                document.getElementById("profileTab").innerHTML = `
+        <button class="back-btn" onclick="backFromProfile()">← Back</button>
+
+        <div class="profile-page-header">
+          <div class="profile-page-avatar">${player.flag}</div>
+          <div>
+            <div class="profile-page-name">${playerName}</div>
+            <div class="profile-page-sub">Ranked #${rankPos} on the Chuddy List</div>
+          </div>
+        </div>
+
+        <div class="profile-page-stats">
+          <div class="stat-card"><div class="stat-val gold">#${rankPos}</div><div class="stat-lbl">Leaderboard</div></div>
+          <div class="stat-card"><div class="stat-val">${player.pts}</div><div class="stat-lbl">Points</div></div>
+          <div class="stat-card"><div class="stat-val green">${completed.length}</div><div class="stat-lbl">Completions</div></div>
+          <div class="stat-card"><div class="stat-val">${completionPct}%</div><div class="stat-lbl">List Done</div></div>
+        </div>
+
+        <div class="profile-page-columns">
+          <div class="profile-page-col">
+            <div class="section-label">✓ Completed<span class="count">${completed.length}</span></div>
+            <div class="profile-level-grid">
+              ${
+                  completed.length
+                      ? completed
+                            .map((d) => levelRow(d, "completed", "badge-complete", "100%", true, playerRecords[d.rank]))
+                            .join("")
+                      : `<div class="no-records">No completions yet</div>`
+              }
+            </div>
+          </div>
+
+          <div class="profile-page-col">
+            <div class="section-label">◔ In Progress<span class="count">${partial.length}</span></div>
+            <div class="profile-level-grid">
+              ${
+                  partial.length
+                      ? partial
+                            .map((d) =>
+                                levelRow(
+                                    d,
+                                    "partial",
+                                    "badge-partial",
+                                    playerRecords[d.rank].pct + "%",
+                                    true,
+                                    playerRecords[d.rank],
+                                ),
+                            )
+                            .join("")
+                      : `<div class="no-records">No partial records</div>`
+              }
+            </div>
+          </div>
+
+          <div class="profile-page-col">
+            <div class="section-label">○ Not Beaten<span class="count">${unbeaten.length}</span></div>
+            <div class="profile-level-grid">
+              ${
+                  unbeaten.length
+                      ? unbeaten.map((d) => levelRow(d, "unbeaten", "badge-none", "—", false, null)).join("")
+                      : `<div class="no-records">List fully cleared! 🎉</div>`
+              }
+            </div>
+          </div>
+        </div>
+      `;
+            }
+
+            // ═══════════════════════════════════════════════════════════════════════════════
+            // VIDEO LIGHTBOX (used by the "watch" button on player profiles)
+            // ═══════════════════════════════════════════════════════════════════════════════
+            function openVideoLightbox(videoId, levelName) {
+                document.getElementById("lightboxTitle").textContent = levelName;
+                document.getElementById("lightboxFrame").innerHTML =
+                    `<iframe src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1" allowfullscreen loading="lazy" title="${levelName} verification"></iframe>`;
+                document.getElementById("videoLightbox").classList.add("open");
+                document.body.style.overflow = "hidden";
+            }
+
+            function closeVideoLightboxDirect() {
+                document.getElementById("videoLightbox").classList.remove("open");
+                document.getElementById("lightboxFrame").innerHTML = "";
+                document.body.style.overflow = "";
+            }
+
+            function closeVideoLightbox(e) {
+                if (e.target === document.getElementById("videoLightbox")) {
+                    closeVideoLightboxDirect();
+                }
             }
 
             // ═══════════════════════════════════════════════════════════════════════════════
