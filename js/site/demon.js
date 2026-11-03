@@ -73,16 +73,20 @@ function selectDemon(rank) {
             <span class="chip chip-pts">⭐ ${demonPts} pts</span>
           </div>
         </div>
-        <a class="watch-btn" href="https://youtu.be/${encodeURIComponent(d.video)}" target="_blank" rel="noopener">▶ Watch on YouTube</a>
+        ${d.video ? `<a class="watch-btn" href="https://youtu.be/${encodeURIComponent(d.video)}" target="_blank" rel="noopener">▶ Watch on YouTube</a>` : ""}
       </div>
     </div>
     <div class="detail-body">
       <div>
         <div class="section-label">Verification Video</div>
-        <div class="video-container">
+        ${
+            d.video
+                ? `<div class="video-container">
           <iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(d.video)}?rel=0&modestbranding=1"
             allowfullscreen loading="lazy" title="${esc(d.name)} verification"></iframe>
-        </div>
+        </div>`
+                : `<div class="no-records">No verification video for this level yet</div>`
+        }
       </div>
       <div class="records-col">
         <div class="section-label">Records<span class="count">${d.records.length}</span></div>

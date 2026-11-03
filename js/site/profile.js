@@ -2,7 +2,7 @@
 // PLAYER PROFILE PAGE
 // ═══════════════════════════════════════════════════════════════════════════════
 function profileLevelRow(d, statusClass, badgeClass, badgeText, rec) {
-    const showWatch = !!rec;
+    const showWatch = !!rec && !!(rec.video || d.video);
     const watchBtn = showWatch
         ? `<button class="watch-icon-btn" data-video="${esc(rec.video || d.video)}" data-title="${esc(d.name)}" title="${rec.video ? "Watch completion" : "Watch verification"}">▶</button>`
         : "";
