@@ -1,35 +1,36 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // PLAYER PROFILE PAGE
 // ═══════════════════════════════════════════════════════════════════════════════
-function profileLevelRow(d, statusClass, badgeClass, badgeText, rec) {
+function profileLevelRow(d, statusClass, pctClass, pctText, rec) {
     const showWatch = !!rec && !!(rec.video || d.video);
     const watchBtn = showWatch
-        ? `<button class="watch-icon-btn" data-video="${esc(rec.video || d.video)}" data-title="${esc(d.name)}" title="${rec.video ? "Watch completion" : "Watch verification"}">▶</button>`
+        ? `<button class="watch-icon-btn" data-video="${esc(rec.video || d.video)}" data-title="${esc(d.name)}" title="${rec.video ? "Watch completion" : "Watch verification"}" aria-label="Watch video">${icon("play")}</button>`
         : "";
-    const crown = rec?.isFirstVictor ? `<span class="first-victor-badge" title="First to beat this level">👑 1st</span>` : "";
-    const attemptsTxt = rec?.attempts ? `<span class="rec-attempts">${rec.attempts.toLocaleString()} att.</span>` : "";
+    const crown = rec?.isFirstVictor ? `<span class="badge badge-first" title="First to beat this level">${icon("crown")}</span>` : "";
+    const pct = pctText ? `<span class="pct ${pctClass}">${pctText}</span>` : "";
 
-    return `<div class="profile-level-row ${statusClass}" data-demon="${d.rank}">
-      <div class="profile-level-left">
-        <span class="profile-level-rank">#${d.rank}</span>
-        <div class="profile-level-text">
-          <div class="profile-level-name">${esc(d.name)}</div>
-          <div class="profile-level-creator">by ${esc(d.creator)}</div>
+    return `<div class="level-row ${statusClass}" data-demon="${d.rank}">
+      <div class="level-row-left">
+        <span class="rank-num">#${d.rank}</span>
+        <div class="level-row-text">
+          <div class="level-row-name">${esc(d.name)}</div>
+          <div class="level-row-creator">by ${esc(d.creator)}${rec?.attempts ? ` · ${rec.attempts.toLocaleString()} att.` : ""}</div>
         </div>
       </div>
-      <div class="profile-level-right">
+      <div class="level-row-right">
         ${crown}
-        ${attemptsTxt}
         ${watchBtn}
-        <span class="profile-level-badge ${badgeClass}">${badgeText}</span>
+        ${pct}
       </div>
     </div>`;
 }
 
-function profileColumn(title, items, emptyText, rowFn) {
-    return `<div class="profile-page-col">
-      <div class="section-label">${title}<span class="count">${items.length}</span></div>
-      <div class="profile-level-grid">
+function profileColumn(iconName, iconCls, title, items, emptyText, rowFn) {
+    return `<div class="card profile-col">
+      <div class="card-head">
+        <div class="section-label">${icon(iconName, iconCls)} ${title} <span class="count">${items.length}</span></div>
+      </div>
+      <div class="card-body">
         ${items.length ? items.map(rowFn).join("") : `<div class="no-records">${emptyText}</div>`}
       </div>
     </div>`;
@@ -39,15 +40,16 @@ function profileColumn(title, items, emptyText, rowFn) {
 function renderProfilePage(playerName) {
     const el = document.getElementById("profileTab");
     const player = getPlayer(playerName);
+    const back = `<button class="btn btn-ghost btn-sm back-btn" onclick="backFromProfile()">${icon("arrow-left")}Back</button>`;
 
     if (!player) {
-        el.innerHTML = `
-        <button class="ghost-btn back-btn" onclick="backFromProfile()">← Back</button>
+        el.innerHTML = `<div class="page">
+        ${back}
         <div class="empty-state">
-          <div class="empty-icon">👤</div>
+          <div class="empty-icon">${icon("user")}</div>
           <div class="empty-title">Player not found</div>
           <div class="empty-sub">No records exist for “${esc(playerName)}”.</div>
-        </div>`;
+        </div></div>`;
         return false;
     }
 
@@ -57,40 +59,49 @@ function renderProfilePage(playerName) {
     const unbeaten = DEMONS.filter((d) => !recs[d.rank]);
     const completionPct = DEMONS.length ? Math.round((completed.length / DEMONS.length) * 100) : 0;
     const totalPlayers = getPlayerStats().length;
-    const hardest = player.hardest ? `Hardest: #${player.hardest.rank} ${esc(player.hardest.name)}` : "No completions yet";
+    const firsts = completed.filter((d) => recs[d.rank].isFirstVictor).length;
 
-    el.innerHTML = `
-    <button class="ghost-btn back-btn" onclick="backFromProfile()">← Back</button>
+    el.innerHTML = `<div class="page">
+    ${back}
 
-    <div class="profile-page-header">
-      <div class="profile-page-avatar">${esc(player.flag)}</div>
+    <div class="card profile-header">
+      <div class="profile-avatar">${flagHTML(player.flag)}</div>
       <div>
-        <div class="profile-page-name">${esc(player.name)}</div>
-        <div class="profile-page-sub">Ranked #${player.position} of ${totalPlayers} on the Chuddy List · ${hardest}</div>
+        <h1 class="profile-name">${esc(player.name)}</h1>
+        <div class="profile-sub">
+          <span class="meta">${icon("trophy")}Rank ${player.position} of ${totalPlayers}</span>
+          ${player.hardest ? `<span class="meta">${icon("skull")}Hardest: #${player.hardest.rank} ${esc(player.hardest.name)}</span>` : ""}
+          ${firsts ? `<span class="meta">${icon("crown")}${firsts} first victor${firsts !== 1 ? "ies" : "y"}</span>` : ""}
+        </div>
       </div>
     </div>
 
-    <div class="profile-page-stats">
-      <div class="stat-card"><div class="stat-val gold">#${player.position}</div><div class="stat-lbl">Leaderboard</div></div>
-      <div class="stat-card"><div class="stat-val">${player.pts}</div><div class="stat-lbl">Points</div></div>
-      <div class="stat-card"><div class="stat-val green">${completed.length}</div><div class="stat-lbl">Completions</div></div>
-      <div class="stat-card"><div class="stat-val">${completionPct}%</div><div class="stat-lbl">List Done</div></div>
-    </div>
-    <div class="progress-track profile-progress" title="${completed.length} of ${DEMONS.length} levels completed">
-      <div class="progress-fill" style="width:${completionPct}%"></div>
+    <div class="stat-grid profile-stats">
+      ${statCard("trophy", "gold", `#${player.position}`, "Leaderboard")}
+      ${statCard("star", "", player.pts.toLocaleString(), "Points")}
+      ${statCard("check-circle", "green", completed.length, "Completions")}
+      ${statCard("half-circle", "neutral", partial.length, "In progress")}
     </div>
 
-    <div class="profile-page-columns">
-      ${profileColumn("✓ Completed", completed, "No completions yet", (d) =>
-          profileLevelRow(d, "completed", "badge-complete", "100%", recs[d.rank]),
+    <div class="card profile-progress">
+      <div class="profile-progress-head">
+        <span>List progress</span>
+        <span><span class="mono">${completed.length} / ${DEMONS.length}</span> · ${completionPct}%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${completionPct}%"></div></div>
+    </div>
+
+    <div class="profile-columns">
+      ${profileColumn("check-circle", "col-icon-done", "Completed", completed, "No completions yet", (d) =>
+          profileLevelRow(d, "completed", "full", "100%", recs[d.rank]),
       )}
-      ${profileColumn("◔ In Progress", partial, "No partial records", (d) =>
-          profileLevelRow(d, "partial", "badge-partial", recs[d.rank].pct + "%", recs[d.rank]),
+      ${profileColumn("half-circle", "col-icon-progress", "In progress", partial, "No partial records", (d) =>
+          profileLevelRow(d, "partial", "", recs[d.rank].pct + "%", recs[d.rank]),
       )}
-      ${profileColumn("○ Not Beaten", unbeaten, "List fully cleared! 🎉", (d) =>
-          profileLevelRow(d, "unbeaten", "badge-none", "—", null),
+      ${profileColumn("circle", "", "Not beaten", unbeaten, "List fully cleared!", (d) =>
+          profileLevelRow(d, "unbeaten", "", "", null),
       )}
-    </div>`;
+    </div></div>`;
     return true;
 }
 

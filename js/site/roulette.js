@@ -45,6 +45,13 @@ function showRouletteDemon(d) {
     document.getElementById("rBy").textContent = `by ${d.creator}`;
 }
 
+// Thumbnail behind the card once a level has been picked (hidden while spinning)
+function setRouletteBg(d) {
+    const bg = document.getElementById("rBg");
+    if (d?.video) bg.style.backgroundImage = `url("${youtubeThumb(d.video)}")`;
+    bg.classList.toggle("show", !!d?.video);
+}
+
 function spinRoulette() {
     if (spinning || !DEMONS.length) return;
     document.getElementById("rouletteSaveRow").hidden = true;
@@ -53,7 +60,8 @@ function spinRoulette() {
     if (inChallenge) {
         if (!rouletteState.pool || rouletteState.pool.length === 0) rouletteState.pool = getChallengePool();
         if (rouletteState.pool.length === 0) {
-            document.getElementById("rNum").textContent = "🎉";
+            setRouletteBg(null);
+            document.getElementById("rNum").innerHTML = icon("sparkles");
             document.getElementById("rName").textContent = "All done!";
             document.getElementById("rBy").textContent = "You've completed every level.";
             document.getElementById("rPts").textContent = "";
@@ -71,6 +79,7 @@ function spinRoulette() {
     let t = 0;
     const max = 22;
 
+    setRouletteBg(null);
     const iv = setInterval(() => {
         showRouletteDemon(pick());
         rPts.textContent = "";
@@ -79,7 +88,8 @@ function spinRoulette() {
         clearInterval(iv);
         const final = pick();
         showRouletteDemon(final);
-        rPts.textContent = `${calcScore(final.rank, 100)} pts for completion`;
+        setRouletteBg(final);
+        rPts.innerHTML = `${icon("star")}${calcScore(final.rank, 100)} pts for a completion`;
         rouletteState.currentDemon = final;
         // Remove from pool so the same level isn't shown again this session
         if (inChallenge) rouletteState.pool = rouletteState.pool.filter((d) => d.rank !== final.rank);
@@ -157,14 +167,16 @@ function refreshChallengeList() {
             const pts = calcScore(s.rank, s.pct);
             return `<div class="mini-row">
           <span class="mini-row-left">
-            <span class="mono small muted">#${s.rank}</span>
-            <span class="mini-row-name">${esc(s.name)}</span>
+            <span class="rank-num">#${s.rank}</span>
+            <span style="min-width:0">
+              <span class="mini-row-name" style="display:block">${esc(s.name)}</span>
+              <span class="mini-row-sub" style="display:block">${pts} pts · by ${esc(s.creator)}</span>
+            </span>
           </span>
           <span class="saved-row-right">
+            <span class="meta">${icon("calendar")}${formatShortDate(s.savedAt)}</span>
             <span class="pct ${s.pct === 100 ? "full" : ""}">${s.pct}%</span>
-            <span class="mono small" style="color:var(--gold)">${pts} pts</span>
-            <span class="rec-date">${formatShortDate(s.savedAt)}</span>
-            <button class="saved-remove" onclick="removeRouletteSaved(${Number(s.rank)})" title="Remove">✕</button>
+            <button class="saved-remove" onclick="removeRouletteSaved(${Number(s.rank)})" title="Remove" aria-label="Remove">${icon("x")}</button>
           </span>
         </div>`;
         })

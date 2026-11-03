@@ -21,6 +21,7 @@ function setAccentHue(hue) {
     root.style.setProperty("--accent", `hsl(${hue},77%,57%)`);
     root.style.setProperty("--accent2", `hsl(${(hue + 18) % 360},77%,62%)`);
     root.style.setProperty("--accent-glow", `hsla(${hue},77%,57%,0.25)`);
+    root.style.setProperty("--accent-soft", `hsla(${hue},77%,57%,0.12)`);
     try {
         localStorage.setItem("accentHue", hue);
     } catch {}
@@ -37,13 +38,12 @@ function setAccentHue(hue) {
     syncSwatches(hue);
 }
 
-// Tinted gradient laid over the level's YouTube thumbnail. Deeper ranks get darker.
+// Source for the level header's ambient glow: the thumbnail (blurred heavily in
+// CSS, so its low resolution never shows), or an accent gradient without a video
 function heroBackground(demon) {
-    const tier = Math.min(Math.floor((demon.rank - 1) / 3), 4);
-    const sat = [80, 75, 65, 55, 40][tier];
-    const light = [22, 17, 13, 10, 8][tier];
-    const tint = `linear-gradient(135deg,hsla(${currentHue},${sat}%,${light}%,0.65),hsla(${currentHue},${sat}%,3%,0.85))`;
-    return demon.video ? `${tint}, url("${youtubeThumb(demon.video)}")` : tint;
+    return demon.video
+        ? `url("${youtubeThumb(demon.video, "mqdefault")}")`
+        : `linear-gradient(135deg,hsl(${currentHue},55%,22%),hsl(${currentHue},45%,6%))`;
 }
 
 function syncSwatches(hue) {

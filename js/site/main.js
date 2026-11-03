@@ -50,6 +50,7 @@ document.addEventListener("keydown", (e) => {
 });
 
 async function init() {
+    hydrateIcons();
     initThemePicker();
     await loadData();
     renderSidebar(DEMONS);

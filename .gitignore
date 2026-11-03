@@ -15,3 +15,6 @@ supabase_setup.sql
 
 # Database backups
 _backup/*.json
+
+# Screenshots shared while working on the site
+pictures/

@@ -2,47 +2,126 @@
    LEADERBOARD PAGE
    ═══════════════════════════════════════════════════════════════════════════ */
 
-.lb-view {
-    padding: 2.5rem;
+.lb-search {
+    width: 240px;
 }
 
-.lb-inner {
-    display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 2rem;
-    align-items: start;
-}
-
-.lb-side {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-}
-.lb-side-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.lb-heading-row {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
+.lb-stats {
+    grid-template-columns: repeat(3, 1fr);
     margin-bottom: 1.5rem;
 }
-.lb-search {
-    width: 220px;
-}
 
-.stats-row {
+/* ── PODIUM ─────────────────────────────────────── */
+.podium {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr 1.1fr 1fr;
+    align-items: end;
     gap: 12px;
     margin-bottom: 1.5rem;
 }
+.podium-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 1.25rem 1rem 1.1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    overflow: hidden;
+    transition:
+        border-color 0.15s,
+        transform 0.15s;
+}
+.podium-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+}
+.podium-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: var(--medal);
+}
+.podium-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, var(--medal-glow) 0%, transparent 70%);
+    pointer-events: none;
+}
+.podium-card.p1 {
+    --medal: var(--gold);
+    --medal-glow: rgba(245, 200, 66, 0.12);
+    padding-top: 1.75rem;
+    padding-bottom: 1.4rem;
+}
+.podium-card.p2 {
+    --medal: var(--silver);
+    --medal-glow: rgba(194, 203, 216, 0.08);
+}
+.podium-card.p3 {
+    --medal: var(--bronze);
+    --medal-glow: rgba(217, 149, 102, 0.08);
+}
+.podium-medal {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: var(--medal);
+    background: color-mix(in srgb, var(--medal) 14%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--medal) 35%, transparent);
+}
+.p1 .podium-medal {
+    width: 46px;
+    height: 46px;
+    font-size: 1.35rem;
+}
+.podium-name {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    max-width: 100%;
+}
+.podium-name span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.podium-pts {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--medal);
+}
+.podium-sub {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
 
+/* ── LAYOUT ─────────────────────────────────────── */
+.lb-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 1.5rem;
+    align-items: start;
+}
+.lb-side {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* ── TABLE ──────────────────────────────────────── */
 .lb-table-wrap {
     overflow-x: auto;
 }
@@ -52,7 +131,7 @@
 }
 .lb-table th {
     text-align: left;
-    padding: 10px 14px;
+    padding: 11px 16px;
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -61,10 +140,18 @@
     border-bottom: 1px solid var(--border);
     white-space: nowrap;
 }
+.lb-table th.num,
+.lb-table td.num {
+    text-align: right;
+}
 .lb-table td {
-    padding: 10px 14px;
+    padding: 11px 16px;
     font-size: 0.88rem;
     border-bottom: 1px solid var(--border);
+    font-variant-numeric: tabular-nums;
+}
+.lb-table tbody tr:last-child td {
+    border-bottom: none;
 }
 .lb-table tbody tr {
     transition: background 0.1s;
@@ -77,86 +164,97 @@
     cursor: default;
     text-align: center;
     color: var(--text-muted);
-    padding: 2rem;
+    padding: 2.5rem;
 }
 
 .lb-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 24px;
+    border-radius: 6px;
     font-family: var(--font-mono);
     font-size: 0.78rem;
     color: var(--text-muted);
 }
 .lb-num.gold {
     color: var(--gold);
-    font-weight: 600;
+    background: rgba(245, 200, 66, 0.1);
 }
 .lb-num.silver {
     color: var(--silver);
-    font-weight: 600;
+    background: rgba(194, 203, 216, 0.08);
 }
 .lb-num.bronze {
     color: var(--bronze);
-    font-weight: 600;
+    background: rgba(217, 149, 102, 0.1);
 }
 
 .lb-player {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-weight: 500;
+    gap: 10px;
+    font-weight: 600;
 }
 .lb-pts {
     font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: var(--accent);
+    font-weight: 500;
+    color: var(--text);
 }
 .lb-comps {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+    color: var(--text-dim);
 }
 .lb-hardest {
-    font-size: 0.8rem;
     color: var(--text-dim);
     white-space: nowrap;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .lb-hardest .mono {
     color: var(--text-muted);
-    font-size: 0.7rem;
-    margin-right: 4px;
+    font-size: 0.72rem;
+    margin-right: 6px;
 }
 
-.podium-emoji {
-    font-size: 1.3rem;
-}
-.podium-pts {
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-@media (max-width: 1100px) {
+@media (max-width: 1150px) {
     .lb-inner {
         grid-template-columns: 1fr;
     }
+    .lb-side {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
 }
 @media (max-width: 680px) {
-    .lb-view {
-        padding: 1.5rem 1rem;
-    }
     .lb-search {
         width: 100%;
     }
-    .stats-row {
+    .page-head .input-wrap {
+        width: 100%;
+    }
+    .lb-stats {
+        grid-template-columns: 1fr 1fr 1fr;
         gap: 8px;
     }
-    .stat-card {
-        padding: 14px;
+    .lb-stats .stat-icon {
+        display: none;
+    }
+    .podium {
+        grid-template-columns: 1fr;
+    }
+    .podium-card.p1 {
+        order: -1;
+    }
+    .lb-side {
+        grid-template-columns: 1fr;
     }
     .lb-col-hardest {
         display: none;
     }
     .lb-table th,
     .lb-table td {
-        padding: 10px 8px;
+        padding: 10px;
     }
 }

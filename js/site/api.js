@@ -56,7 +56,7 @@ async function loadData() {
         );
 
         usingSupabase = true;
-        showStatus("Live data loaded ✓", false, 2500);
+        showStatus("Live data loaded", false, 2500);
     } catch (e) {
         console.warn("Supabase unavailable, using placeholder data.", e);
         setDemons(PLACEHOLDER);

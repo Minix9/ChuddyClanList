@@ -13,6 +13,7 @@ supabase_setup.sql       Run once in Supabase to create tables + seed data
 
 assets/
   list_icon.png          Logo / favicon
+  flags/                 Country flag SVGs (de, gb, it, us) — add more as <code>.svg
 
 css/
   shared/base.css        Design tokens (colours, fonts), reset, scrollbar, keyframes
@@ -27,6 +28,7 @@ css/
 
 js/
   shared/utils.js        esc(), dates, YouTube ID parsing, scoring formula (calcPoints)
+  shared/icons.js        SVG icon set (icon("trophy")) + flag emoji → flag image
   site/config.js         ← Supabase URL + anon key go here
   site/placeholder-data.js  Demo data used when Supabase isn't reachable
   site/state.js          Global state, player stats / points

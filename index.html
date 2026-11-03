@@ -5,10 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Chuddy List</title>
         <meta name="description" content="The Chuddy List — demon rankings, player records and leaderboard." />
+        <meta name="theme-color" content="#0a0a0d" />
         <link rel="icon" type="image/png" href="assets/list_icon.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://i.ytimg.com" />
         <link
-            href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap"
             rel="stylesheet"
         />
 
@@ -24,29 +26,35 @@
         <!-- STATUS BAR -->
         <div class="status-bar" id="statusBar" role="status" aria-live="polite">
             <div class="status-dot live" id="statusDot"></div>
-            <span id="statusMsg">Connecting to Supabase…</span>
+            <span id="statusMsg">Connecting…</span>
         </div>
 
         <!-- HEADER -->
         <header>
             <div class="header-left">
-                <button class="mob-toggle" id="mobToggle" onclick="toggleSidebar()" aria-label="Toggle level list">☰</button>
+                <button class="icon-btn mob-toggle" id="mobToggle" onclick="toggleSidebar()" aria-label="Toggle level list">
+                    <span data-icon="menu"></span>
+                </button>
                 <a class="logo" href="#/">
                     <div class="logo-mark"><img src="assets/list_icon.png" alt="" /></div>
-                    <span class="logo-wordmark">CHUDDY <em>LIST</em></span>
+                    <div class="logo-text">
+                        <span class="logo-wordmark">CHUDDY <em>LIST</em></span>
+                        <span class="logo-tagline">Demon rankings</span>
+                    </div>
                 </a>
             </div>
-            <nav>
-                <a class="nav-btn" data-tab="list" href="#/">List</a>
-                <a class="nav-btn" data-tab="leaderboard" href="#/leaderboard">Leaderboard</a>
-                <a class="nav-btn" data-tab="roulette" href="#/roulette">Roulette</a>
+            <nav aria-label="Main">
+                <a class="nav-btn" data-tab="list" href="#/"><span data-icon="list"></span><span>List</span></a>
+                <a class="nav-btn" data-tab="leaderboard" href="#/leaderboard"><span data-icon="trophy"></span><span>Leaderboard</span></a>
+                <a class="nav-btn" data-tab="roulette" href="#/roulette"><span data-icon="shuffle"></span><span>Roulette</span></a>
             </nav>
             <div class="header-right">
                 <div class="theme-wrap">
-                    <button class="theme-btn" onclick="toggleThemePicker()" title="Change accent colour">
+                    <button class="icon-btn" onclick="toggleThemePicker()" title="Change accent colour" aria-label="Change accent colour">
                         <span class="theme-dot" id="themePreviewDot"></span><span class="theme-label">Theme</span>
                     </button>
                     <div class="theme-popover" id="themePopover">
+                        <div class="theme-popover-title">Accent colour</div>
                         <div class="theme-swatches" id="themeSwatches"></div>
                         <div class="theme-slider-wrap">
                             <label for="hueSlider">Custom hue</label>
@@ -63,12 +71,12 @@
             <aside class="sidebar" id="sidebar">
                 <div class="sidebar-top">
                     <div class="search-wrap">
-                        <span class="search-icon">🔍</span>
+                        <span class="search-icon" data-icon="search"></span>
                         <input
                             class="search-input"
                             id="searchInput"
                             type="search"
-                            placeholder="Search levels or creators…"
+                            placeholder="Search levels or creators"
                             autocomplete="off"
                             oninput="filterList(this.value)"
                         />
@@ -76,7 +84,7 @@
                     </div>
                     <div class="sidebar-meta">
                         <span id="sidebarCount"></span>
-                        <span>↑ ↓ to browse</span>
+                        <span><kbd>↑</kbd> <kbd>↓</kbd> to browse</span>
                     </div>
                 </div>
                 <div class="demon-list-wrap">
@@ -92,7 +100,7 @@
                 <!-- LIST TAB -->
                 <section class="view visible" id="listTab">
                     <div class="empty-state" id="emptyState">
-                        <div class="empty-icon">☠️</div>
+                        <div class="empty-icon"><span data-icon="skull"></span></div>
                         <div class="empty-title" id="emptyTitle">Loading the list…</div>
                         <div class="empty-sub" id="emptySub">Fetching levels and records.</div>
                     </div>
@@ -100,133 +108,155 @@
                 </section>
 
                 <!-- LEADERBOARD TAB -->
-                <section class="view lb-view" id="lbTab">
-                    <div class="lb-inner">
-                        <div>
-                            <div class="lb-heading-row">
-                                <div>
-                                    <div class="page-heading">Leader<span>board</span></div>
-                                    <p class="page-sub">Ranked by points earned from completed demons</p>
-                                </div>
+                <section class="view" id="lbTab">
+                    <div class="page">
+                        <div class="page-head">
+                            <div>
+                                <div class="eyebrow"><span data-icon="trophy"></span> Rankings</div>
+                                <h1 class="page-heading">Leaderboard</h1>
+                                <p class="page-sub">Players ranked by points earned from their records</p>
+                            </div>
+                            <div class="input-wrap">
+                                <span data-icon="search"></span>
                                 <input
                                     class="text-input lb-search"
                                     id="lbSearch"
                                     type="search"
-                                    placeholder="Find a player…"
+                                    placeholder="Find a player"
                                     autocomplete="off"
                                     oninput="renderLeaderboardTable()"
                                 />
                             </div>
-                            <div class="stats-row" id="lbStats"></div>
-                            <div class="lb-table-wrap">
+                        </div>
+
+                        <div class="stat-grid lb-stats" id="lbStats"></div>
+                        <div class="podium" id="podium"></div>
+
+                        <div class="lb-inner">
+                            <div class="card lb-table-wrap">
                                 <table class="lb-table">
                                     <thead>
                                         <tr>
-                                            <th style="width: 44px">#</th>
+                                            <th style="width: 60px">Rank</th>
                                             <th>Player</th>
-                                            <th>Points</th>
-                                            <th>Completions</th>
+                                            <th class="num">Points</th>
+                                            <th class="num">Completions</th>
                                             <th class="lb-col-hardest">Hardest</th>
                                         </tr>
                                     </thead>
                                     <tbody id="lbBody"></tbody>
                                 </table>
                             </div>
-                        </div>
 
-                        <div class="lb-side">
-                            <div class="panel-box">
-                                <div class="panel-box-title">🏆 Top 3</div>
-                                <div class="lb-side-list" id="podium"></div>
-                            </div>
-                            <div class="panel-box">
-                                <div class="panel-box-title">💀 Most Completed</div>
-                                <div class="lb-side-list" id="mostCompleted"></div>
-                            </div>
-                            <div class="panel-box">
-                                <div class="panel-box-title">⚡ Recent Records</div>
-                                <div class="lb-side-list" id="recentRecords"></div>
+                            <div class="lb-side">
+                                <div class="card">
+                                    <div class="card-head">
+                                        <div class="section-label"><span data-icon="check-circle"></span> Most completed</div>
+                                    </div>
+                                    <div class="card-body" id="mostCompleted"></div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-head">
+                                        <div class="section-label"><span data-icon="zap"></span> Recent records</div>
+                                    </div>
+                                    <div class="card-body" id="recentRecords"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
                 <!-- ROULETTE TAB -->
-                <section class="view roulette-view" id="rouletteTab">
-                    <div class="roulette-wrap">
-                        <div class="page-heading">Level <span>Roulette</span></div>
-                        <p class="page-sub">Random challenge from the full Chuddy List</p>
-
-                        <label class="challenge-toggle">
-                            <input type="checkbox" id="challengeMode" onchange="updateChallengeMode()" />
-                            Challenge mode <span class="muted small">(no repeats)</span>
-                        </label>
-                        <div class="challenge-progress" id="challengeProgressWrap" hidden>
-                            <div class="challenge-progress-head">
-                                <span>Challenge Progress</span>
-                                <span class="mono" id="challengeProgressText">0 / 0</span>
-                            </div>
-                            <div class="progress-track">
-                                <div class="progress-fill" id="challengeProgressBar" style="width: 0%"></div>
+                <section class="view" id="rouletteTab">
+                    <div class="page roulette-wrap">
+                        <div class="page-head">
+                            <div>
+                                <div class="eyebrow"><span data-icon="shuffle"></span> Challenge</div>
+                                <h1 class="page-heading">Level Roulette</h1>
+                                <p class="page-sub">Spin for a random level from the Chuddy List</p>
                             </div>
                         </div>
 
-                        <div class="roulette-card" id="rouletteCard">
+                        <div class="card challenge-bar">
+                            <label class="challenge-toggle">
+                                <input class="switch" type="checkbox" id="challengeMode" onchange="updateChallengeMode()" />
+                                <span>Challenge mode<small>Completed levels won't come up again</small></span>
+                            </label>
+                            <div class="challenge-progress" id="challengeProgressWrap" hidden>
+                                <div class="challenge-progress-text" id="challengeProgressText">0 / 0</div>
+                                <div class="progress-track">
+                                    <div class="progress-fill" id="challengeProgressBar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card roulette-card" id="rouletteCard">
+                            <div class="roulette-bg" id="rBg"></div>
                             <div class="roulette-num" id="rNum">?</div>
                             <div class="roulette-name" id="rName">Spin to begin</div>
-                            <div class="roulette-by" id="rBy">—</div>
+                            <div class="roulette-by" id="rBy">Press the button below</div>
                             <div class="roulette-pts" id="rPts"></div>
                         </div>
 
-                        <!-- Save section (appears after a spin) -->
-                        <div class="roulette-save-row" id="rouletteSaveRow" hidden>
-                            <input
-                                class="text-input"
-                                id="roulettePct"
-                                type="number"
-                                min="1"
-                                max="100"
-                                value="100"
-                                placeholder="% achieved"
-                                aria-label="Percent achieved"
-                            />
-                            <button class="primary-btn" onclick="saveRouletteResult()">💾 Save</button>
-                            <button class="ghost-btn" onclick="skipRouletteSpin()">⏭ Skip</button>
-                            <button class="ghost-btn" onclick="viewRouletteLevel()" title="Open this level">↗</button>
+                        <div class="roulette-actions">
+                            <!-- Save section (appears after a spin) -->
+                            <div class="roulette-save-row" id="rouletteSaveRow" hidden>
+                                <div class="input-wrap">
+                                    <span data-icon="target"></span>
+                                    <input
+                                        class="text-input"
+                                        id="roulettePct"
+                                        type="number"
+                                        min="1"
+                                        max="100"
+                                        value="100"
+                                        placeholder="% achieved"
+                                        aria-label="Percent achieved"
+                                    />
+                                </div>
+                                <button class="btn btn-primary" onclick="saveRouletteResult()"><span data-icon="save"></span>Save</button>
+                                <button class="btn btn-ghost" onclick="skipRouletteSpin()"><span data-icon="skip"></span>Skip</button>
+                                <button class="btn btn-ghost" onclick="viewRouletteLevel()" title="Open this level" aria-label="Open this level">
+                                    <span data-icon="external"></span>
+                                </button>
+                            </div>
+
+                            <button class="btn btn-primary spin-btn" id="spinBtn" onclick="spinRoulette()"><span data-icon="dice"></span>Spin</button>
+                            <div class="spin-hint" id="remainingInfo"></div>
                         </div>
 
-                        <button class="spin-btn" id="spinBtn" onclick="spinRoulette()">🎲 SPIN</button>
-                        <div class="spin-hint" id="remainingInfo"></div>
-
-                        <div class="saved-results" id="challengeListWrap" hidden>
-                            <div class="saved-results-head">
-                                <span class="saved-results-title">Saved Results</span>
+                        <div class="card saved-results" id="challengeListWrap" hidden>
+                            <div class="card-head">
+                                <div class="section-label"><span data-icon="save"></span> Saved results</div>
                                 <div class="saved-results-actions">
-                                    <button class="ghost-btn sm" onclick="exportRoulette()">📤 Export</button>
-                                    <button class="ghost-btn sm danger" onclick="clearRoulette()">🗑 Clear</button>
+                                    <button class="btn btn-ghost btn-sm" onclick="exportRoulette()"><span data-icon="download"></span>Export CSV</button>
+                                    <button class="btn btn-ghost btn-sm danger" onclick="clearRoulette()"><span data-icon="trash"></span>Clear</button>
                                 </div>
                             </div>
-                            <div class="saved-results-list" id="challengeList"></div>
+                            <div class="card-body saved-results-list" id="challengeList"></div>
                         </div>
                     </div>
                 </section>
 
                 <!-- PLAYER PROFILE PAGE -->
-                <section class="view profile-view" id="profileTab"></section>
+                <section class="view" id="profileTab"></section>
             </main>
         </div>
 
         <!-- VIDEO LIGHTBOX -->
         <div class="video-lightbox-overlay" id="videoLightbox" onclick="closeVideoLightbox(event)">
             <div class="video-lightbox-modal" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle">
-                <button class="lightbox-close" onclick="closeVideoLightboxDirect()" aria-label="Close video">✕</button>
-                <div class="video-lightbox-title" id="lightboxTitle"></div>
+                <div class="video-lightbox-head">
+                    <div class="video-lightbox-title" id="lightboxTitle"></div>
+                    <button class="icon-btn" onclick="closeVideoLightboxDirect()" aria-label="Close video"><span data-icon="x"></span></button>
+                </div>
                 <div class="video-lightbox-frame" id="lightboxFrame"></div>
             </div>
         </div>
 
         <!-- Scripts are plain (non-module) and load in order — later files use globals from earlier ones -->
         <script src="js/shared/utils.js"></script>
+        <script src="js/shared/icons.js"></script>
         <script src="js/site/config.js"></script>
         <script src="js/site/placeholder-data.js"></script>
         <script src="js/site/state.js"></script>

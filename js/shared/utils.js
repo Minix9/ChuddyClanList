@@ -33,8 +33,9 @@ function extractYouTubeId(input) {
     return m ? m[1] : trimmed;
 }
 
-function youtubeThumb(videoId) {
-    return `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`;
+// size: "mqdefault" (320×180, small lists) or "hqdefault" (480×360, headers)
+function youtubeThumb(videoId, size = "hqdefault") {
+    return `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/${size}.jpg`;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

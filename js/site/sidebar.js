@@ -12,16 +12,25 @@ function renderSidebar(list) {
     }
 
     ul.innerHTML = list
-        .map(
-            (d) => `
+        .map((d) => {
+            const thumb = d.video
+                ? `<img class="d-thumb" src="${youtubeThumb(d.video, "mqdefault")}" alt="" loading="lazy" />`
+                : `<span class="d-thumb"></span>`;
+            return `
     <li>
       <a class="demon-item ${currentRank === d.rank ? "active" : ""}" href="#/demon/${d.rank}" data-rank="${d.rank}">
-        <span class="d-rank ${rankClass(d.rank)}">#${d.rank}</span>
-        <span class="d-name">${esc(d.name)}</span>
-        <span class="d-completions" title="Completions">${completionCount(d)}✓</span>
+        <span class="d-rank ${rankClass(d.rank)}">${d.rank}</span>
+        ${thumb}
+        <span class="d-text">
+          <span class="d-name">${esc(d.name)}</span>
+          <span class="d-sub">
+            <span class="d-creator">${esc(d.creator)}</span>
+            <span class="d-completions" title="Completions">${icon("check")}${completionCount(d)}</span>
+          </span>
+        </span>
       </a>
-    </li>`,
-        )
+    </li>`;
+        })
         .join("");
 }
 
