@@ -1,0 +1,14 @@
+# Editor / OS clutter
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Admin panel + database setup stay local (they're used with private login data)
+admin.html
+admin PACKS.html
+css/admin/
+js/admin/
+_backup/admin.original.html
+supabase_setup.sql

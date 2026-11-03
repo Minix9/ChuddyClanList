@@ -1,0 +1,225 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ROULETTE PAGE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.roulette-view {
+    padding: 2.5rem 2rem;
+}
+
+.roulette-wrap {
+    max-width: 540px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.challenge-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin: 1rem 0 0.75rem;
+    cursor: pointer;
+    font-size: 0.84rem;
+    color: var(--text-dim);
+}
+.challenge-toggle input {
+    accent-color: var(--accent);
+    width: 15px;
+    height: 15px;
+}
+
+.challenge-progress {
+    margin-bottom: 1rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    text-align: left;
+}
+.challenge-progress-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+}
+.challenge-progress-head .mono {
+    color: var(--accent);
+}
+
+/* ── CARD ───────────────────────────────────────── */
+.roulette-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 3rem 2rem 2.5rem;
+    margin: 1rem 0 1.5rem;
+    position: relative;
+    overflow: hidden;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.roulette-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 100%, var(--accent-glow) 0%, transparent 65%);
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.roulette-num {
+    font-family: var(--font-display);
+    font-size: 5.5rem;
+    line-height: 1;
+    color: var(--accent);
+}
+.roulette-name {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+}
+.roulette-by {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+.roulette-pts {
+    margin-top: 6px;
+    font-size: 0.78rem;
+    color: var(--gold);
+    font-family: var(--font-mono);
+    min-height: 1.2em;
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.9);
+        opacity: 0.4;
+    }
+    60% {
+        transform: scale(1.04);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+.pop {
+    animation: popIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ── SAVE ROW ───────────────────────────────────── */
+.roulette-save-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    max-width: 420px;
+    margin: 0 auto 1rem;
+}
+.roulette-save-row .text-input {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ── SPIN ───────────────────────────────────────── */
+.spin-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    letter-spacing: 0.1em;
+    padding: 14px 44px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 22px var(--accent-glow);
+    transition:
+        transform 0.12s,
+        box-shadow 0.2s,
+        opacity 0.15s;
+}
+.spin-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px var(--accent-glow);
+}
+.spin-btn:active:not(:disabled) {
+    transform: scale(0.97);
+}
+.spin-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.spin-hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+    min-height: 1.2em;
+}
+
+/* ── SAVED RESULTS ──────────────────────────────── */
+.saved-results {
+    margin-top: 1.5rem;
+    text-align: left;
+}
+.saved-results-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+.saved-results-title {
+    font-family: var(--font-display);
+    letter-spacing: 0.1em;
+    font-size: 1rem;
+    color: var(--text-dim);
+}
+.saved-results-actions {
+    display: flex;
+    gap: 8px;
+}
+.saved-results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+.saved-row-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.saved-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    padding: 2px 4px;
+}
+.saved-remove:hover {
+    color: var(--accent);
+}
+
+@media (max-width: 680px) {
+    .roulette-view {
+        padding: 1.5rem 1rem;
+    }
+    .roulette-num {
+        font-size: 4rem;
+    }
+    .roulette-name {
+        font-size: 1.8rem;
+    }
+    .saved-row-right .rec-date {
+        display: none;
+    }
+}
