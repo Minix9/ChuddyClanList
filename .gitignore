@@ -12,3 +12,6 @@ css/admin/
 js/admin/
 _backup/admin.original.html
 supabase_setup.sql
+
+# Database backups
+_backup/*.json
