@@ -11,7 +11,9 @@ let usingSupabase = false;
 let playerStatsCache = null;
 
 function setDemons(list) {
-    DEMONS = [...list].sort((a, b) => a.rank - b.rank);
+    // Number levels by their position, so bad ranks in the database (0, negatives,
+    // gaps, duplicates) can never break the list or the points formula
+    DEMONS = [...list].sort((a, b) => a.rank - b.rank).map((d, i) => ({ ...d, rank: i + 1 }));
     DEMONS.forEach((d) => d.records.sort(compareRecords));
     filtered = [...DEMONS];
     playerStatsCache = null;

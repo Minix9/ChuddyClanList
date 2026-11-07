@@ -46,6 +46,7 @@ function youtubeThumb(videoId, size = "hqdefault") {
 // ═══════════════════════════════════════════════════════════════════════════════
 function calcPoints(rank, percent, listSize) {
     const n = listSize;
+    rank = Math.min(Math.max(rank, 1), Math.max(n, 1)); // out-of-range ranks would give NaN
     if (n <= 1) return Math.round(300 * (percent / 100));
     // 300 * exp( -ln(300) / (n-1)^1.2  *  (rank-1)^1.2 )
     const base = 300 * Math.exp((-Math.log(300) / Math.pow(n - 1, 1.2)) * Math.pow(rank - 1, 1.2));

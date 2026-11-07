@@ -18,3 +18,12 @@ _backup/*.json
 
 # Screenshots shared while working on the site
 pictures/
+
+# Personal auto-login admin (contains no key itself, but loads local-config.js)
+admin-local.html
+
+# Admin login SQL (contains your email)
+supabase_admin_auth.sql
+
+# All Supabase SQL files stay local
+supabase_*.sql
