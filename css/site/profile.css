@@ -137,6 +137,24 @@
     gap: 6px;
     flex-shrink: 0;
 }
+/* Points per level / per column */
+.level-pts {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--gold);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+.level-pts.muted {
+    color: var(--text-muted);
+}
+.col-pts {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--gold);
+    white-space: nowrap;
+}
+
 .col-icon-done {
     color: var(--green) !important;
 }

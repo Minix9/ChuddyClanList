@@ -8,6 +8,11 @@ function profileLevelRow(d, statusClass, pctClass, pctText, rec) {
         : "";
     const crown = rec?.isFirstVictor ? `<span class="badge badge-first" title="First to beat this level">${icon("crown")}</span>` : "";
     const pct = pctText ? `<span class="pct ${pctClass}">${pctText}</span>` : "";
+    // Points earned from this record, or what the level is worth if not beaten yet
+    const possible = calcScore(d.rank, 100);
+    const pts = rec
+        ? `<span class="level-pts" title="${rec.pct < 100 ? `${possible.toLocaleString()} pts at 100%` : "Points earned"}">+${calcScore(d.rank, rec.pct).toLocaleString()} pts</span>`
+        : `<span class="level-pts muted" title="Points for beating this level">${possible.toLocaleString()} pts</span>`;
 
     return `<div class="level-row ${statusClass}" data-demon="${d.rank}">
       <div class="level-row-left">
@@ -20,15 +25,22 @@ function profileLevelRow(d, statusClass, pctClass, pctText, rec) {
       <div class="level-row-right">
         ${crown}
         ${watchBtn}
+        ${pts}
         ${pct}
       </div>
     </div>`;
 }
 
-function profileColumn(iconName, iconCls, title, items, emptyText, rowFn) {
+// Total points of a set of levels, at the percentage pctOf(level) returns
+function sumPts(levels, pctOf) {
+    return levels.reduce((s, d) => s + calcScore(d.rank, pctOf(d)), 0);
+}
+
+function profileColumn(iconName, iconCls, title, items, emptyText, rowFn, ptsText) {
     return `<div class="card profile-col">
       <div class="card-head">
         <div class="section-label">${icon(iconName, iconCls)} ${title} <span class="count">${items.length}</span></div>
+        ${ptsText ? `<span class="col-pts">${ptsText}</span>` : ""}
       </div>
       <div class="card-body">
         ${items.length ? items.map(rowFn).join("") : `<div class="no-records">${emptyText}</div>`}
@@ -92,14 +104,32 @@ function renderProfilePage(playerName) {
     </div>
 
     <div class="profile-columns">
-      ${profileColumn("check-circle", "col-icon-done", "Completed", completed, "No completions yet", (d) =>
-          profileLevelRow(d, "completed", "full", "100%", recs[d.rank]),
+      ${profileColumn(
+          "check-circle",
+          "col-icon-done",
+          "Completed",
+          completed,
+          "No completions yet",
+          (d) => profileLevelRow(d, "completed", "full", "100%", recs[d.rank]),
+          `${sumPts(completed, (d) => recs[d.rank].pct).toLocaleString()} pts`,
       )}
-      ${profileColumn("half-circle", "col-icon-progress", "In progress", partial, "No partial records", (d) =>
-          profileLevelRow(d, "partial", "", recs[d.rank].pct + "%", recs[d.rank]),
+      ${profileColumn(
+          "half-circle",
+          "col-icon-progress",
+          "In progress",
+          partial,
+          "No partial records",
+          (d) => profileLevelRow(d, "partial", "", recs[d.rank].pct + "%", recs[d.rank]),
+          `${sumPts(partial, (d) => recs[d.rank].pct).toLocaleString()} pts`,
       )}
-      ${profileColumn("circle", "", "Not beaten", unbeaten, "List fully cleared!", (d) =>
-          profileLevelRow(d, "unbeaten", "", "", null),
+      ${profileColumn(
+          "circle",
+          "",
+          "Not beaten",
+          unbeaten,
+          "List fully cleared!",
+          (d) => profileLevelRow(d, "unbeaten", "", "", null),
+          `${sumPts(unbeaten, () => 100).toLocaleString()} pts left`,
       )}
     </div></div>`;
     return true;
