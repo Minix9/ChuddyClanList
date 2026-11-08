@@ -4,6 +4,7 @@
 //   #/demon/<rank>     list with that level open
 //   #/leaderboard
 //   #/roulette
+//   #/changelog
 //   #/player/<name>
 // Every page has its own URL, so links can be shared and Back/Forward work.
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -11,6 +12,7 @@ const VIEWS = {
     list: "listTab",
     leaderboard: "lbTab",
     roulette: "rouletteTab",
+    changelog: "changelogTab",
     profile: "profileTab",
 };
 
@@ -24,6 +26,8 @@ function parseRoute() {
             return { tab: "leaderboard" };
         case "roulette":
             return { tab: "roulette" };
+        case "changelog":
+            return { tab: "changelog" };
         case "player": {
             let name = arg;
             try {
@@ -64,6 +68,8 @@ function renderRoute() {
     } else if (route.tab === "roulette") {
         refreshRoulette();
         title = "Roulette";
+    } else if (route.tab === "changelog") {
+        title = "Changelog";
     } else if (route.tab === "profile") {
         renderProfilePage(route.player);
         title = route.player;
