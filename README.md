@@ -1,6 +1,6 @@
 # Chuddy List — Setup Guide
 
-A Geometry Dash–style demon list: public site + local admin panel, backed by Supabase.
+A Geometry Dash–style demon list: public site + admin panel, both on GitHub Pages, backed by Supabase.
 
 ---
 
@@ -8,7 +8,7 @@ A Geometry Dash–style demon list: public site + local admin panel, backed by S
 
 ```
 index.html               Public site (GitHub Pages)
-admin.html               Admin panel — open locally, keep private
+admin.html               Admin panel — https://minix9.github.io/ChuddyClanList/admin.html
 supabase_setup.sql       Run once in Supabase to create tables + seed data
 
 assets/
@@ -42,7 +42,7 @@ js/
   site/roulette.js       Roulette page
   site/router.js         URL routing (#/demon/3, #/player/Name, …)
   site/main.js           Startup, click delegation, keyboard shortcuts
-  admin/api.js           Supabase REST helpers (service_role)
+  admin/api.js           Supabase Auth sign-in + REST helpers
   admin/ui.js            Toast, panels, modals, busy guard
   admin/data.js          Loads everything, fills dropdowns
   admin/dashboard.js     Dashboard panel
@@ -82,7 +82,8 @@ In **Settings → API**:
 
 - **Project URL** → looks like `https://xyzabc.supabase.co`
 - **anon public key** → used by the public site (safe to expose, read-only)
-- **service_role key** → used by the admin panel (keep this SECRET, write access)
+- **service_role / secret key** → never used in a browser (Supabase refuses
+  secret keys there). Keep it for server-side scripts only.
 
 ## Step 4 — Configure the public site
 
@@ -102,14 +103,28 @@ in `js/site/placeholder-data.js`.
 2. **Settings → Pages**, set the source to your main branch
 3. Your site is live at `https://yourusername.github.io/your-repo/`
 
-`admin.html` contains no keys (you type them in at sign-in), but there's no
-reason to publish it — keep it local.
+The admin panel is published too. It contains no keys: admins sign in with their
+own Supabase account, and the database only accepts changes from emails in the
+admin list (see Step 6).
 
 ## Step 6 — Use the admin panel
 
-Open `admin.html` **locally** (double-click it). Enter your Project URL,
-service_role key and an admin password. Tick *Stay signed in* to survive page
-refreshes until the tab is closed.
+Open **https://minix9.github.io/ChuddyClanList/admin.html** (or `admin.html`
+locally) and sign in with your email + password. Tick *Stay signed in* to skip
+the login next time.
+
+One-time setup in Supabase (these SQL files are local-only, not in the repo):
+1. **Authentication → Users → Add user** for each admin (tick *Auto Confirm User*)
+2. Run `supabase_admin_auth.sql` with each admin's email — creates the admin
+   list and the write rules
+3. Run `supabase_rank_check.sql` — the database then refuses ranks below 1
+4. Keep **Allow new users to sign up** turned off
+
+To add another admin later: create their user (step 1), then run in the SQL Editor:
+`INSERT INTO public.admins (email) VALUES (lower('friend@example.com'));`
+
+`admin-local.html` (local only, git-ignored) is a personal copy that always
+stays signed in.
 
 - **Dashboard** — totals, recent records, levels nobody has beaten yet
 - **Demons** — add / edit / delete, ▲▼ to move a level one spot; changing a
@@ -154,8 +169,8 @@ index.html (GitHub Pages — public)
     ▼
 Supabase REST API  ──►  PostgreSQL
     ▲
-    │  fetch() with service_role key (read + write)
-admin.html (local only)
+    │  fetch() with anon key + the admin's login token (writes allowed by RLS)
+admin.html (GitHub Pages — sign-in required)
 ```
 
 ## Database Schema

@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="robots" content="noindex, nofollow" />
+        <title>Chuddy List — Admin</title>
+        <meta name="theme-color" content="#0a0a0d" />
+        <link rel="icon" type="image/png" href="assets/list_icon.png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
+
+        <link rel="stylesheet" href="css/shared/base.css" />
+        <!-- Same buttons, cards, stat cards and badges as the public site -->
+        <link rel="stylesheet" href="css/site/components.css" />
+        <link rel="stylesheet" href="css/admin/layout.css" />
+        <link rel="stylesheet" href="css/admin/components.css" />
+    </head>
+    <body>
+        <!-- TOAST -->
+        <div id="toast" role="status" aria-live="polite"></div>
+
+        <!-- ════════════════════════════════════════════════════
+             LOGIN SCREEN
+        ═════════════════════════════════════════════════════ -->
+        <div id="loginScreen" hidden>
+            <form class="card login-box" onsubmit="doLogin(); return false;">
+                <div class="login-head">
+                    <div class="logo-mark"><img src="assets/list_icon.png" alt="" /></div>
+                    <div>
+                        <div class="login-title">Chuddy List Admin</div>
+                        <div class="login-sub">Sign in with your admin account</div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="field-label" for="inputEmail">Email</label>
+                    <div class="input-wrap">
+                        <span data-icon="user"></span>
+                        <input class="text-input" id="inputEmail" type="email" placeholder="you@example.com" autocomplete="username" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="inputPass">Password</label>
+                    <div class="input-wrap">
+                        <span data-icon="lock"></span>
+                        <input class="text-input" id="inputPass" type="password" placeholder="Your password" autocomplete="current-password" />
+                    </div>
+                </div>
+                <label class="checkbox-row">
+                    <input type="checkbox" id="inputRemember" />
+                    Stay signed in on this computer
+                </label>
+
+                <button class="btn btn-primary" id="loginBtn" type="submit"><span data-icon="lock"></span>Sign in</button>
+                <div class="login-note">
+                    <span data-icon="alert"></span>
+                    <span>Uses your <strong>Supabase Auth</strong> user (Authentication → Users). Only emails listed in <strong>supabase_admin_auth.sql</strong> can change data.</span>
+                </div>
+            </form>
+        </div>
+
+        <!-- ════════════════════════════════════════════════════
+             ADMIN SCREEN
+        ═════════════════════════════════════════════════════ -->
+        <div id="adminScreen" hidden>
+            <!-- HEADER -->
+            <div class="admin-header">
+                <div class="admin-logo">
+                    <div class="logo-mark"><img src="assets/list_icon.png" alt="" /></div>
+                    <span class="logo-wordmark">CHUDDY <em>LIST</em></span>
+                    <span class="admin-badge">Admin</span>
+                </div>
+                <div class="header-right">
+                    <div class="conn-pill" title="Connected project">
+                        <div class="connection-dot" id="connDot"></div>
+                        <span id="connLabel">Disconnected</span>
+                    </div>
+                    <button class="icon-btn" onclick="loadAll(true)" title="Reload all data" aria-label="Reload all data"><span data-icon="refresh"></span></button>
+                    <a class="icon-btn" href="index.html" target="_blank" rel="noopener" title="Open the public site">
+                        <span data-icon="external"></span><span class="header-label">View site</span>
+                    </a>
+                    <button class="icon-btn" onclick="doLogout()" title="Sign out"><span data-icon="log-out"></span><span class="header-label">Sign out</span></button>
+                </div>
+            </div>
+
+            <div class="admin-body">
+                <!-- SIDEBAR -->
+                <nav class="admin-nav">
+                    <div class="nav-section-label">Overview</div>
+                    <button class="admin-nav-btn active" data-panel="dashboard" onclick="showPanel('dashboard')">
+                        <span data-icon="grid"></span> Dashboard
+                    </button>
+
+                    <div class="nav-section-label">Content</div>
+                    <button class="admin-nav-btn" data-panel="demons" onclick="showPanel('demons')">
+                        <span data-icon="skull"></span> Demons <span class="nav-count" id="navCountDemons"></span>
+                    </button>
+                    <button class="admin-nav-btn" data-panel="records" onclick="showPanel('records')">
+                        <span data-icon="trophy"></span> Records <span class="nav-count" id="navCountRecords"></span>
+                    </button>
+                    <button class="admin-nav-btn" data-panel="players" onclick="showPanel('players')">
+                        <span data-icon="users"></span> Players <span class="nav-count" id="navCountPlayers"></span>
+                    </button>
+                </nav>
+
+                <!-- MAIN -->
+                <main class="admin-main">
+                    <!-- ── DASHBOARD ── -->
+                    <section class="panel active" id="panel-dashboard">
+                        <div class="page-head">
+                            <div>
+                                <div class="eyebrow"><span data-icon="grid"></span> Overview</div>
+                                <h1 class="page-heading">Dashboard</h1>
+                                <p class="page-sub">What's on the list right now</p>
+                            </div>
+                        </div>
+                        <div class="stat-grid" id="dashStats"></div>
+                        <div class="dash-grid">
+                            <div class="card table-card">
+                                <div class="card-head">
+                                    <div class="section-label"><span data-icon="zap"></span> Recent records</div>
+                                    <button class="btn btn-ghost btn-sm" onclick="showPanel('records')">View all</button>
+                                </div>
+                                <table class="data-table">
+                                    <tbody id="recentRecords">
+                                        <tr><td class="empty-table">Loading…</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card table-card">
+                                <div class="card-head">
+                                    <div class="section-label"><span data-icon="skull"></span> Unbeaten levels</div>
+                                </div>
+                                <table class="data-table">
+                                    <tbody id="unbeatenLevels">
+                                        <tr><td class="empty-table">Loading…</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ── DEMONS ── -->
+                    <section class="panel" id="panel-demons">
+                        <div class="page-head">
+                            <div>
+                                <div class="eyebrow"><span data-icon="skull"></span> Content</div>
+                                <h1 class="page-heading">Demons</h1>
+                                <p class="page-sub">Use the arrows to move a level one spot — other levels shift automatically</p>
+                            </div>
+                            <div class="panel-actions">
+                                <div class="input-wrap">
+                                    <span data-icon="search"></span>
+                                    <input class="text-input" id="demonSearch" type="search" placeholder="Search demons" oninput="renderDemons()" />
+                                </div>
+                                <button class="btn btn-primary" onclick="openDemonModal()"><span data-icon="plus"></span>Add demon</button>
+                            </div>
+                        </div>
+                        <div class="card table-card">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 60px">Rank</th>
+                                        <th>Level</th>
+                                        <th>Video</th>
+                                        <th class="num">Records</th>
+                                        <th class="num">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="demonTableBody">
+                                    <tr><td colspan="5" class="empty-table">Loading…</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- ── RECORDS ── -->
+                    <section class="panel" id="panel-records">
+                        <div class="page-head">
+                            <div>
+                                <div class="eyebrow"><span data-icon="trophy"></span> Content</div>
+                                <h1 class="page-heading">Records</h1>
+                                <p class="page-sub">Click a column header to sort</p>
+                            </div>
+                            <div class="panel-actions">
+                                <button class="btn btn-primary" onclick="openRecordModal()"><span data-icon="plus"></span>Add record</button>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-bottom: 1rem">
+                            <div class="filter-row">
+                                <select class="text-input" id="filterDemon" onchange="renderRecords()" aria-label="Filter by demon">
+                                    <option value="">All demons</option>
+                                </select>
+                                <select class="text-input" id="filterPlayer" onchange="renderRecords()" aria-label="Filter by player">
+                                    <option value="">All players</option>
+                                </select>
+                                <select class="text-input" id="filterStatus" onchange="renderRecords()" aria-label="Filter by status">
+                                    <option value="">All records</option>
+                                    <option value="full">Completions (100%)</option>
+                                    <option value="partial">Progress (under 100%)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="card table-card">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th class="sortable" onclick="sortRecords('player')">Player<span class="sort-arrow" id="sort-player"></span></th>
+                                        <th class="sortable" onclick="sortRecords('rank')">Level<span class="sort-arrow" id="sort-rank"></span></th>
+                                        <th class="sortable" onclick="sortRecords('pct')">Progress<span class="sort-arrow" id="sort-pct"></span></th>
+                                        <th class="sortable num" onclick="sortRecords('attempts')">Attempts<span class="sort-arrow" id="sort-attempts"></span></th>
+                                        <th class="sortable" onclick="sortRecords('date')">Date<span class="sort-arrow" id="sort-date"></span></th>
+                                        <th class="num">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recordTableBody">
+                                    <tr><td colspan="6" class="empty-table">Loading…</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- ── PLAYERS ── -->
+                    <section class="panel" id="panel-players">
+                        <div class="page-head">
+                            <div>
+                                <div class="eyebrow"><span data-icon="users"></span> Content</div>
+                                <h1 class="page-heading">Players</h1>
+                                <p class="page-sub">Deleting a player also removes their records</p>
+                            </div>
+                            <div class="panel-actions">
+                                <div class="input-wrap">
+                                    <span data-icon="search"></span>
+                                    <input class="text-input" id="playerSearch" type="search" placeholder="Search players" oninput="renderPlayers()" />
+                                </div>
+                                <button class="btn btn-primary" onclick="openPlayerModal()"><span data-icon="plus"></span>Add player</button>
+                            </div>
+                        </div>
+                        <div class="card table-card">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Player</th>
+                                        <th class="num">Records</th>
+                                        <th class="num">Completions</th>
+                                        <th class="num">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="playerTableBody">
+                                    <tr><td colspan="4" class="empty-table">Loading…</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════════════════
+             MODALS  (each is a <form>, so Enter saves)
+        ═════════════════════════════════════════════════════ -->
+
+        <!-- Add/Edit Demon -->
+        <div class="modal-overlay" id="demonModal">
+            <div class="modal" role="dialog" aria-modal="true" aria-labelledby="demonModalTitle">
+                <div class="modal-header">
+                    <div class="modal-title"><span class="modal-title-icon"><span data-icon="skull"></span></span><span id="demonModalTitle">Add demon</span></div>
+                    <button class="icon-btn sm" type="button" onclick="closeModal('demonModal')" aria-label="Close"><span data-icon="x"></span></button>
+                </div>
+                <form onsubmit="saveDemon(); return false;">
+                    <div class="modal-form">
+                        <input type="hidden" id="demonId" />
+                        <div class="form-grid">
+                            <div class="field">
+                                <label class="field-label" for="demonName">Level name</label>
+                                <input class="text-input" id="demonName" type="text" placeholder="Sakupen Hell" />
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="demonCreator">Creator</label>
+                                <input class="text-input" id="demonCreator" type="text" placeholder="NoctaFly" />
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="demonRank">Rank</label>
+                                <input class="text-input" id="demonRank" type="number" min="1" placeholder="1" />
+                                <div class="field-hint" id="demonRankHint"></div>
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="demonVideo">YouTube link or ID <span class="label-hint">(optional)</span></label>
+                                <input
+                                    class="text-input"
+                                    id="demonVideo"
+                                    type="text"
+                                    placeholder="https://youtu.be/xCjm6Guo5DY"
+                                    oninput="previewVideoId('demonVideo', 'demonVideoPreview')"
+                                />
+                                <div class="field-hint" id="demonVideoPreview"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-ghost" type="button" onclick="closeModal('demonModal')">Cancel</button>
+                        <button class="btn btn-primary" type="submit"><span data-icon="save"></span>Save demon</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add/Edit Record -->
+        <div class="modal-overlay" id="recordModal">
+            <div class="modal" role="dialog" aria-modal="true" aria-labelledby="recordModalTitle">
+                <div class="modal-header">
+                    <div class="modal-title"><span class="modal-title-icon"><span data-icon="trophy"></span></span><span id="recordModalTitle">Add record</span></div>
+                    <button class="icon-btn sm" type="button" onclick="closeModal('recordModal')" aria-label="Close"><span data-icon="x"></span></button>
+                </div>
+                <form onsubmit="saveRecord(); return false;">
+                    <div class="modal-form">
+                        <input type="hidden" id="recordId" />
+                        <div class="field">
+                            <label class="field-label" for="recordDemon">Demon</label>
+                            <select class="text-input" id="recordDemon" onchange="checkExistingRecord()"></select>
+                        </div>
+                        <div class="field">
+                            <label class="field-label" for="recordPlayer">Player</label>
+                            <select class="text-input" id="recordPlayer" onchange="checkExistingRecord()"></select>
+                            <div class="field-hint" id="recordExistingHint"></div>
+                        </div>
+                        <div class="form-grid">
+                            <div class="field">
+                                <label class="field-label" for="recordPct">Progress (1–100%)</label>
+                                <input class="text-input" id="recordPct" type="number" min="1" max="100" placeholder="100" />
+                            </div>
+                            <div class="field">
+                                <label class="field-label" for="recordAttempts">Attempts <span class="label-hint">(optional)</span></label>
+                                <input class="text-input" id="recordAttempts" type="number" min="1" placeholder="e.g. 4200" />
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="field-label" for="recordDate">Completion date</label>
+                            <div class="input-wrap">
+                                <span data-icon="calendar"></span>
+                                <input class="text-input" id="recordDate" type="date" />
+                            </div>
+                            <div class="field-hint">When the level was beaten. The earliest 100% date decides the first victor.</div>
+                        </div>
+                        <div class="field">
+                            <label class="field-label" for="recordVideo">Completion video <span class="label-hint">(optional)</span></label>
+                            <input
+                                class="text-input"
+                                id="recordVideo"
+                                type="text"
+                                placeholder="https://youtu.be/… or leave blank"
+                                oninput="previewVideoId('recordVideo', 'recordVideoPreview')"
+                            />
+                            <div class="field-hint" id="recordVideoPreview"></div>
+                            <div class="field-hint">If left blank, the site uses the demon's verification video.</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-ghost" type="button" onclick="closeModal('recordModal')">Cancel</button>
+                        <button class="btn btn-primary" type="submit"><span data-icon="save"></span>Save record</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add/Edit Player -->
+        <div class="modal-overlay" id="playerModal">
+            <div class="modal sm" role="dialog" aria-modal="true" aria-labelledby="playerModalTitle">
+                <div class="modal-header">
+                    <div class="modal-title"><span class="modal-title-icon"><span data-icon="user"></span></span><span id="playerModalTitle">Add player</span></div>
+                    <button class="icon-btn sm" type="button" onclick="closeModal('playerModal')" aria-label="Close"><span data-icon="x"></span></button>
+                </div>
+                <form onsubmit="savePlayer(); return false;">
+                    <div class="modal-form">
+                        <input type="hidden" id="playerId" />
+                        <div class="field">
+                            <label class="field-label" for="playerName">Player name</label>
+                            <input class="text-input" id="playerName" type="text" placeholder="Sunix" />
+                        </div>
+                        <div class="field">
+                            <label class="field-label" for="playerCountry">Country</label>
+                            <div class="country-wrap">
+                                <span class="country-flag" id="playerCountryFlag"></span>
+                                <select class="text-input" id="playerCountry" onchange="previewCountry()"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-ghost" type="button" onclick="closeModal('playerModal')">Cancel</button>
+                        <button class="btn btn-primary" type="submit"><span data-icon="save"></span>Save player</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Confirm dialog (replaces the browser's confirm()) -->
+        <div class="modal-overlay" id="confirmModal">
+            <div class="modal sm" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+                <div class="confirm-body">
+                    <div class="confirm-icon"><span data-icon="trash"></span></div>
+                    <div>
+                        <div class="confirm-title" id="confirmTitle"></div>
+                        <div class="confirm-text" id="confirmText"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-ghost" type="button" id="confirmCancel">Cancel</button>
+                    <button class="btn btn-danger" type="button" id="confirmOk">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts are plain (non-module) so this page works straight from file:// -->
+        <script src="js/shared/utils.js"></script>
+        <script src="js/shared/icons.js"></script>
+        <script>hydrateIcons();</script>
+        <script src="js/site/config.js"></script>
+        <script src="js/admin/api.js"></script>
+        <script src="js/admin/ui.js"></script>
+        <script src="js/admin/data.js"></script>
+        <script src="js/admin/dashboard.js"></script>
+        <script src="js/admin/demons.js"></script>
+        <script src="js/admin/records.js"></script>
+        <script src="js/admin/players.js"></script>
+        <script src="js/admin/auth.js"></script>
+    </body>
+</html>

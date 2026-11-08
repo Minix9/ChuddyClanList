@@ -1,0 +1,344 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ADMIN LAYOUT — login screen, header, sidebar nav, panels
+   Shared look (buttons, cards, stat cards, badges) comes from css/site/components.css
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── LOGO (same mark as the public site) ──────── */
+.logo-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    box-shadow: 0 4px 14px var(--accent-glow);
+}
+.logo-mark img {
+    width: 27px;
+    height: 27px;
+    object-fit: contain;
+}
+.logo-wordmark {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+}
+.logo-wordmark em {
+    color: var(--accent);
+    font-style: normal;
+}
+
+/* ── LOGIN SCREEN ─────────────────────────────── */
+#loginScreen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background:
+        radial-gradient(ellipse at 50% -10%, var(--accent-soft) 0%, transparent 55%),
+        var(--bg);
+}
+.login-box {
+    width: 100%;
+    max-width: 400px;
+    padding: 2.25rem 2rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    box-shadow: var(--shadow);
+}
+.login-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0.25rem;
+}
+.login-head .logo-mark {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+}
+.login-head .logo-mark img {
+    width: 33px;
+    height: 33px;
+}
+.login-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+.login-sub {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+.login-note {
+    display: flex;
+    gap: 10px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+}
+.login-note .icon {
+    font-size: 1rem;
+    color: var(--gold);
+    margin-top: 1px;
+}
+.login-note strong {
+    color: var(--text-dim);
+}
+
+/* ── HEADER ───────────────────────────────────── */
+.admin-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 60px;
+    background: rgba(10, 10, 13, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0 1.25rem;
+}
+.admin-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.admin-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.conn-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 99px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    max-width: 280px;
+}
+.conn-pill span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.connection-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--text-muted);
+}
+.connection-dot.live {
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+}
+
+/* Square icon button (header + table actions) */
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 34px;
+    min-width: 34px;
+    padding: 0 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        color 0.15s,
+        border-color 0.15s,
+        background 0.15s;
+}
+.icon-btn .icon {
+    font-size: 1rem;
+}
+.icon-btn:hover:not(:disabled) {
+    color: var(--text);
+    border-color: var(--border-hover);
+    background: var(--surface2);
+}
+.icon-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+.icon-btn.sm {
+    height: 30px;
+    min-width: 30px;
+    padding: 0 8px;
+    border-radius: 8px;
+}
+.icon-btn.sm .icon {
+    font-size: 0.9rem;
+}
+.icon-btn.danger:hover:not(:disabled) {
+    color: var(--red);
+    border-color: rgba(248, 113, 113, 0.4);
+    background: rgba(248, 113, 113, 0.08);
+}
+
+/* ── BODY ─────────────────────────────────────── */
+.admin-body {
+    display: grid;
+    grid-template-columns: 236px 1fr;
+    min-height: calc(100vh - 60px);
+}
+
+/* ── SIDEBAR NAV ──────────────────────────────── */
+.admin-nav {
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+    padding: 1rem 10px;
+}
+.nav-section-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0 10px;
+    margin: 1.1rem 0 6px;
+}
+.nav-section-label:first-child {
+    margin-top: 0;
+}
+.admin-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 9px 10px;
+    margin-bottom: 2px;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    color: var(--text-dim);
+    font-size: 0.86rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition:
+        color 0.12s,
+        background 0.12s;
+}
+.admin-nav-btn .icon {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+}
+.admin-nav-btn:hover {
+    color: var(--text);
+    background: var(--surface2);
+}
+.admin-nav-btn.active {
+    color: var(--text);
+    background: var(--surface2);
+    border-color: var(--border-hover);
+}
+.admin-nav-btn.active .icon {
+    color: var(--accent);
+}
+.nav-count {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface3);
+    border-radius: 5px;
+    padding: 1px 7px;
+}
+
+/* ── MAIN PANEL ───────────────────────────────── */
+.admin-main {
+    overflow-y: auto;
+    padding: 2rem 2.25rem 3rem;
+    min-width: 0;
+}
+.admin-main > .panel {
+    max-width: 1200px;
+}
+
+.panel {
+    display: none;
+    animation: fadeUp 0.2s ease;
+}
+.panel.active {
+    display: block;
+}
+
+.panel-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.panel-actions .input-wrap .text-input {
+    width: 240px;
+}
+
+@media (max-width: 860px) {
+    .admin-body {
+        grid-template-columns: 1fr;
+    }
+    .admin-nav {
+        display: flex;
+        gap: 4px;
+        overflow-x: auto;
+        padding: 8px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+    .nav-section-label {
+        display: none;
+    }
+    .admin-nav-btn {
+        width: auto;
+        white-space: nowrap;
+        margin: 0;
+    }
+    .admin-main {
+        padding: 1.25rem 1rem 2rem;
+    }
+    .conn-pill span,
+    .header-label {
+        display: none;
+    }
+    .panel-actions,
+    .panel-actions .input-wrap,
+    .panel-actions .input-wrap .text-input {
+        width: 100%;
+    }
+}

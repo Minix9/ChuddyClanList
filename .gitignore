@@ -5,12 +5,12 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 
-# Admin panel + database setup stay local (they're used with private login data)
-admin.html
+# The admin panel (admin.html, css/admin/, js/admin/) is published: it holds no keys,
+# admins sign in with their own Supabase account and RLS limits writes to them.
+# These admin-related files stay local:
 admin PACKS.html
-css/admin/
-js/admin/
 _backup/admin.original.html
+js/admin/local-config.js
 supabase_setup.sql
 
 # Database backups
@@ -27,3 +27,6 @@ supabase_admin_auth.sql
 
 # All Supabase SQL files stay local
 supabase_*.sql
+
+# Admin package for other admins (send it directly, never push)
+*.zip
