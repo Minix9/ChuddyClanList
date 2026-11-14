@@ -5,11 +5,33 @@
 .profile-header {
     position: relative;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 1.25rem;
-    padding: 1.5rem;
+    gap: 1rem 1.25rem;
+    padding: 1.1rem 1.25rem;
     margin-bottom: 1rem;
     overflow: hidden;
+}
+.profile-id {
+    flex: 1;
+    min-width: 0;
+}
+.profile-name-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.profile-actions {
+    display: flex;
+    gap: 8px;
+    align-self: flex-start;
+}
+.profile-actions .back-btn {
+    margin: 0;
+}
+.badge-member {
+    color: var(--accent);
+    background: var(--accent-soft);
 }
 .profile-header::after {
     content: "";
@@ -19,9 +41,9 @@
     pointer-events: none;
 }
 .profile-avatar {
-    width: 72px;
-    height: 72px;
-    border-radius: 18px;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
     background: var(--surface2);
     border: 1px solid var(--border-hover);
     display: flex;
@@ -41,7 +63,7 @@
 }
 .profile-name {
     font-family: var(--font-display);
-    font-size: 2.6rem;
+    font-size: 2.4rem;
     letter-spacing: 0.03em;
     line-height: 1;
     overflow-wrap: anywhere;
@@ -65,8 +87,7 @@
 }
 
 .profile-progress {
-    padding: 14px 16px;
-    margin-bottom: 1.5rem;
+    flex-basis: 100%;
 }
 .profile-progress-head {
     display: flex;
@@ -77,16 +98,6 @@
 }
 .profile-progress-head .mono {
     color: var(--text);
-}
-
-.profile-columns {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1rem;
-}
-.profile-col .card-body {
-    max-height: 560px;
-    overflow-y: auto;
 }
 
 .level-row {
@@ -111,7 +122,7 @@
 .level-row-left {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     min-width: 0;
 }
 .level-row-text {
@@ -148,32 +159,21 @@
 .level-pts.muted {
     color: var(--text-muted);
 }
-.col-pts {
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    color: var(--gold);
-    white-space: nowrap;
-}
-
-.col-icon-done {
-    color: var(--green) !important;
-}
-.col-icon-progress {
-    color: var(--accent) !important;
-}
-
-@media (max-width: 1100px) {
-    .profile-columns {
-        grid-template-columns: 1fr;
-    }
-}
 @media (max-width: 680px) {
     .profile-header {
         padding: 1rem;
     }
+    .profile-actions {
+        order: -1;
+        flex-basis: 100%;
+        justify-content: space-between;
+    }
+    .profile-actions .back-btn {
+        order: -1;
+    }
     .profile-avatar {
-        width: 58px;
-        height: 58px;
+        width: 52px;
+        height: 52px;
         border-radius: 14px;
     }
     .profile-name {

@@ -44,15 +44,6 @@ function recordRow(d, r, pos) {
 // Verification or records — stays the same while browsing between levels
 let detailPane = "video";
 
-function showDetailPane(pane) {
-    detailPane = pane;
-    document.querySelectorAll(".detail-tab").forEach((b) => {
-        b.classList.toggle("active", b.dataset.pane === pane);
-        b.setAttribute("aria-selected", b.dataset.pane === pane);
-    });
-    document.querySelectorAll(".detail-pane").forEach((p) => (p.hidden = p.dataset.pane !== pane));
-}
-
 function selectDemon(rank) {
     const d = getDemon(rank);
     if (!d) return false;
@@ -136,8 +127,7 @@ function selectDemon(rank) {
       </div>
       <div class="detail-pane records-pane" role="tabpanel" data-pane="records">${recsHTML}</div>
     </div>`;
-    detail.querySelectorAll(".detail-tab").forEach((b) => (b.onclick = () => showDetailPane(b.dataset.pane)));
-    showDetailPane(detailPane);
+    initTabs(detail, detailPane, (p) => (detailPane = p));
     // Set via the style API rather than an inline attribute so odd video IDs can't break the markup
     detail.querySelector(".hero-bg").style.backgroundImage = heroBackground(d);
 

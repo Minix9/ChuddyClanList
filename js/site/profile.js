@@ -17,6 +17,7 @@ function profileLevelRow(d, statusClass, pctClass, pctText, rec) {
     return `<div class="level-row ${statusClass}" data-demon="${d.rank}">
       <div class="level-row-left">
         <span class="rank-num">#${d.rank}</span>
+        ${typeTag(d)}
         <div class="level-row-text">
           <div class="level-row-name">${esc(d.name)}</div>
           <div class="level-row-creator">by ${esc(d.creator)}${rec?.attempts ? ` · ${rec.attempts.toLocaleString()} att.` : ""}</div>
@@ -36,15 +37,16 @@ function sumPts(levels, pctOf) {
     return levels.reduce((s, d) => s + calcScore(d.rank, pctOf(d)), 0);
 }
 
-function profileColumn(iconName, iconCls, title, items, emptyText, rowFn, ptsText) {
-    return `<div class="card profile-col">
-      <div class="card-head">
-        <div class="section-label">${icon(iconName, iconCls)} ${title} <span class="count">${items.length}</span></div>
-        ${ptsText ? `<span class="col-pts">${ptsText}</span>` : ""}
-      </div>
-      <div class="card-body">
-        ${items.length ? items.map(rowFn).join("") : `<div class="no-records">${emptyText}</div>`}
-      </div>
+// Last opened tab (Completed / In progress / Not beaten), kept between profiles
+let profilePane = "completed";
+
+function profileTab(pane, iconName, title, count, ptsText) {
+    return `<button class="detail-tab" role="tab" data-pane="${pane}">${icon(iconName)}${title} <span class="count">${count}</span><span class="tab-pts">${ptsText}</span></button>`;
+}
+
+function profilePaneHTML(pane, items, emptyText, rowFn) {
+    return `<div class="detail-pane records-pane" role="tabpanel" data-pane="${pane}">
+      ${items.length ? items.map(rowFn).join("") : `<div class="no-records">${emptyText}</div>`}
     </div>`;
 }
 
@@ -73,65 +75,55 @@ function renderProfilePage(playerName) {
     const totalPlayers = getPlayerStats().length;
     const firsts = completed.filter((d) => recs[d.rank].isFirstVictor).length;
 
-    el.innerHTML = `<div class="page">
-    ${back}
+    const member = clanMember(player.name);
+    const demonsDone = completed.filter((d) => !d.challenge).length;
+    const pts = (levels, pctOf) => `${sumPts(levels, pctOf).toLocaleString()} pts`;
 
+    el.innerHTML = `<div class="page">
     <div class="card profile-header">
       <div class="profile-avatar">${flagHTML(player.flag)}</div>
-      <div>
-        <h1 class="profile-name">${esc(player.name)}</h1>
+      <div class="profile-id">
+        <div class="profile-name-row">
+          <h1 class="profile-name">${esc(player.name)}</h1>
+          ${member ? `<span class="badge badge-member" title="Chuddy Clan member">${icon("users")}Member</span>` : ""}
+        </div>
         <div class="profile-sub">
           <span class="meta">${icon("trophy")}Rank ${player.position} of ${totalPlayers}</span>
           ${player.hardest ? `<span class="meta">${icon("skull")}Hardest: #${player.hardest.rank} ${esc(player.hardest.name)}</span>` : ""}
           ${firsts ? `<span class="meta">${icon("crown")}${firsts} first victor${firsts !== 1 ? "ies" : "y"}</span>` : ""}
         </div>
       </div>
+      <div class="profile-actions">
+        ${member ? `<a class="btn btn-ghost btn-sm" href="${esc(member.youtube)}" target="_blank" rel="noopener">${icon("youtube")}YouTube</a>` : ""}
+        ${back}
+      </div>
+      <div class="profile-progress">
+        <div class="profile-progress-head">
+          <span>List progress</span>
+          <span><span class="mono">${completed.length} / ${DEMONS.length}</span> · ${completionPct}%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" style="width:${completionPct}%"></div></div>
+      </div>
     </div>
 
     <div class="stat-grid profile-stats">
-      ${statCard("trophy", "gold", `#${player.position}`, "Leaderboard")}
-      ${statCard("star", "", player.pts.toLocaleString(), "Points")}
+      ${statCard("star", "gold", player.pts.toLocaleString(), "Points")}
       ${statCard("check-circle", "green", completed.length, "Completions")}
-      ${statCard("half-circle", "neutral", partial.length, "In progress")}
+      ${statCard("skull", "", demonsDone, `Demon${demonsDone !== 1 ? "s" : ""}`)}
+      ${statCard("zap", "blue", completed.length - demonsDone, `Challenge${completed.length - demonsDone !== 1 ? "s" : ""}`)}
     </div>
 
-    <div class="card profile-progress">
-      <div class="profile-progress-head">
-        <span>List progress</span>
-        <span><span class="mono">${completed.length} / ${DEMONS.length}</span> · ${completionPct}%</span>
+    <div class="card fit-fill">
+      <div class="detail-tabs" role="tablist">
+        ${profileTab("completed", "check-circle", "Completed", completed.length, pts(completed, (d) => recs[d.rank].pct))}
+        ${profileTab("partial", "half-circle", "In progress", partial.length, pts(partial, (d) => recs[d.rank].pct))}
+        ${profileTab("unbeaten", "circle", "Not beaten", unbeaten.length, `${pts(unbeaten, () => 100)} left`)}
       </div>
-      <div class="progress-track"><div class="progress-fill" style="width:${completionPct}%"></div></div>
-    </div>
-
-    <div class="profile-columns">
-      ${profileColumn(
-          "check-circle",
-          "col-icon-done",
-          "Completed",
-          completed,
-          "No completions yet",
-          (d) => profileLevelRow(d, "completed", "full", "100%", recs[d.rank]),
-          `${sumPts(completed, (d) => recs[d.rank].pct).toLocaleString()} pts`,
-      )}
-      ${profileColumn(
-          "half-circle",
-          "col-icon-progress",
-          "In progress",
-          partial,
-          "No partial records",
-          (d) => profileLevelRow(d, "partial", "", recs[d.rank].pct + "%", recs[d.rank]),
-          `${sumPts(partial, (d) => recs[d.rank].pct).toLocaleString()} pts`,
-      )}
-      ${profileColumn(
-          "circle",
-          "",
-          "Not beaten",
-          unbeaten,
-          "List fully cleared!",
-          (d) => profileLevelRow(d, "unbeaten", "", "", null),
-          `${sumPts(unbeaten, () => 100).toLocaleString()} pts left`,
-      )}
+      ${profilePaneHTML("completed", completed, "No completions yet", (d) => profileLevelRow(d, "completed", "full", "100%", recs[d.rank]))}
+      ${profilePaneHTML("partial", partial, "No partial records", (d) => profileLevelRow(d, "partial", "", recs[d.rank].pct + "%", recs[d.rank]))}
+      ${profilePaneHTML("unbeaten", unbeaten, "List fully cleared!", (d) => profileLevelRow(d, "unbeaten", "", "", null))}
     </div></div>`;
+    initTabs(el, profilePane, (p) => (profilePane = p));
     return true;
 }
 

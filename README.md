@@ -38,8 +38,10 @@ js/
   site/sidebar.js        Level list + search
   site/demon.js          Level detail page
   site/leaderboard.js    Leaderboard page
+  site/clan.js           ← Chuddy Clan members + their YouTube channels
   site/profile.js        Player profile page
   site/roulette.js       Roulette page
+  site/home.js           Home page (greeting, top 3, members)
   site/router.js         URL routing (#/demon/3, #/player/Name, …)
   site/main.js           Startup, click delegation, keyboard shortcuts
   admin/api.js           Supabase Auth sign-in + REST helpers

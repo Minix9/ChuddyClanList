@@ -43,3 +43,17 @@ function isLightboxOpen() {
 function toggleSidebar(force) {
     document.getElementById("sidebar").classList.toggle("open", force);
 }
+
+// Tabs: each .detail-tab[data-pane] shows the .detail-pane with the same data-pane inside root
+function initTabs(root, pane, onChange) {
+    const show = (p) => {
+        root.querySelectorAll(".detail-tab").forEach((b) => {
+            b.classList.toggle("active", b.dataset.pane === p);
+            b.setAttribute("aria-selected", b.dataset.pane === p);
+        });
+        root.querySelectorAll(".detail-pane").forEach((el) => (el.hidden = el.dataset.pane !== p));
+        onChange?.(p);
+    };
+    root.querySelectorAll(".detail-tab").forEach((b) => (b.onclick = () => show(b.dataset.pane)));
+    show(pane);
+}

@@ -4,32 +4,7 @@
 const MEDAL_CLASSES = ["gold", "silver", "bronze"];
 
 function buildLeaderboard() {
-    const players = getPlayerStats();
-    const totalComps = DEMONS.reduce((s, d) => s + completionCount(d), 0);
-
-    document.getElementById("lbStats").innerHTML = [
-        statCard("layers", "", DEMONS.length, "Levels listed"),
-        statCard("users", "neutral", players.length, "Ranked players"),
-        statCard("check-circle", "green", totalComps, "Total completions"),
-    ].join("");
-
     renderLeaderboardTable();
-
-    // Podium — shown 2nd · 1st · 3rd so the winner sits in the middle
-    const top = players.slice(0, 3);
-    const order = [1, 0, 2].filter((i) => top[i]);
-    document.getElementById("podium").innerHTML = order
-        .map((i) => {
-            const p = top[i];
-            return `
-    <div class="podium-card p${i + 1}" data-player="${esc(p.name)}">
-      <div class="podium-medal">${icon(i === 0 ? "crown" : "medal")}</div>
-      <div class="podium-name">${flagHTML(p.flag)}<span>${esc(p.name)}</span></div>
-      <div class="podium-pts">${p.pts.toLocaleString()} pts</div>
-      <div class="podium-sub">${p.comps} completion${p.comps !== 1 ? "s" : ""}</div>
-    </div>`;
-        })
-        .join("");
 
     // Most completed demons
     const mostCompleted = DEMONS.map((d) => ({ d, count: completionCount(d) }))

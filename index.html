@@ -109,12 +109,27 @@
                             <h1 class="home-title">Welcome to the <em>Chuddy List</em></h1>
                             <p class="home-sub">Demon and challenge rankings, player records and a points leaderboard, all in one place.</p>
                             <a class="btn btn-primary home-main-btn" href="#/list"><span data-icon="list"></span>Open the list</a>
+                            <div class="home-official">
+                                <a class="btn btn-ghost btn-sm" href="https://www.youtube.com/@ChuddyChannel" target="_blank" rel="noopener"
+                                    ><span data-icon="youtube"></span>Chuddy Clan on YouTube</a
+                                >
+                                <a
+                                    class="btn btn-ghost btn-sm"
+                                    href="https://aredl.net/profile/clan/d91efa63-7a6a-4a6f-aeac-d6fad8c5c5ea"
+                                    target="_blank"
+                                    rel="noopener"
+                                    ><span data-icon="external"></span>Chuddy Clan on AREDL</a
+                                >
+                            </div>
                         </div>
 
                         <div class="stat-grid home-stats" id="homeStats"></div>
 
                         <div class="section-label"><span data-icon="crown"></span> Top of the list</div>
                         <div class="home-top" id="homeTop"></div>
+
+                        <div class="section-label"><span data-icon="users"></span> Members</div>
+                        <div class="home-members" id="homeMembers"></div>
 
                         <div class="section-label"><span data-icon="grid"></span> Explore</div>
                         <div class="home-links">
@@ -148,7 +163,7 @@
                 </section>
 
                 <!-- LEADERBOARD TAB -->
-                <section class="view" id="lbTab">
+                <section class="view fit" id="lbTab">
                     <div class="page">
                         <div class="page-head">
                             <div>
@@ -169,10 +184,7 @@
                             </div>
                         </div>
 
-                        <div class="stat-grid lb-stats" id="lbStats"></div>
-                        <div class="podium" id="podium"></div>
-
-                        <div class="lb-inner">
+                        <div class="lb-inner fit-fill">
                             <div class="card lb-table-wrap">
                                 <table class="lb-table">
                                     <thead>
@@ -301,7 +313,7 @@
                 </section>
 
                 <!-- PLAYER PROFILE PAGE -->
-                <section class="view" id="profileTab"></section>
+                <section class="view fit" id="profileTab"></section>
             </main>
         </div>
 
@@ -328,6 +340,7 @@
         <script src="js/site/sidebar.js"></script>
         <script src="js/site/demon.js"></script>
         <script src="js/site/leaderboard.js"></script>
+        <script src="js/site/clan.js"></script>
         <script src="js/site/profile.js"></script>
         <script src="js/site/roulette.js"></script>
         <script src="js/site/home.js"></script>

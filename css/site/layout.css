@@ -292,6 +292,30 @@ nav {
     max-width: 1320px;
     margin: 0 auto;
 }
+/* Pages that fit the screen exactly (leaderboard, profile): the .fit-fill part
+   takes the remaining height and long lists scroll inside it */
+.view.fit.visible {
+    height: 100%;
+}
+.fit .page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+.fit-fill {
+    flex: 1;
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+}
+@media (max-width: 680px), (max-height: 560px) {
+    .view.fit.visible,
+    .fit .page {
+        height: auto;
+    }
+}
 
 /* ── SIDEBAR ────────────────────────────────────── */
 .sidebar {
