@@ -11,6 +11,14 @@ document.addEventListener("click", (e) => {
         openVideoLightbox(video.dataset.video, video.dataset.title || "");
         return;
     }
+    const copy = e.target.closest("[data-copy]");
+    if (copy) {
+        navigator.clipboard?.writeText(copy.dataset.copy).then(
+            () => showStatus("Level ID copied", false, 1500),
+            () => {},
+        );
+        return;
+    }
     const player = e.target.closest("[data-player]");
     if (player) {
         goToPlayer(player.dataset.player);
@@ -37,7 +45,7 @@ document.addEventListener("keydown", (e) => {
 
     if (e.key === "/" && t.id !== "searchInput") {
         e.preventDefault();
-        if (!onList) navigate("#/");
+        if (!onList) navigate("#/list");
         toggleSidebar(true);
         document.getElementById("searchInput").focus();
     } else if (onList && (e.key === "ArrowDown" || e.key === "ArrowUp")) {

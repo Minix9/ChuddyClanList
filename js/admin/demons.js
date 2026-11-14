@@ -19,7 +19,7 @@ function renderDemons() {
                   return `
         <tr>
           <td><span class="rank-badge ${rankClass(d.rank)}">${d.rank}</span></td>
-          <td><div class="cell-level">${thumb}<div><div class="cell-title">${esc(d.name)}</div><div class="cell-sub">by ${esc(d.creator)}</div></div></div></td>
+          <td><div class="cell-level">${thumb}<div><div class="cell-title">${esc(d.name)}</div><div class="cell-sub">by ${esc(d.creator)} · ${d.is_challenge ? "Challenge" : "Demon"}${d.level_id ? ` · ID ${d.level_id}` : ""}</div></div></div></td>
           <td>${video}</td>
           <td class="num muted">${recCount}</td>
           <td><div class="action-row">
@@ -48,6 +48,8 @@ function openDemonModal() {
     document.getElementById("demonRank").value = demons.length + 1;
     document.getElementById("demonVideo").value = "";
     document.getElementById("demonVideoPreview").textContent = "";
+    document.getElementById("demonType").value = "demon";
+    document.getElementById("demonLevelId").value = "";
     document.getElementById("demonModalTitle").textContent = "Add demon";
     setRankHint(true);
     openModal("demonModal");
@@ -62,6 +64,8 @@ function editDemon(id) {
     document.getElementById("demonRank").value = d.rank;
     document.getElementById("demonVideo").value = d.video_id;
     document.getElementById("demonVideoPreview").textContent = "";
+    document.getElementById("demonType").value = d.is_challenge ? "challenge" : "demon";
+    document.getElementById("demonLevelId").value = d.level_id ?? "";
     document.getElementById("demonModalTitle").textContent = "Edit demon";
     setRankHint(false);
     openModal("demonModal");
@@ -73,6 +77,8 @@ async function saveDemon() {
         name: document.getElementById("demonName").value.trim(),
         creator: document.getElementById("demonCreator").value.trim(),
         video_id: extractYouTubeId(document.getElementById("demonVideo").value),
+        is_challenge: document.getElementById("demonType").value === "challenge",
+        level_id: parseInt(document.getElementById("demonLevelId").value) || null,
     };
     const rank = parseInt(document.getElementById("demonRank").value);
     if (rank < 1) {

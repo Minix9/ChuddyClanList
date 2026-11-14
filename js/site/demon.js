@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// DEMON DETAIL — hero, stats, verification video, records
+// DEMON DETAIL — hero, stats, verification video / records tabs
 // ═══════════════════════════════════════════════════════════════════════════════
 function playerLink(name) {
     return `#/player/${encodeURIComponent(name)}`;
@@ -41,6 +41,18 @@ function recordRow(d, r, pos) {
       </div>`;
 }
 
+// Verification or records — stays the same while browsing between levels
+let detailPane = "video";
+
+function showDetailPane(pane) {
+    detailPane = pane;
+    document.querySelectorAll(".detail-tab").forEach((b) => {
+        b.classList.toggle("active", b.dataset.pane === pane);
+        b.setAttribute("aria-selected", b.dataset.pane === pane);
+    });
+    document.querySelectorAll(".detail-pane").forEach((p) => (p.hidden = p.dataset.pane !== pane));
+}
+
 function selectDemon(rank) {
     const d = getDemon(rank);
     if (!d) return false;
@@ -71,6 +83,9 @@ function selectDemon(rank) {
     }
     if (!d.records.length) recsHTML = `<div class="no-records">${icon("trophy")}No records yet — be the first!</div>`;
 
+    const levelIdHTML = d.levelId
+        ? `<button class="copy-id" data-copy="${esc(d.levelId)}" title="Copy level ID">${esc(d.levelId)}${icon("copy")}</button>`
+        : `<span class="muted">—</span>`;
     const firstVictorHTML = firstVictor
         ? `<a href="${esc(playerLink(firstVictor.player))}">${esc(firstVictor.player)}</a>`
         : `<span class="muted">—</span>`;
@@ -87,16 +102,8 @@ function selectDemon(rank) {
           </div>
         </div>
         <div class="hero-content">
-          ${
-              d.video
-                  ? `<button class="hero-thumb" data-video="${esc(d.video)}" data-title="${esc(d.name)} — verification" aria-label="Play verification video">
-            <img src="${youtubeThumb(d.video)}" alt="" />
-            <span class="hero-thumb-play">${icon("play")}</span>
-          </button>`
-                  : `<div class="hero-thumb hero-thumb-empty">${icon("video")}</div>`
-          }
           <div class="hero-main">
-            <div class="hero-rank"><span class="hero-rank-num ${rankClass(rank) || "rank-plain"}">#${rank}</span></div>
+            <div class="hero-rank"><span class="hero-rank-num ${rankClass(rank) || "rank-plain"}">#${rank}</span>${typeTag(d, true)}</div>
             <h1 class="hero-title">${esc(d.name)}</h1>
             <div class="hero-by">by <strong>${esc(d.creator)}</strong></div>
           </div>
@@ -109,12 +116,15 @@ function selectDemon(rank) {
       ${statCard("star", "gold", calcScore(d.rank, 100), "Points")}
       ${statCard("check-circle", "green", completions.length, `Completion${completions.length !== 1 ? "s" : ""}`)}
       ${statCard("crown", "gold", firstVictorHTML, "First victor")}
-      ${statCard("users", "neutral", d.records.length, "Records")}
+      ${statCard("hash", "neutral", levelIdHTML, "Level ID")}
     </div>
 
-    <div class="detail-body">
-      <div>
-        <div class="section-label">${icon("video")} Verification</div>
+    <div class="detail-body card">
+      <div class="detail-tabs" role="tablist">
+        <button class="detail-tab" role="tab" data-pane="video">${icon("video")}Verification</button>
+        <button class="detail-tab" role="tab" data-pane="records">${icon("trophy")}Records <span class="count">${d.records.length}</span></button>
+      </div>
+      <div class="detail-pane video-pane" role="tabpanel" data-pane="video">
         ${
             d.video
                 ? `<div class="video-container">
@@ -124,13 +134,10 @@ function selectDemon(rank) {
                 : `<div class="no-records">${icon("video")}No verification video for this level yet</div>`
         }
       </div>
-      <div class="card">
-        <div class="card-head">
-          <div class="section-label">${icon("trophy")} Records <span class="count">${d.records.length}</span></div>
-        </div>
-        <div class="card-body">${recsHTML}</div>
-      </div>
+      <div class="detail-pane records-pane" role="tabpanel" data-pane="records">${recsHTML}</div>
     </div>`;
+    detail.querySelectorAll(".detail-tab").forEach((b) => (b.onclick = () => showDetailPane(b.dataset.pane)));
+    showDetailPane(detailPane);
     // Set via the style API rather than an inline attribute so odd video IDs can't break the markup
     detail.querySelector(".hero-bg").style.backgroundImage = heroBackground(d);
 

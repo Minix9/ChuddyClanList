@@ -50,6 +50,8 @@ async function loadData() {
                     name: d.name,
                     creator: d.creator,
                     video: d.video_id,
+                    levelId: d.level_id || null,
+                    challenge: !!d.is_challenge,
                     records: demonRecords,
                 };
             }),

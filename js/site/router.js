@@ -1,6 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // ROUTER — hash-based so it works on GitHub Pages and file://
-//   #/                 list (keeps the last selected level)
+//   #/                 home page
+//   #/list             list (keeps the last selected level)
 //   #/demon/<rank>     list with that level open
 //   #/leaderboard
 //   #/roulette
@@ -9,6 +10,7 @@
 // Every page has its own URL, so links can be shared and Back/Forward work.
 // ═══════════════════════════════════════════════════════════════════════════════
 const VIEWS = {
+    home: "homeTab",
     list: "listTab",
     leaderboard: "lbTab",
     roulette: "rouletteTab",
@@ -37,8 +39,10 @@ function parseRoute() {
         }
         case "demon":
             return { tab: "list", rank: parseInt(arg) };
-        default:
+        case "list":
             return { tab: "list" };
+        default:
+            return { tab: "home" };
     }
 }
 
@@ -47,6 +51,7 @@ function showView(tab) {
         document.getElementById(id).classList.toggle("visible", name === tab);
     }
     document.getElementById("appBody").classList.toggle("no-sidebar", tab !== "list");
+    document.getElementById("mobToggle").hidden = tab !== "list";
     document.querySelectorAll(".nav-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
 }
 
@@ -54,7 +59,9 @@ function renderRoute() {
     const route = parseRoute();
     let title = "";
 
-    if (route.tab === "list") {
+    if (route.tab === "home") {
+        renderHome();
+    } else if (route.tab === "list") {
         const rank = getDemon(route.rank) ? route.rank : (currentRank ?? DEMONS[0]?.rank);
         if (rank != null && selectDemon(rank)) title = getDemon(rank).name;
         else {

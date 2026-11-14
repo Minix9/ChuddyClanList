@@ -21,6 +21,7 @@
         <link rel="stylesheet" href="css/site/leaderboard.css" />
         <link rel="stylesheet" href="css/site/profile.css" />
         <link rel="stylesheet" href="css/site/roulette.css" />
+        <link rel="stylesheet" href="css/site/home.css" />
     </head>
     <body>
         <!-- STATUS BAR -->
@@ -44,7 +45,8 @@
                 </a>
             </div>
             <nav aria-label="Main">
-                <a class="nav-btn" data-tab="list" href="#/"><span data-icon="list"></span><span>List</span></a>
+                <a class="nav-btn" data-tab="home" href="#/"><span data-icon="home"></span><span>Home</span></a>
+                <a class="nav-btn" data-tab="list" href="#/list"><span data-icon="list"></span><span>List</span></a>
                 <a class="nav-btn" data-tab="leaderboard" href="#/leaderboard"><span data-icon="trophy"></span><span>Leaderboard</span></a>
                 <a class="nav-btn" data-tab="roulette" href="#/roulette"><span data-icon="shuffle"></span><span>Roulette</span></a>
                 <a class="nav-btn" data-tab="changelog" href="#/changelog"><span data-icon="history"></span><span>Changelog</span></a>
@@ -98,8 +100,45 @@
 
             <!-- MAIN CONTENT -->
             <main class="main-area" id="mainArea">
+                <!-- HOME -->
+                <section class="view visible" id="homeTab">
+                    <div class="page home">
+                        <div class="home-hero">
+                            <img class="home-logo" src="assets/list_icon.png" alt="" />
+                            <div class="eyebrow"><span data-icon="sparkles"></span> Welcome</div>
+                            <h1 class="home-title">Welcome to the <em>Chuddy List</em></h1>
+                            <p class="home-sub">Demon and challenge rankings, player records and a points leaderboard, all in one place.</p>
+                            <a class="btn btn-primary home-main-btn" href="#/list"><span data-icon="list"></span>Open the list</a>
+                        </div>
+
+                        <div class="stat-grid home-stats" id="homeStats"></div>
+
+                        <div class="section-label"><span data-icon="crown"></span> Top of the list</div>
+                        <div class="home-top" id="homeTop"></div>
+
+                        <div class="section-label"><span data-icon="grid"></span> Explore</div>
+                        <div class="home-links">
+                            <a class="card home-link" href="#/leaderboard">
+                                <span class="home-link-icon"><span data-icon="trophy"></span></span>
+                                <span class="home-link-text"><strong>Leaderboard</strong><small>Players ranked by points</small></span>
+                                <span data-icon="chevron-right"></span>
+                            </a>
+                            <a class="card home-link" href="#/roulette">
+                                <span class="home-link-icon"><span data-icon="shuffle"></span></span>
+                                <span class="home-link-text"><strong>Roulette</strong><small>Spin for a random level</small></span>
+                                <span data-icon="chevron-right"></span>
+                            </a>
+                            <a class="card home-link" href="#/changelog">
+                                <span class="home-link-icon"><span data-icon="history"></span></span>
+                                <span class="home-link-text"><strong>Changelog</strong><small>Latest changes to the list</small></span>
+                                <span data-icon="chevron-right"></span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- LIST TAB -->
-                <section class="view visible" id="listTab">
+                <section class="view" id="listTab">
                     <div class="empty-state" id="emptyState">
                         <div class="empty-icon"><span data-icon="skull"></span></div>
                         <div class="empty-title" id="emptyTitle">Loading the list…</div>
@@ -291,6 +330,7 @@
         <script src="js/site/leaderboard.js"></script>
         <script src="js/site/profile.js"></script>
         <script src="js/site/roulette.js"></script>
+        <script src="js/site/home.js"></script>
         <script src="js/site/router.js"></script>
         <script src="js/site/main.js"></script>
     </body>

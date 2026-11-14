@@ -118,7 +118,8 @@ One-time setup in Supabase (these SQL files are local-only, not in the repo):
 2. Run `supabase_admin_auth.sql` with each admin's email — creates the admin
    list and the write rules
 3. Run `supabase_rank_check.sql` — the database then refuses ranks below 1
-4. Keep **Allow new users to sign up** turned off
+4. Run `supabase_level_info.sql` — adds the demon/challenge type and level ID
+5. Keep **Allow new users to sign up** turned off
 
 To add another admin later: create their user (step 1), then run in the SQL Editor:
 `INSERT INTO public.admins (email) VALUES (lower('friend@example.com'));`

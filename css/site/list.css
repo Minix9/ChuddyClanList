@@ -1,8 +1,16 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   LIST PAGE — level detail (hero, stats, verification video, records)
+   LIST PAGE — level detail (hero, stats, verification / records tabs)
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* On desktop the level page fills the screen exactly — the video shrinks to
+   fit and long record lists scroll inside their tab, so the page never scrolls */
+#listTab {
+    height: 100%;
+}
 .demon-detail {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     animation: fadeUp 0.2s ease;
 }
 
@@ -33,7 +41,7 @@
 .hero-inner {
     position: relative;
     z-index: 1;
-    padding: 1.1rem 2.25rem 1.75rem;
+    padding: 0.9rem 2.25rem 1.1rem;
 }
 
 .hero-top {
@@ -43,61 +51,6 @@
     gap: 1rem;
 }
 
-/* Thumbnail at a size the 480px source can actually fill sharply */
-.hero-thumb {
-    position: relative;
-    width: 256px;
-    aspect-ratio: 16 / 9;
-    flex-shrink: 0;
-    padding: 0;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
-    overflow: hidden;
-    background: var(--surface2);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
-    cursor: pointer;
-}
-.hero-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* also crops YouTube's letterbox bars */
-    display: block;
-    transition: transform 0.3s ease;
-}
-.hero-thumb:hover img {
-    transform: scale(1.04);
-}
-.hero-thumb-play {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.25);
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-.hero-thumb-play .icon {
-    width: 46px;
-    height: 46px;
-    padding: 13px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: #fff;
-    box-shadow: 0 6px 20px var(--accent-glow);
-}
-.hero-thumb:hover .hero-thumb-play,
-.hero-thumb:focus-visible .hero-thumb-play {
-    opacity: 1;
-}
-.hero-thumb-empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
-    color: var(--text-muted);
-    cursor: default;
-}
 .hero-crumb {
     font-size: 0.75rem;
     font-weight: 600;
@@ -127,7 +80,7 @@
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    margin-top: 1.1rem;
+    margin-top: 0.4rem;
 }
 .hero-main {
     flex: 1;
@@ -140,7 +93,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 .hero-rank-num {
     font-family: var(--font-mono);
@@ -154,14 +107,14 @@
 }
 .hero-title {
     font-family: var(--font-display);
-    font-size: 3.2rem;
+    font-size: 2.9rem;
     letter-spacing: 0.02em;
     line-height: 0.95;
     text-shadow: 0 2px 24px rgba(0, 0, 0, 0.6);
     overflow-wrap: anywhere;
 }
 .hero-by {
-    margin-top: 8px;
+    margin-top: 6px;
     font-size: 0.95rem;
     color: rgba(255, 255, 255, 0.75);
 }
@@ -172,23 +125,95 @@
 
 /* ── STATS STRIP ────────────────────────────────── */
 .detail-stats {
-    padding: 1.5rem 2.25rem 0;
+    padding: 1rem 2.25rem 0;
+}
+.copy-id {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+.copy-id .icon {
+    font-size: 0.8em;
+    color: var(--text-muted);
+    transition: color 0.12s;
+}
+.copy-id:hover .icon {
+    color: var(--accent2);
 }
 
-/* ── DETAIL BODY ────────────────────────────────── */
+/* ── DETAIL BODY (Verification / Records tabs) ── */
 .detail-body {
-    padding: 1.5rem 2.25rem 3rem;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 400px;
-    gap: 1.5rem;
-    align-items: start;
+    flex: 1;
+    min-height: 300px;
+    margin: 1rem 2.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+.detail-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 6px;
+    border-bottom: 1px solid var(--border);
+}
+.detail-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 14px;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    color: var(--text-dim);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background 0.12s,
+        color 0.12s;
+}
+.detail-tab:hover {
+    color: var(--text);
+    background: var(--surface2);
+}
+.detail-tab.active {
+    color: var(--text);
+    background: var(--surface3);
+}
+.detail-tab.active .icon {
+    color: var(--accent);
+}
+.detail-pane {
+    flex: 1;
+    min-height: 0;
+    padding: 12px;
+}
+.records-pane {
+    overflow-y: auto;
+    padding: 6px;
+}
+/* Sized by the pane (container query units) so the video never overflows the screen */
+.video-pane {
+    container-type: size;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.video-pane .no-records {
+    width: 100%;
 }
 
 .video-container {
-    border-radius: var(--radius-lg);
+    width: min(100cqw, 100cqh * 16 / 9);
+    border-radius: var(--radius);
     overflow: hidden;
     aspect-ratio: 16/9;
-    border: 1px solid var(--border);
     background: #000;
 }
 .video-container iframe {
@@ -271,14 +296,20 @@
 }
 
 /* ── RESPONSIVE ─────────────────────────────────── */
-@media (max-width: 1200px) {
-    .detail-body {
-        grid-template-columns: 1fr;
+/* Phones: normal scrolling page, video at full width */
+@media (max-width: 680px), (max-height: 560px) {
+    #listTab,
+    .demon-detail {
+        height: auto;
     }
-}
-@media (max-width: 900px) {
-    .hero-thumb {
-        width: 200px;
+    .video-pane {
+        container-type: normal;
+    }
+    .video-container {
+        width: 100%;
+    }
+    .records-pane {
+        overflow: visible;
     }
 }
 @media (max-width: 680px) {
@@ -290,9 +321,6 @@
         align-items: flex-start;
         gap: 1rem;
     }
-    .hero-thumb {
-        width: 100%;
-    }
     .hero-watch {
         align-self: flex-start;
     }
@@ -303,6 +331,6 @@
         padding: 1rem 1rem 0;
     }
     .detail-body {
-        padding: 1rem 1rem 2rem;
+        margin: 1rem 1rem 2rem;
     }
 }

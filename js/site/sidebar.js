@@ -24,6 +24,7 @@ function renderSidebar(list) {
         <span class="d-text">
           <span class="d-name">${esc(d.name)}</span>
           <span class="d-sub">
+            ${typeTag(d)}
             <span class="d-creator">${esc(d.creator)}</span>
             <span class="d-completions" title="Completions">${icon("check")}${completionCount(d)}</span>
           </span>

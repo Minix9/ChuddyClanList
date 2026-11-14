@@ -207,6 +207,34 @@
     margin-top: 2px;
 }
 
+/* ── DEMON / CHALLENGE TAG ──────────────────────── */
+.type-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+    padding: 2px;
+    border-radius: 5px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.type-tag.demon {
+    color: var(--red);
+    background: rgba(248, 113, 113, 0.12);
+}
+.type-tag.challenge {
+    color: #60a5fa;
+    background: rgba(96, 165, 250, 0.14);
+}
+/* With its name (level page): pill instead of an icon chip */
+.hero-rank .type-tag {
+    padding: 4px 9px;
+    border-radius: 7px;
+    backdrop-filter: blur(8px);
+}
+
 /* ── BADGES ─────────────────────────────────────── */
 .badge {
     display: inline-flex;
