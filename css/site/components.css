@@ -536,9 +536,57 @@
     line-height: 1.6;
 }
 
-.changelog-empty {
-    min-height: 0;
-    padding: 4rem 2rem;
+/* ── CHANGELOG ──────────────────────────────────── */
+.changelog-page {
+    max-width: 860px;
+}
+.changelog-entry {
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: var(--text-dim);
+}
+.changelog-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin-bottom: 10px;
+}
+.changelog-title {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    letter-spacing: 0.03em;
+    color: var(--text);
+}
+.changelog-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+.changelog-list {
+    margin: 12px 0 0;
+    padding-left: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.changelog-list strong {
+    color: var(--text);
+}
+.changelog-list .up,
+.changelog-list .down {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+}
+.changelog-list .up {
+    color: var(--green);
+}
+.changelog-list .down {
+    color: var(--red);
 }
 
 .no-records {
