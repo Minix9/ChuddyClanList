@@ -14,14 +14,15 @@
             rel="stylesheet"
         />
 
-        <link rel="stylesheet" href="css/shared/base.css" />
-        <link rel="stylesheet" href="css/site/layout.css" />
-        <link rel="stylesheet" href="css/site/components.css" />
-        <link rel="stylesheet" href="css/site/list.css" />
-        <link rel="stylesheet" href="css/site/leaderboard.css" />
-        <link rel="stylesheet" href="css/site/profile.css" />
-        <link rel="stylesheet" href="css/site/roulette.css" />
-        <link rel="stylesheet" href="css/site/home.css" />
+        <!-- ?v= makes browsers fetch fresh files after an update — change it whenever CSS/JS changes -->
+        <link rel="stylesheet" href="css/shared/base.css?v=20261115" />
+        <link rel="stylesheet" href="css/site/layout.css?v=20261115" />
+        <link rel="stylesheet" href="css/site/components.css?v=20261115" />
+        <link rel="stylesheet" href="css/site/list.css?v=20261115" />
+        <link rel="stylesheet" href="css/site/leaderboard.css?v=20261115" />
+        <link rel="stylesheet" href="css/site/profile.css?v=20261115" />
+        <link rel="stylesheet" href="css/site/roulette.css?v=20261115" />
+        <link rel="stylesheet" href="css/site/home.css?v=20261115" />
     </head>
     <body>
         <!-- STATUS BAR -->
@@ -300,39 +301,68 @@
                             </div>
                         </div>
 
-                        <article class="card changelog-entry">
-                            <div class="changelog-head">
-                                <h2 class="changelog-title">List re-rank</h2>
-                                <time class="changelog-date" datetime="2026-11-15"><span data-icon="calendar"></span>15 Nov 2026</time>
-                            </div>
-                            <p>
-                                Every placement on the list has been reviewed using eight placement opinions from players who have played the
-                                levels. Opinions based on completions counted fully, opinions based on progress counted half, and each
-                                opinion's confidence rating set how much it mattered. The new order matches 99% of all opinions, up from 96%.
-                            </p>
-                            <ul class="changelog-list">
-                                <li>
-                                    161 of 195 levels changed position; the 7 levels nobody gave an opinion on kept their spot relative to
-                                    their neighbours.
-                                </li>
-                                <li>
-                                    <strong>Biggest climbs:</strong> Sunset Sandstorm <span class="up">+31</span>, Erebus (BoldStep)
-                                    <span class="up">+24</span>, Tung Tung Sahurcles <span class="up">+17</span>, Plasma Doom Machine
-                                    <span class="up">+12</span>, OUTPUT SPRING <span class="up">+12</span>
-                                </li>
-                                <li>
-                                    <strong>Biggest drops:</strong> Explosion <span class="down">−32</span>, Through The Decay
-                                    <span class="down">−30</span>, Red World Rebirth <span class="down">−28</span>, Deorum
-                                    <span class="down">−20</span>, Vanuatu <span class="down">−19</span>, Fusion Z <span class="down">−17</span>,
-                                    Virulent Virge <span class="down">−17</span>
-                                </li>
-                                <li>
-                                    <strong>New levels placed:</strong> Find The Answer (#103), PROTOFLICKER (#143), i hate renn (#151), Digital
-                                    Disarray (#176), gloss (#189)
-                                </li>
-                                <li>The gap in the ranks at #83–84 is gone.</li>
-                            </ul>
-                        </article>
+                        <!-- Level links use #/level/<name> so they still work after ranks change -->
+                        <div class="cl-timeline">
+                            <article class="cl-entry">
+                                <div class="cl-meta">
+                                    <time class="cl-date" datetime="2026-11-15">Nov 15, 2026</time>
+                                    <span class="cl-tag">Placements</span>
+                                </div>
+                                <div class="card cl-card">
+                                    <div class="cl-head">
+                                        <span class="cl-icon"><span data-icon="layers"></span></span>
+                                        <h2 class="cl-title">List re-rank</h2>
+                                    </div>
+                                    <p class="cl-lead">
+                                        Every placement on the list has been reviewed using eight placement opinions from players who have
+                                        played the levels. Opinions based on completions counted fully, opinions based on progress counted
+                                        half, and each opinion's confidence rating set how much it mattered.
+                                    </p>
+
+                                    <h3 class="cl-section">Summary</h3>
+                                    <ul class="cl-bullets">
+                                        <li><strong>161 of 195</strong> levels changed position.</li>
+                                        <li>The new order matches <strong>99%</strong> of all opinions, up from 96%.</li>
+                                        <li>The 7 levels nobody gave an opinion on kept their spot relative to their neighbours.</li>
+                                        <li>The gap in the ranks at #83–84 is gone.</li>
+                                    </ul>
+
+                                    <div class="cl-columns">
+                                        <div>
+                                            <h3 class="cl-section">Biggest climbs</h3>
+                                            <ul class="cl-moves">
+                                                <li><a class="lvl-link" href="#/level/Sunset%20Sandstorm">Sunset Sandstorm</a><span class="cl-rank">#64</span><span class="up"><span data-icon="arrow-up"></span>31</span></li>
+                                                <li><a class="lvl-link" href="#/level/Erebus%20(BoldStep)">Erebus (BoldStep)</a><span class="cl-rank">#73</span><span class="up"><span data-icon="arrow-up"></span>24</span></li>
+                                                <li><a class="lvl-link" href="#/level/Tung%20Tung%20Sahurcles">Tung Tung Sahurcles</a><span class="cl-rank">#152</span><span class="up"><span data-icon="arrow-up"></span>17</span></li>
+                                                <li><a class="lvl-link" href="#/level/Plasma%20Doom%20Machine">Plasma Doom Machine</a><span class="cl-rank">#20</span><span class="up"><span data-icon="arrow-up"></span>12</span></li>
+                                                <li><a class="lvl-link" href="#/level/OUTPUT%20SPRING">OUTPUT SPRING</a><span class="cl-rank">#126</span><span class="up"><span data-icon="arrow-up"></span>12</span></li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h3 class="cl-section">Biggest drops</h3>
+                                            <ul class="cl-moves">
+                                                <li><a class="lvl-link" href="#/level/Explosion">Explosion</a><span class="cl-rank">#191</span><span class="down"><span data-icon="arrow-down"></span>32</span></li>
+                                                <li><a class="lvl-link" href="#/level/Through%20The%20Decay">Through The Decay</a><span class="cl-rank">#190</span><span class="down"><span data-icon="arrow-down"></span>30</span></li>
+                                                <li><a class="lvl-link" href="#/level/Red%20World%20Rebirth">Red World Rebirth</a><span class="cl-rank">#186</span><span class="down"><span data-icon="arrow-down"></span>28</span></li>
+                                                <li><a class="lvl-link" href="#/level/Deorum">Deorum</a><span class="cl-rank">#50</span><span class="down"><span data-icon="arrow-down"></span>20</span></li>
+                                                <li><a class="lvl-link" href="#/level/Vanuatu">Vanuatu</a><span class="cl-rank">#94</span><span class="down"><span data-icon="arrow-down"></span>19</span></li>
+                                                <li><a class="lvl-link" href="#/level/Fusion%20Z">Fusion Z</a><span class="cl-rank">#153</span><span class="down"><span data-icon="arrow-down"></span>17</span></li>
+                                                <li><a class="lvl-link" href="#/level/Virulent%20Virge">Virulent Virge</a><span class="cl-rank">#107</span><span class="down"><span data-icon="arrow-down"></span>17</span></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <h3 class="cl-section">New levels placed</h3>
+                                    <ul class="cl-chips">
+                                        <li><a class="lvl-link" href="#/level/Find%20The%20Answer">Find The Answer</a><span class="cl-rank">#103</span></li>
+                                        <li><a class="lvl-link" href="#/level/PROTOFLICKER">PROTOFLICKER</a><span class="cl-rank">#143</span></li>
+                                        <li><a class="lvl-link" href="#/level/i%20hate%20renn">i hate renn</a><span class="cl-rank">#151</span></li>
+                                        <li><a class="lvl-link" href="#/level/Digital%20Disarray">Digital Disarray</a><span class="cl-rank">#176</span></li>
+                                        <li><a class="lvl-link" href="#/level/gloss">gloss</a><span class="cl-rank">#189</span></li>
+                                    </ul>
+                                </div>
+                            </article>
+                        </div>
                     </div>
                 </section>
 
@@ -353,22 +383,22 @@
         </div>
 
         <!-- Scripts are plain (non-module) and load in order — later files use globals from earlier ones -->
-        <script src="js/shared/utils.js"></script>
-        <script src="js/shared/icons.js"></script>
-        <script src="js/site/config.js"></script>
-        <script src="js/site/placeholder-data.js"></script>
-        <script src="js/site/state.js"></script>
-        <script src="js/site/api.js"></script>
-        <script src="js/site/ui.js"></script>
-        <script src="js/site/theme.js"></script>
-        <script src="js/site/sidebar.js"></script>
-        <script src="js/site/demon.js"></script>
-        <script src="js/site/leaderboard.js"></script>
-        <script src="js/site/clan.js"></script>
-        <script src="js/site/profile.js"></script>
-        <script src="js/site/roulette.js"></script>
-        <script src="js/site/home.js"></script>
-        <script src="js/site/router.js"></script>
-        <script src="js/site/main.js"></script>
+        <script src="js/shared/utils.js?v=20261115"></script>
+        <script src="js/shared/icons.js?v=20261115"></script>
+        <script src="js/site/config.js?v=20261115"></script>
+        <script src="js/site/placeholder-data.js?v=20261115"></script>
+        <script src="js/site/state.js?v=20261115"></script>
+        <script src="js/site/api.js?v=20261115"></script>
+        <script src="js/site/ui.js?v=20261115"></script>
+        <script src="js/site/theme.js?v=20261115"></script>
+        <script src="js/site/sidebar.js?v=20261115"></script>
+        <script src="js/site/demon.js?v=20261115"></script>
+        <script src="js/site/leaderboard.js?v=20261115"></script>
+        <script src="js/site/clan.js?v=20261115"></script>
+        <script src="js/site/profile.js?v=20261115"></script>
+        <script src="js/site/roulette.js?v=20261115"></script>
+        <script src="js/site/home.js?v=20261115"></script>
+        <script src="js/site/router.js?v=20261115"></script>
+        <script src="js/site/main.js?v=20261115"></script>
     </body>
 </html>

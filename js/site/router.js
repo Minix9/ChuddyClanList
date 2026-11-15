@@ -3,6 +3,7 @@
 //   #/                 home page
 //   #/list             list (keeps the last selected level)
 //   #/demon/<rank>     list with that level open
+//   #/level/<name>     same, found by name (stable links for the changelog)
 //   #/leaderboard
 //   #/roulette
 //   #/changelog
@@ -39,6 +40,14 @@ function parseRoute() {
         }
         case "demon":
             return { tab: "list", rank: parseInt(arg) };
+        case "level": {
+            // Link by name (used in the changelog) — names stay put when ranks change
+            let name = arg;
+            try {
+                name = decodeURIComponent(arg);
+            } catch {}
+            return { tab: "list", rank: DEMONS.find((d) => d.name.toLowerCase() === name.toLowerCase())?.rank };
+        }
         case "list":
             return { tab: "list" };
         default:
