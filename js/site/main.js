@@ -14,7 +14,7 @@ document.addEventListener("click", (e) => {
     const copy = e.target.closest("[data-copy]");
     if (copy) {
         navigator.clipboard?.writeText(copy.dataset.copy).then(
-            () => showStatus("Level ID copied", false, 1500),
+            () => showStatus(copy.dataset.copied || "Level ID copied", false, 1500),
             () => {},
         );
         return;

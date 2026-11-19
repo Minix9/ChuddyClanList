@@ -7,6 +7,7 @@
 //   #/leaderboard
 //   #/roulette
 //   #/changelog
+//   #/changelog/<id>   changelog, scrolled to that entry (first 8 characters of its id)
 //   #/player/<name>
 // Every page has its own URL, so links can be shared and Back/Forward work.
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -41,7 +42,7 @@ function parseRoute() {
         case "roulette":
             return { tab: "roulette" };
         case "changelog":
-            return { tab: "changelog" };
+            return { tab: "changelog", entry: arg };
         case "player": {
             let name = arg;
             try {
@@ -99,6 +100,8 @@ function renderRoute() {
         document.getElementById("changelogList").innerHTML =
             CHANGELOG.map((e) => changelogEntryHTML(e)).join("") || `<div class="no-records">${icon("history")}No updates yet</div>`;
         title = "Changelog";
+        const entry = route.entry && CHANGELOG.find((e) => e.id?.startsWith(route.entry));
+        if (entry) title = entry.title;
     } else if (route.tab === "profile") {
         renderProfilePage(route.player);
         title = route.player;
@@ -106,6 +109,12 @@ function renderRoute() {
 
     showView(route.tab);
     if (route.tab !== "list") document.getElementById("mainArea").scrollTop = 0;
+    // A shared changelog link: jump to that entry and mark it
+    const shared = route.entry && document.getElementById(`cl-${route.entry}`);
+    if (shared) {
+        shared.classList.add("cl-shared");
+        shared.scrollIntoView({ block: "start" });
+    }
     document.title = title ? `${title} — Chuddy List` : "Chuddy List";
     document.getElementById("backBtn").disabled = navDepth === 0;
 }

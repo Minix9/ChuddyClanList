@@ -34,6 +34,7 @@ function renderChangelogTable() {
         <td><div class="cell-title">${esc(e.title)}</div></td>
         <td>${e.tag ? `<span class="badge badge-accent">${esc(e.tag)}</span>` : ""}</td>
         <td><div class="action-row">
+          <button class="btn btn-sm btn-primary" onclick="copyChangelogLink('${e.id}')">${icon("copy")}Copy link</button>
           <button class="icon-btn sm" onclick="openChangelogEditor('${e.id}')" title="Edit" aria-label="Edit">${icon("pencil")}</button>
           <button class="icon-btn sm danger" onclick="deleteChangelog('${e.id}')" title="Delete" aria-label="Delete">${icon("trash")}</button>
         </div></td>
@@ -124,6 +125,17 @@ async function deleteChangelog(id) {
     if (!e) return;
     const ok = await confirmDialog(`Delete "${e.title}"?`, "It disappears from the site's Changelog tab. This can't be undone.");
     if (ok) runTask(() => sbDelete("changelog", `id=eq.${id}`), "Entry deleted");
+}
+
+async function copyChangelogLink(id) {
+    const e = changelog.find((x) => x.id === id);
+    if (!e) return;
+    try {
+        await navigator.clipboard.writeText(changelogShareText(e));
+        toast("Link copied — paste it in Discord");
+    } catch {
+        toast("Couldn't copy — your browser blocked the clipboard", "error");
+    }
 }
 
 // ── TEXT EDITING ─────────────────────────────────────────────────────────────

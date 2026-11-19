@@ -9,6 +9,7 @@
     grid-template-columns: 150px minmax(0, 1fr);
     gap: 2rem;
     padding-bottom: 2.5rem;
+    scroll-margin-top: 1.5rem;
 }
 .cl-meta {
     display: flex;
@@ -27,6 +28,13 @@
 .cl-body {
     border-top: 1px solid var(--border-hover);
     padding-top: 12px;
+}
+/* The entry a shared link points at */
+.cl-shared .cl-body {
+    border-top: 2px solid var(--accent);
+}
+.cl-shared h2 {
+    color: var(--accent);
 }
 .cl-lead {
     max-width: 68ch;

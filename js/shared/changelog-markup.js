@@ -92,12 +92,43 @@ function changelogDate(day) {
     return new Date(y, m - 1, d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-// One full entry: { title, tag, body, published_on }
+// Link to one entry. The first 8 characters of its id are enough and keep shared links short.
+const changelogHref = (entry) => `#/changelog/${entry.id.slice(0, 8)}`;
+
+// What the Copy link buttons copy, written for Discord: the title, the first paragraph,
+// what moved (up to 3 rows per list) and the link
+function changelogShareText(entry) {
+    const escMd = (s) => String(s).replace(/([\\*_~`|])/g, "\\$1");
+    const blocks = changelogBlocks(entry.body);
+    const lines = [`**${entry.title}** · Chuddy List changelog`];
+
+    const lead = blocks.find((b) => b.type === "para")?.text.replace(/\[\[@?(.+?)\]\]/g, (_, n) => escMd(n.trim()));
+    if (lead) lines.push(lead.length > 280 ? lead.slice(0, 279).trimEnd() + "…" : lead);
+
+    const rows = [];
+    let more = 0;
+    for (const b of blocks.filter((b) => b.type === "moves")) {
+        const moved = b.items.filter((m) => m.kind !== "new"); // new levels are left out
+        rows.push(...moved.slice(0, 3));
+        more += Math.max(0, moved.length - 3);
+    }
+    for (const m of rows) {
+        const to = m.rank ? ` → #${m.rank}` : "";
+        lines.push(`${m.kind === "up" ? `▲ **${escMd(m.name)}** up` : `▼ **${escMd(m.name)}** down`} ${m.by}${to}`);
+    }
+    if (more) lines.push(`…and ${more} more`);
+
+    lines.push(SITE_URL + changelogHref(entry));
+    return lines.join("\n");
+}
+
+// One full entry: { id, title, tag, body, published_on }
 function changelogEntryHTML(entry, isKnown) {
-    return `<article class="cl-entry">
+    return `<article class="cl-entry"${entry.id ? ` id="cl-${esc(entry.id.slice(0, 8))}"` : ""}>
       <div class="cl-meta">
         <time class="cl-date" datetime="${esc(entry.published_on)}">${esc(changelogDate(entry.published_on))}</time>
         ${entry.tag ? `<span class="badge badge-accent">${esc(entry.tag)}</span>` : ""}
+        ${entry.id ? `<button class="btn btn-ghost btn-sm" data-copy="${esc(changelogShareText(entry))}" data-copied="Link copied">${icon("copy")}Copy link</button>` : ""}
       </div>
       <div class="cl-body">
         <h2>${esc(entry.title)}</h2>
