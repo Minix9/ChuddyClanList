@@ -28,17 +28,23 @@ document.addEventListener("click", (e) => {
     if (demon) goToDemon(Number(demon.dataset.demon));
 });
 
-// Keyboard shortcuts:  /  focus search · ↑ ↓ browse levels · Enter open first result · Esc close
+// Keyboard shortcuts:  /  focus search · ↑ ↓ browse levels · Enter open first result · Esc close · Ctrl+Z back
 document.addEventListener("keydown", (e) => {
     const t = e.target;
     const typing = t.matches?.("input, textarea, select") && t.id !== "searchInput";
     const onList = parseRoute().tab === "list";
 
     if (e.key === "Escape") {
-        if (isLightboxOpen()) return closeVideoLightboxDirect();
+        if (isLightboxOpen()) return closeVideoLightbox();
         closeThemePicker();
         toggleSidebar(false);
         if (t.id === "searchInput") t.blur();
+        return;
+    }
+    // Ctrl+Z: back to the previous page — but inside a text field it still undoes typing
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z" && !t.matches?.("input, textarea, select")) {
+        e.preventDefault();
+        goBack();
         return;
     }
     if (typing || isLightboxOpen() || e.ctrlKey || e.metaKey || e.altKey) return;

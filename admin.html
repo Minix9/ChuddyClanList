@@ -9,15 +9,17 @@
         <link rel="icon" type="image/png" href="assets/list_icon.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
-            href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,600&family=DM+Mono&display=swap"
             rel="stylesheet"
         />
 
-        <link rel="stylesheet" href="css/shared/base.css" />
+        <!-- ?v= makes browsers fetch fresh files after an update — change it whenever CSS/JS changes -->
+        <link rel="stylesheet" href="css/shared/base.css?v=20261119c" />
         <!-- Same buttons, cards, stat cards and badges as the public site -->
-        <link rel="stylesheet" href="css/site/components.css" />
-        <link rel="stylesheet" href="css/admin/layout.css" />
-        <link rel="stylesheet" href="css/admin/components.css" />
+        <link rel="stylesheet" href="css/site/components.css?v=20261119c" />
+        <link rel="stylesheet" href="css/site/changelog.css?v=20261119c" />
+        <link rel="stylesheet" href="css/admin/layout.css?v=20261119c" />
+        <link rel="stylesheet" href="css/admin/components.css?v=20261119c" />
     </head>
     <body>
         <!-- TOAST -->
@@ -105,6 +107,9 @@
                     <button class="admin-nav-btn" data-panel="players" onclick="showPanel('players')">
                         <span data-icon="users"></span> Players <span class="nav-count" id="navCountPlayers"></span>
                     </button>
+                    <button class="admin-nav-btn" data-panel="changelog" onclick="showPanel('changelog')">
+                        <span data-icon="history"></span> Changelog <span class="nav-count" id="navCountChangelog"></span>
+                    </button>
                 </nav>
 
                 <!-- MAIN -->
@@ -113,12 +118,11 @@
                     <section class="panel active" id="panel-dashboard">
                         <div class="page-head">
                             <div>
-                                <div class="eyebrow"><span data-icon="grid"></span> Overview</div>
                                 <h1 class="page-heading">Dashboard</h1>
                                 <p class="page-sub">What's on the list right now</p>
                             </div>
                         </div>
-                        <div class="stat-grid" id="dashStats"></div>
+                        <dl class="stats" id="dashStats"></dl>
                         <div class="dash-grid">
                             <div class="card table-card">
                                 <div class="card-head">
@@ -148,7 +152,6 @@
                     <section class="panel" id="panel-demons">
                         <div class="page-head">
                             <div>
-                                <div class="eyebrow"><span data-icon="skull"></span> Content</div>
                                 <h1 class="page-heading">Demons</h1>
                                 <p class="page-sub">Use the arrows to move a level one spot — other levels shift automatically</p>
                             </div>
@@ -182,7 +185,6 @@
                     <section class="panel" id="panel-records">
                         <div class="page-head">
                             <div>
-                                <div class="eyebrow"><span data-icon="trophy"></span> Content</div>
                                 <h1 class="page-heading">Records</h1>
                                 <p class="page-sub">Click a column header to sort</p>
                             </div>
@@ -230,7 +232,6 @@
                     <section class="panel" id="panel-players">
                         <div class="page-head">
                             <div>
-                                <div class="eyebrow"><span data-icon="users"></span> Content</div>
                                 <h1 class="page-heading">Players</h1>
                                 <p class="page-sub">Deleting a player also removes their records</p>
                             </div>
@@ -257,6 +258,99 @@
                                 </tbody>
                             </table>
                         </div>
+                    </section>
+
+                    <!-- ── CHANGELOG ── -->
+                    <section class="panel" id="panel-changelog">
+                        <!-- list of entries -->
+                        <div id="clListView">
+                            <div class="page-head">
+                                <div>
+                                    <h1>Changelog</h1>
+                                    <p class="page-sub">Entries show on the site's Changelog tab, newest first</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="openChangelogEditor()"><span data-icon="plus"></span>New entry</button>
+                            </div>
+                            <div class="card table-card">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 130px">Date</th>
+                                            <th>Title</th>
+                                            <th>Tag</th>
+                                            <th class="num">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="changelogTableBody">
+                                        <tr><td colspan="4" class="empty-table">Loading…</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- editor -->
+                        <form id="clEditorView" hidden onsubmit="saveChangelog(); return false;">
+                            <div class="page-head">
+                                <div>
+                                    <h1 id="clEditorTitle">New entry</h1>
+                                    <p class="page-sub">Write on the left, see exactly how it will look on the right</p>
+                                </div>
+                                <div class="panel-actions">
+                                    <button class="btn btn-ghost" type="button" onclick="closeChangelogEditor()">Cancel</button>
+                                    <button class="btn btn-primary" type="submit"><span data-icon="save"></span>Save entry</button>
+                                </div>
+                            </div>
+                            <input type="hidden" id="clId" />
+                            <div class="cl-fields">
+                                <div class="field">
+                                    <label class="field-label" for="clTitle">Title</label>
+                                    <input class="text-input" id="clTitle" type="text" placeholder="List re-rank" oninput="updateChangelogPreview()" />
+                                </div>
+                                <div class="field">
+                                    <label class="field-label" for="clDate">Date</label>
+                                    <input class="text-input" id="clDate" type="date" oninput="updateChangelogPreview()" />
+                                </div>
+                                <div class="field">
+                                    <label class="field-label" for="clTag">Tag <span class="label-hint">(optional)</span></label>
+                                    <input class="text-input" id="clTag" type="text" list="clTagOptions" placeholder="Placements" oninput="updateChangelogPreview()" />
+                                    <datalist id="clTagOptions"></datalist>
+                                </div>
+                            </div>
+
+                            <div class="cl-editor">
+                                <div class="cl-write">
+                                    <div class="cl-toolbar" role="toolbar" aria-label="Formatting">
+                                        <button class="icon-btn sm" type="button" onclick="clBold()" title="Bold (Ctrl+B)"><b>B</b></button>
+                                        <button class="icon-btn sm" type="button" onclick="clLinePrefix('## ')" title="Section label">Label</button>
+                                        <button class="icon-btn sm" type="button" onclick="clLinePrefix('- ')" title="Bullet point"><span data-icon="list"></span>List</button>
+                                        <span class="action-sep"></span>
+                                        <button class="icon-btn sm" type="button" onclick="openPicker('link')" title="Link to a level page (Ctrl+K)"><span data-icon="external"></span>Level</button>
+                                        <button class="icon-btn sm" type="button" onclick="openPicker('player')" title="Link to a player's profile"><span data-icon="user"></span>Player</button>
+                                        <span class="action-sep"></span>
+                                        <button class="icon-btn sm" type="button" onclick="openPicker('up')" title="Climb row: a level that moved up"><span data-icon="arrow-up"></span>Climb</button>
+                                        <button class="icon-btn sm" type="button" onclick="openPicker('down')" title="Drop row: a level that moved down"><span data-icon="arrow-down"></span>Drop</button>
+                                        <button class="icon-btn sm" type="button" onclick="openPicker('new')" title="A newly placed level"><span data-icon="plus"></span>New</button>
+                                        <button class="icon-btn sm" type="button" onclick="openPicker('swap')" title="Two levels that swapped places (do the swap on the list first)"><span data-icon="shuffle"></span>Swap</button>
+                                        <button class="icon-btn sm" type="button" onclick="openPicker('first')" title="Announce a level's first victor (taken from the records)"><span data-icon="crown"></span>First victor</button>
+                                    </div>
+                                    <div class="cl-picker" id="clPicker" hidden>
+                                        <input class="text-input" id="clPickerSearch" type="search" placeholder="Search a level…" autocomplete="off" oninput="renderPicker()" onkeydown="pickerKey(event)" />
+                                        <div class="cl-picker-list" id="clPickerList"></div>
+                                    </div>
+                                    <textarea class="text-input cl-text" id="clBody" oninput="updateChangelogPreview()" onkeydown="changelogShortcut(event)"></textarea>
+                                    <div class="field-hint cl-cheatsheet">
+                                        <code>**bold**</code> · <code>[[Level]]</code> link · <code>## Label</code> · <code>- bullet</code> ·
+                                        <code>[[@Player]]</code> player · <code>+12 [[Level]] #5</code> climb · <code>-3 [[Level]] #40</code> drop ·
+                                        <code>new [[Level]] #12</code> new level · empty line = new paragraph
+                                    </div>
+                                </div>
+                                <div class="cl-preview">
+                                    <div class="field-label">Preview</div>
+                                    <div id="clPreview"></div>
+                                    <div class="field-hint" id="clWarnings"></div>
+                                </div>
+                            </div>
+                        </form>
                     </section>
                 </main>
             </div>
@@ -360,6 +454,13 @@
                             <div class="field-hint">When the level was beaten. The earliest 100% date decides the first victor.</div>
                         </div>
                         <div class="field">
+                            <label class="checkbox-row">
+                                <input type="checkbox" id="recordVerifier" />
+                                Verifier — this player verified the level
+                            </label>
+                            <div class="field-hint">Shown as "Verifier" in its own section, instead of a first victor.</div>
+                        </div>
+                        <div class="field">
                             <label class="field-label" for="recordVideo">Completion video <span class="label-hint">(optional)</span></label>
                             <input
                                 class="text-input"
@@ -428,17 +529,19 @@
         </div>
 
         <!-- Scripts are plain (non-module) so this page works straight from file:// -->
-        <script src="js/shared/utils.js"></script>
-        <script src="js/shared/icons.js"></script>
+        <script src="js/shared/utils.js?v=20261119c"></script>
+        <script src="js/shared/icons.js?v=20261119c"></script>
+        <script src="js/shared/changelog-markup.js?v=20261119c"></script>
         <script>hydrateIcons();</script>
-        <script src="js/site/config.js"></script>
-        <script src="js/admin/api.js"></script>
-        <script src="js/admin/ui.js"></script>
-        <script src="js/admin/data.js"></script>
-        <script src="js/admin/dashboard.js"></script>
-        <script src="js/admin/demons.js"></script>
-        <script src="js/admin/records.js"></script>
-        <script src="js/admin/players.js"></script>
-        <script src="js/admin/auth.js"></script>
+        <script src="js/site/config.js?v=20261119c"></script>
+        <script src="js/admin/api.js?v=20261119c"></script>
+        <script src="js/admin/ui.js?v=20261119c"></script>
+        <script src="js/admin/data.js?v=20261119c"></script>
+        <script src="js/admin/dashboard.js?v=20261119c"></script>
+        <script src="js/admin/demons.js?v=20261119c"></script>
+        <script src="js/admin/records.js?v=20261119c"></script>
+        <script src="js/admin/players.js?v=20261119c"></script>
+        <script src="js/admin/changelog.js?v=20261119c"></script>
+        <script src="js/admin/auth.js?v=20261119c"></script>
     </body>
 </html>

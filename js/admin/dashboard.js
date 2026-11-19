@@ -4,10 +4,10 @@
 function renderDashboard() {
     const completions = records.filter((r) => r.percentage === 100);
     document.getElementById("dashStats").innerHTML = [
-        statCard("skull", "", demons.length, "Demons"),
-        statCard("trophy", "gold", records.length, "Records"),
-        statCard("check-circle", "green", completions.length, "Completions"),
-        statCard("users", "neutral", players.length, "Players"),
+        stat("Demons", demons.length),
+        stat("Records", records.length),
+        stat("Completions", completions.length),
+        stat("Players", players.length),
     ].join("");
 
     // records are already ordered newest first by loadAll()

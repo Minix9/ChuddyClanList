@@ -5,24 +5,25 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Chuddy List</title>
         <meta name="description" content="The Chuddy List — demon rankings, player records and leaderboard." />
-        <meta name="theme-color" content="#0a0a0d" />
+        <meta name="theme-color" content="#0b0b0e" />
         <link rel="icon" type="image/png" href="assets/list_icon.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://i.ytimg.com" />
         <link
-            href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,600&family=DM+Mono&display=swap"
             rel="stylesheet"
         />
 
         <!-- ?v= makes browsers fetch fresh files after an update — change it whenever CSS/JS changes -->
-        <link rel="stylesheet" href="css/shared/base.css?v=20261115" />
-        <link rel="stylesheet" href="css/site/layout.css?v=20261115" />
-        <link rel="stylesheet" href="css/site/components.css?v=20261115" />
-        <link rel="stylesheet" href="css/site/list.css?v=20261115" />
-        <link rel="stylesheet" href="css/site/leaderboard.css?v=20261115" />
-        <link rel="stylesheet" href="css/site/profile.css?v=20261115" />
-        <link rel="stylesheet" href="css/site/roulette.css?v=20261115" />
-        <link rel="stylesheet" href="css/site/home.css?v=20261115" />
+        <link rel="stylesheet" href="css/shared/base.css?v=20261119c" />
+        <link rel="stylesheet" href="css/site/layout.css?v=20261119c" />
+        <link rel="stylesheet" href="css/site/components.css?v=20261119c" />
+        <link rel="stylesheet" href="css/site/list.css?v=20261119c" />
+        <link rel="stylesheet" href="css/site/leaderboard.css?v=20261119c" />
+        <link rel="stylesheet" href="css/site/profile.css?v=20261119c" />
+        <link rel="stylesheet" href="css/site/roulette.css?v=20261119c" />
+        <link rel="stylesheet" href="css/site/home.css?v=20261119c" />
+        <link rel="stylesheet" href="css/site/changelog.css?v=20261119c" />
     </head>
     <body>
         <!-- STATUS BAR -->
@@ -37,12 +38,12 @@
                 <button class="icon-btn mob-toggle" id="mobToggle" onclick="toggleSidebar()" aria-label="Toggle level list">
                     <span data-icon="menu"></span>
                 </button>
+                <button class="icon-btn" id="backBtn" onclick="goBack()" disabled title="Back to the previous page (Ctrl+Z)" aria-label="Back to the previous page">
+                    <span data-icon="undo"></span>
+                </button>
                 <a class="logo" href="#/" title="Home" aria-label="Chuddy List home">
-                    <div class="logo-mark"><img src="assets/list_icon.png" alt="" /></div>
-                    <div class="logo-text">
-                        <span class="logo-wordmark">CHUDDY <em>LIST</em></span>
-                        <span class="logo-tagline">Demon rankings</span>
-                    </div>
+                    <span class="logo-mark"><img src="assets/list_icon.png" alt="" /></span>
+                    <span class="logo-wordmark">CHUDDY <em>LIST</em></span>
                 </a>
             </div>
             <nav aria-label="Main">
@@ -57,12 +58,12 @@
                         <span class="theme-dot" id="themePreviewDot"></span><span class="theme-label">Theme</span>
                     </button>
                     <div class="theme-popover" id="themePopover">
-                        <div class="theme-popover-title">Accent colour</div>
+                        <span class="label">Accent colour</span>
                         <div class="theme-swatches" id="themeSwatches"></div>
-                        <div class="theme-slider-wrap">
-                            <label for="hueSlider">Custom hue</label>
+                        <label class="theme-slider-wrap">
+                            Custom hue
                             <input type="range" id="hueSlider" min="0" max="359" oninput="setAccentHue(this.value)" />
-                        </div>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -74,9 +75,9 @@
             <aside class="sidebar" id="sidebar">
                 <div class="sidebar-top">
                     <div class="search-wrap">
-                        <span class="search-icon" data-icon="search"></span>
+                        <span data-icon="search"></span>
                         <input
-                            class="search-input"
+                            class="text-input"
                             id="searchInput"
                             type="search"
                             placeholder="Search levels or creators"
@@ -102,52 +103,50 @@
             <main class="main-area" id="mainArea">
                 <!-- HOME -->
                 <section class="view visible" id="homeTab">
-                    <div class="page home">
-                        <div class="home-hero">
-                            <img class="home-logo" src="assets/list_icon.png" alt="" />
-                            <div class="eyebrow"><span data-icon="sparkles"></span> Welcome</div>
-                            <h1 class="home-title">Welcome to the <em>Chuddy List</em></h1>
-                            <p class="home-sub">Demon and challenge rankings, player records and a points leaderboard, all in one place.</p>
-                            <a class="btn btn-primary home-main-btn" href="#/list"><span data-icon="list"></span>Open the list</a>
-                            <div class="home-official">
-                                <a class="btn btn-ghost btn-sm" href="https://www.youtube.com/@ChuddyChannel" target="_blank" rel="noopener"
-                                    ><span data-icon="youtube"></span>Chuddy Clan on YouTube</a
+                    <div class="page">
+                        <div class="home-intro">
+                            <h1>Chuddy List</h1>
+                            <p class="home-lead">Demon and challenge rankings, player records and a points leaderboard, all in one place.</p>
+                            <div class="home-actions">
+                                <a class="btn btn-primary" href="#/list"><span data-icon="list"></span>Browse the list</a>
+                                <a class="btn btn-ghost" href="https://www.youtube.com/@ChuddyChannel" target="_blank" rel="noopener"
+                                    ><span data-icon="youtube"></span>YouTube</a
                                 >
                                 <a
-                                    class="btn btn-ghost btn-sm"
+                                    class="btn btn-ghost"
                                     href="https://aredl.net/profile/clan/d91efa63-7a6a-4a6f-aeac-d6fad8c5c5ea"
                                     target="_blank"
                                     rel="noopener"
-                                    ><span data-icon="external"></span>Chuddy Clan on AREDL</a
+                                    ><span data-icon="external"></span>AREDL</a
                                 >
                             </div>
+                            <dl class="stats" id="homeStats"></dl>
+                            <a class="home-update" id="homeUpdate" href="#/changelog" hidden></a>
                         </div>
 
-                        <div class="stat-grid home-stats" id="homeStats"></div>
-
-                        <div class="section-label"><span data-icon="crown"></span> Top of the list</div>
-                        <div class="home-top" id="homeTop"></div>
-
-                        <div class="section-label"><span data-icon="users"></span> Members</div>
-                        <div class="home-members" id="homeMembers"></div>
-
-                        <div class="section-label"><span data-icon="grid"></span> Explore</div>
-                        <div class="home-links">
-                            <a class="card home-link" href="#/leaderboard">
-                                <span class="home-link-icon"><span data-icon="trophy"></span></span>
-                                <span class="home-link-text"><strong>Leaderboard</strong><small>Players ranked by points</small></span>
-                                <span data-icon="chevron-right"></span>
-                            </a>
-                            <a class="card home-link" href="#/roulette">
-                                <span class="home-link-icon"><span data-icon="shuffle"></span></span>
-                                <span class="home-link-text"><strong>Roulette</strong><small>Spin for a random level</small></span>
-                                <span data-icon="chevron-right"></span>
-                            </a>
-                            <a class="card home-link" href="#/changelog">
-                                <span class="home-link-icon"><span data-icon="history"></span></span>
-                                <span class="home-link-text"><strong>Changelog</strong><small>Latest changes to the list</small></span>
-                                <span data-icon="chevron-right"></span>
-                            </a>
+                        <div class="home-grid">
+                            <section>
+                                <div class="section-head">
+                                    <h2>Hardest levels</h2>
+                                    <a class="more-link" href="#/list">Full list →</a>
+                                </div>
+                                <ol class="rows" id="homeTop"></ol>
+                            </section>
+                            <section>
+                                <div class="section-head">
+                                    <h2>Top players</h2>
+                                    <a class="more-link" href="#/leaderboard">Leaderboard →</a>
+                                </div>
+                                <ol class="rows" id="homePlayers"></ol>
+                            </section>
+                            <section>
+                                <div class="section-head"><h2>Latest records</h2></div>
+                                <ol class="rows" id="homeRecent"></ol>
+                            </section>
+                            <section>
+                                <div class="section-head"><h2>Clan members</h2></div>
+                                <ul class="rows" id="homeMembers"></ul>
+                            </section>
                         </div>
                     </div>
                 </section>
@@ -156,8 +155,8 @@
                 <section class="view" id="listTab">
                     <div class="empty-state" id="emptyState">
                         <div class="empty-icon"><span data-icon="skull"></span></div>
-                        <div class="empty-title" id="emptyTitle">Loading the list…</div>
-                        <div class="empty-sub" id="emptySub">Fetching levels and records.</div>
+                        <h2 id="emptyTitle">Loading the list…</h2>
+                        <p class="empty-sub" id="emptySub">Fetching levels and records.</p>
                     </div>
                     <div class="demon-detail" id="demonDetail" hidden></div>
                 </section>
@@ -167,8 +166,7 @@
                     <div class="page">
                         <div class="page-head">
                             <div>
-                                <div class="eyebrow"><span data-icon="trophy"></span> Rankings</div>
-                                <h1 class="page-heading">Leaderboard</h1>
+                                <h1>Leaderboard</h1>
                                 <p class="page-sub">Players ranked by points earned from their records</p>
                             </div>
                             <div class="input-wrap">
@@ -185,11 +183,11 @@
                         </div>
 
                         <div class="lb-inner fit-fill">
-                            <div class="card lb-table-wrap">
+                            <div class="lb-table-wrap">
                                 <table class="lb-table">
                                     <thead>
-                                        <tr>
-                                            <th style="width: 60px">Rank</th>
+                                        <tr class="label">
+                                            <th>Rank</th>
                                             <th>Player</th>
                                             <th class="num">Points</th>
                                             <th class="num">Completions</th>
@@ -201,18 +199,14 @@
                             </div>
 
                             <div class="lb-side">
-                                <div class="card">
-                                    <div class="card-head">
-                                        <div class="section-label"><span data-icon="check-circle"></span> Most completed</div>
-                                    </div>
-                                    <div class="card-body" id="mostCompleted"></div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-head">
-                                        <div class="section-label"><span data-icon="zap"></span> Recent records</div>
-                                    </div>
-                                    <div class="card-body" id="recentRecords"></div>
-                                </div>
+                                <section>
+                                    <div class="section-head"><h2>Most completed</h2></div>
+                                    <ol class="rows" id="mostCompleted"></ol>
+                                </section>
+                                <section>
+                                    <div class="section-head"><h2>Recent records</h2></div>
+                                    <ol class="rows" id="recentRecords"></ol>
+                                </section>
                             </div>
                         </div>
                     </div>
@@ -223,13 +217,12 @@
                     <div class="page roulette-wrap">
                         <div class="page-head">
                             <div>
-                                <div class="eyebrow"><span data-icon="shuffle"></span> Challenge</div>
-                                <h1 class="page-heading">Level Roulette</h1>
+                                <h1>Level roulette</h1>
                                 <p class="page-sub">Spin for a random level from the Chuddy List</p>
                             </div>
                         </div>
 
-                        <div class="card challenge-bar">
+                        <div class="challenge-bar">
                             <label class="challenge-toggle">
                                 <input class="switch" type="checkbox" id="challengeMode" onchange="updateChallengeMode()" />
                                 <span>Challenge mode<small>Completed levels won't come up again</small></span>
@@ -243,11 +236,13 @@
                         </div>
 
                         <div class="card roulette-card" id="rouletteCard">
-                            <div class="roulette-bg" id="rBg"></div>
-                            <div class="roulette-num" id="rNum">?</div>
-                            <div class="roulette-name" id="rName">Spin to begin</div>
-                            <div class="roulette-by" id="rBy">Press the button below</div>
-                            <div class="roulette-pts" id="rPts"></div>
+                            <img class="roulette-thumb" id="rThumb" alt="" hidden />
+                            <div class="roulette-info">
+                                <div class="roulette-num" id="rNum">?</div>
+                                <h2 id="rName">Spin to begin</h2>
+                                <div class="roulette-by" id="rBy">Press the button below</div>
+                                <div class="roulette-pts pts" id="rPts"></div>
+                            </div>
                         </div>
 
                         <div class="roulette-actions">
@@ -277,92 +272,29 @@
                             <div class="spin-hint" id="remainingInfo"></div>
                         </div>
 
-                        <div class="card saved-results" id="challengeListWrap" hidden>
-                            <div class="card-head">
-                                <div class="section-label"><span data-icon="save"></span> Saved results</div>
+                        <section class="saved-results" id="challengeListWrap" hidden>
+                            <div class="section-head">
+                                <h2>Saved results</h2>
                                 <div class="saved-results-actions">
                                     <button class="btn btn-ghost btn-sm" onclick="exportRoulette()"><span data-icon="download"></span>Export CSV</button>
                                     <button class="btn btn-ghost btn-sm danger" onclick="clearRoulette()"><span data-icon="trash"></span>Clear</button>
                                 </div>
                             </div>
-                            <div class="card-body saved-results-list" id="challengeList"></div>
-                        </div>
+                            <ol class="rows" id="challengeList"></ol>
+                        </section>
                     </div>
                 </section>
 
-                <!-- CHANGELOG TAB — newest entry first; add a new <article> on top for each update -->
+                <!-- CHANGELOG TAB — entries are written in the admin panel (Changelog) -->
                 <section class="view" id="changelogTab">
                     <div class="page changelog-page">
                         <div class="page-head">
                             <div>
-                                <div class="eyebrow"><span data-icon="history"></span> Updates</div>
-                                <h1 class="page-heading">Changelog</h1>
+                                <h1>Changelog</h1>
                                 <p class="page-sub">Every change to the Chuddy List in one place</p>
                             </div>
                         </div>
-
-                        <!-- Level links use #/level/<name> so they still work after ranks change -->
-                        <div class="cl-timeline">
-                            <article class="cl-entry">
-                                <div class="cl-meta">
-                                    <time class="cl-date" datetime="2026-11-15">Nov 15, 2026</time>
-                                    <span class="cl-tag">Placements</span>
-                                </div>
-                                <div class="card cl-card">
-                                    <div class="cl-head">
-                                        <span class="cl-icon"><span data-icon="layers"></span></span>
-                                        <h2 class="cl-title">List re-rank</h2>
-                                    </div>
-                                    <p class="cl-lead">
-                                        Every placement on the list has been reviewed using eight placement opinions from players who have
-                                        played the levels. Opinions based on completions counted fully, opinions based on progress counted
-                                        half, and each opinion's confidence rating set how much it mattered.
-                                    </p>
-
-                                    <h3 class="cl-section">Summary</h3>
-                                    <ul class="cl-bullets">
-                                        <li><strong>161 of 195</strong> levels changed position.</li>
-                                        <li>The new order matches <strong>99%</strong> of all opinions, up from 96%.</li>
-                                        <li>The 7 levels nobody gave an opinion on kept their spot relative to their neighbours.</li>
-                                        <li>The gap in the ranks at #83–84 is gone.</li>
-                                    </ul>
-
-                                    <div class="cl-columns">
-                                        <div>
-                                            <h3 class="cl-section">Biggest climbs</h3>
-                                            <ul class="cl-moves">
-                                                <li><a class="lvl-link" href="#/level/Sunset%20Sandstorm">Sunset Sandstorm</a><span class="cl-rank">#64</span><span class="up"><span data-icon="arrow-up"></span>31</span></li>
-                                                <li><a class="lvl-link" href="#/level/Erebus%20(BoldStep)">Erebus (BoldStep)</a><span class="cl-rank">#73</span><span class="up"><span data-icon="arrow-up"></span>24</span></li>
-                                                <li><a class="lvl-link" href="#/level/Tung%20Tung%20Sahurcles">Tung Tung Sahurcles</a><span class="cl-rank">#152</span><span class="up"><span data-icon="arrow-up"></span>17</span></li>
-                                                <li><a class="lvl-link" href="#/level/Plasma%20Doom%20Machine">Plasma Doom Machine</a><span class="cl-rank">#20</span><span class="up"><span data-icon="arrow-up"></span>12</span></li>
-                                                <li><a class="lvl-link" href="#/level/OUTPUT%20SPRING">OUTPUT SPRING</a><span class="cl-rank">#126</span><span class="up"><span data-icon="arrow-up"></span>12</span></li>
-                                            </ul>
-                                        </div>
-                                        <div>
-                                            <h3 class="cl-section">Biggest drops</h3>
-                                            <ul class="cl-moves">
-                                                <li><a class="lvl-link" href="#/level/Explosion">Explosion</a><span class="cl-rank">#191</span><span class="down"><span data-icon="arrow-down"></span>32</span></li>
-                                                <li><a class="lvl-link" href="#/level/Through%20The%20Decay">Through The Decay</a><span class="cl-rank">#190</span><span class="down"><span data-icon="arrow-down"></span>30</span></li>
-                                                <li><a class="lvl-link" href="#/level/Red%20World%20Rebirth">Red World Rebirth</a><span class="cl-rank">#186</span><span class="down"><span data-icon="arrow-down"></span>28</span></li>
-                                                <li><a class="lvl-link" href="#/level/Deorum">Deorum</a><span class="cl-rank">#50</span><span class="down"><span data-icon="arrow-down"></span>20</span></li>
-                                                <li><a class="lvl-link" href="#/level/Vanuatu">Vanuatu</a><span class="cl-rank">#94</span><span class="down"><span data-icon="arrow-down"></span>19</span></li>
-                                                <li><a class="lvl-link" href="#/level/Fusion%20Z">Fusion Z</a><span class="cl-rank">#153</span><span class="down"><span data-icon="arrow-down"></span>17</span></li>
-                                                <li><a class="lvl-link" href="#/level/Virulent%20Virge">Virulent Virge</a><span class="cl-rank">#107</span><span class="down"><span data-icon="arrow-down"></span>17</span></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    <h3 class="cl-section">New levels placed</h3>
-                                    <ul class="cl-chips">
-                                        <li><a class="lvl-link" href="#/level/Find%20The%20Answer">Find The Answer</a><span class="cl-rank">#103</span></li>
-                                        <li><a class="lvl-link" href="#/level/PROTOFLICKER">PROTOFLICKER</a><span class="cl-rank">#143</span></li>
-                                        <li><a class="lvl-link" href="#/level/i%20hate%20renn">i hate renn</a><span class="cl-rank">#151</span></li>
-                                        <li><a class="lvl-link" href="#/level/Digital%20Disarray">Digital Disarray</a><span class="cl-rank">#176</span></li>
-                                        <li><a class="lvl-link" href="#/level/gloss">gloss</a><span class="cl-rank">#189</span></li>
-                                    </ul>
-                                </div>
-                            </article>
-                        </div>
+                        <div id="changelogList"></div>
                     </div>
                 </section>
 
@@ -375,30 +307,31 @@
         <div class="video-lightbox-overlay" id="videoLightbox" onclick="closeVideoLightbox(event)">
             <div class="video-lightbox-modal" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle">
                 <div class="video-lightbox-head">
-                    <div class="video-lightbox-title" id="lightboxTitle"></div>
-                    <button class="icon-btn" onclick="closeVideoLightboxDirect()" aria-label="Close video"><span data-icon="x"></span></button>
+                    <h2 id="lightboxTitle"></h2>
+                    <button class="icon-btn" onclick="closeVideoLightbox()" aria-label="Close video"><span data-icon="x"></span></button>
                 </div>
                 <div class="video-lightbox-frame" id="lightboxFrame"></div>
             </div>
         </div>
 
         <!-- Scripts are plain (non-module) and load in order — later files use globals from earlier ones -->
-        <script src="js/shared/utils.js?v=20261115"></script>
-        <script src="js/shared/icons.js?v=20261115"></script>
-        <script src="js/site/config.js?v=20261115"></script>
-        <script src="js/site/placeholder-data.js?v=20261115"></script>
-        <script src="js/site/state.js?v=20261115"></script>
-        <script src="js/site/api.js?v=20261115"></script>
-        <script src="js/site/ui.js?v=20261115"></script>
-        <script src="js/site/theme.js?v=20261115"></script>
-        <script src="js/site/sidebar.js?v=20261115"></script>
-        <script src="js/site/demon.js?v=20261115"></script>
-        <script src="js/site/leaderboard.js?v=20261115"></script>
-        <script src="js/site/clan.js?v=20261115"></script>
-        <script src="js/site/profile.js?v=20261115"></script>
-        <script src="js/site/roulette.js?v=20261115"></script>
-        <script src="js/site/home.js?v=20261115"></script>
-        <script src="js/site/router.js?v=20261115"></script>
-        <script src="js/site/main.js?v=20261115"></script>
+        <script src="js/shared/utils.js?v=20261119c"></script>
+        <script src="js/shared/icons.js?v=20261119c"></script>
+        <script src="js/shared/changelog-markup.js?v=20261119c"></script>
+        <script src="js/site/config.js?v=20261119c"></script>
+        <script src="js/site/placeholder-data.js?v=20261119c"></script>
+        <script src="js/site/state.js?v=20261119c"></script>
+        <script src="js/site/api.js?v=20261119c"></script>
+        <script src="js/site/ui.js?v=20261119c"></script>
+        <script src="js/site/theme.js?v=20261119c"></script>
+        <script src="js/site/sidebar.js?v=20261119c"></script>
+        <script src="js/site/demon.js?v=20261119c"></script>
+        <script src="js/site/leaderboard.js?v=20261119c"></script>
+        <script src="js/site/clan.js?v=20261119c"></script>
+        <script src="js/site/profile.js?v=20261119c"></script>
+        <script src="js/site/roulette.js?v=20261119c"></script>
+        <script src="js/site/home.js?v=20261119c"></script>
+        <script src="js/site/router.js?v=20261119c"></script>
+        <script src="js/site/main.js?v=20261119c"></script>
     </body>
 </html>

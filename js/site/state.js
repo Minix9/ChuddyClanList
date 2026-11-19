@@ -4,9 +4,9 @@
 //                  attempts, video, createdAt, isFirstVictor }] }]
 // ═══════════════════════════════════════════════════════════════════════════════
 let DEMONS = [];
+let CHANGELOG = []; // [{ title, tag, body, published_on }], newest first
 let filtered = [];
 let currentRank = null;
-let usingSupabase = false;
 
 let playerStatsCache = null;
 
@@ -42,16 +42,14 @@ function completionCount(demon) {
 // Demon / challenge marker — icon only in the level list, with its name on the level page
 function typeTag(d, withLabel = false) {
     const [cls, name, ic] = d.challenge ? ["challenge", "Challenge", "zap"] : ["demon", "Demon", "skull"];
-    return `<span class="type-tag ${cls}" title="${name}" role="img" aria-label="${name}">${icon(ic)}${withLabel ? name : ""}</span>`;
+    return `<span class="type-tag ${cls}${withLabel ? " labelled" : ""}" title="${name}" role="img" aria-label="${name}">${icon(ic)}${withLabel ? name : ""}</span>`;
 }
 
-// Medal / top-10 colour class for a list position
-function rankClass(rank) {
-    if (rank === 1) return "rank-gold";
-    if (rank === 2) return "rank-silver";
-    if (rank === 3) return "rank-bronze";
-    if (rank <= 10) return "rank-top10";
-    return "";
+// Newest dated records across the whole list, as { d: level, r: record }
+function recentRecords(limit) {
+    return DEMONS.flatMap((d) => d.records.filter((r) => r.createdAt).map((r) => ({ d, r })))
+        .sort((a, b) => new Date(b.r.createdAt) - new Date(a.r.createdAt))
+        .slice(0, limit);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

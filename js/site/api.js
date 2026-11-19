@@ -22,11 +22,14 @@ async function loadData() {
 
     showStatus("Connecting to Supabase…", true);
     try {
-        // Fetch demons + their records in two calls, then join client-side
-        const [demons, records] = await Promise.all([
+        // Fetch demons + their records in two calls, then join client-side.
+        // The changelog is optional: if it can't load, the rest of the site still works.
+        const [demons, records, changelog] = await Promise.all([
             sbGet("demons?select=*&order=rank.asc"),
             sbGet("records?select=*,players(name,flag)"),
+            sbGet("changelog?select=*&order=published_on.desc,created_at.desc").catch(() => []),
         ]);
+        CHANGELOG = changelog;
 
         const byDemon = {};
         records.forEach((r) => {
@@ -38,6 +41,7 @@ async function loadData() {
                 attempts: r.attempts || null,
                 video: r.video_id || null, // player's own completion video
                 createdAt: r.created_at,
+                verifier: !!r.is_verifier,
             });
         });
 
@@ -57,7 +61,6 @@ async function loadData() {
             }),
         );
 
-        usingSupabase = true;
         showStatus("Live data loaded", false, 2500);
     } catch (e) {
         console.warn("Supabase unavailable, using placeholder data.", e);
@@ -66,8 +69,10 @@ async function loadData() {
     }
 }
 
-// Marks the earliest 100% completion as the first victor
+// Marks the earliest 100% completion as the first victor — unless the level has a
+// verifier, who then takes that spot
 function markFirstVictor(records) {
+    if (records.some((r) => r.verifier)) return;
     const fullClears = records.filter((r) => r.pct === 100 && r.createdAt);
     if (!fullClears.length) return;
     const earliest = fullClears.reduce((a, b) => (new Date(a.createdAt) < new Date(b.createdAt) ? a : b));

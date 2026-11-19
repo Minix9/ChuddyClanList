@@ -38,6 +38,30 @@ function youtubeThumb(videoId, size = "hqdefault") {
     return `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/${size}.jpg`;
 }
 
+// Gold / silver / bronze for positions 1–3 (players)
+function medalClass(pos) {
+    return ["", "rank-gold", "rank-silver", "rank-bronze"][pos] || "";
+}
+
+// Levels also mark the rest of the top 10
+function rankClass(rank) {
+    return medalClass(rank) || (rank <= 10 ? "rank-top10" : "");
+}
+
+// Badge on a record: "Verifier" wins over "First" (a verified level has no first-victor badge)
+function recordBadge(verifier, first, iconOnly = false) {
+    if (!verifier && !first) return "";
+    const [cls, ic, text, tip] = verifier
+        ? ["badge-verifier", "shield-check", "Verifier", "Verified this level"]
+        : ["badge-first", "crown", "First", "First to beat this level"];
+    return `<span class="badge ${cls}" title="${tip}">${icon(ic)}${iconOnly ? "" : text}</span>`;
+}
+
+// One figure in a <dl class="stats"> strip. value may contain HTML (links), label may not.
+function stat(label, value) {
+    return `<div class="stat"><dt>${esc(label)}</dt><dd>${value}</dd></div>`;
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // SCORING FORMULA
 // Exponential decay: rank 1 → 300 pts, last rank → 1 pt (at 100%).

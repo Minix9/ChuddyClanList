@@ -12,6 +12,7 @@ const CLAN_MEMBERS = [
     { name: "therealGDF", youtube: "https://www.youtube.com/@therealgdf2009" },
     { name: "Muffin Cat", youtube: "https://www.youtube.com/@MuffinCat" },
     { name: "Fearme718", youtube: "https://www.youtube.com/@fearme7184" },
+    { name: "DenseCabbage22", youtube: "https://www.youtube.com/@DenseCabbage" },
 ];
 
 function clanMember(name) {

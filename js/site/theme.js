@@ -20,7 +20,6 @@ function setAccentHue(hue) {
     const root = document.documentElement;
     root.style.setProperty("--accent", `hsl(${hue},77%,57%)`);
     root.style.setProperty("--accent2", `hsl(${(hue + 18) % 360},77%,62%)`);
-    root.style.setProperty("--accent-glow", `hsla(${hue},77%,57%,0.25)`);
     root.style.setProperty("--accent-soft", `hsla(${hue},77%,57%,0.12)`);
     try {
         localStorage.setItem("accentHue", hue);

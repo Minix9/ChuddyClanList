@@ -23,14 +23,13 @@ function openVideoLightbox(videoId, title) {
     document.body.style.overflow = "hidden";
 }
 
-function closeVideoLightboxDirect() {
-    document.getElementById("videoLightbox").classList.remove("open");
+// With an event (overlay click) it only closes when the dark area itself was clicked
+function closeVideoLightbox(e) {
+    const box = document.getElementById("videoLightbox");
+    if (e && e.target !== box) return;
+    box.classList.remove("open");
     document.getElementById("lightboxFrame").innerHTML = "";
     document.body.style.overflow = "";
-}
-
-function closeVideoLightbox(e) {
-    if (e.target === document.getElementById("videoLightbox")) closeVideoLightboxDirect();
 }
 
 function isLightboxOpen() {

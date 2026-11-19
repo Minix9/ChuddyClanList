@@ -55,7 +55,7 @@ function renderRecords() {
           <td><span class="rank-badge ${rankClass(r.demons?.rank)}">${r.demons?.rank}</span> ${esc(r.demons?.name || "?")}</td>
           <td>
             <span class="pct ${r.percentage === 100 ? "full" : ""}">${r.percentage}%</span>
-            ${firstVictorIds.has(r.id) ? `<span class="badge badge-first" title="First to beat this level">${icon("crown")}First</span>` : ""}
+            ${recordBadge(r.is_verifier, firstVictorIds.has(r.id))}
           </td>
           <td class="num muted">${r.attempts ? r.attempts.toLocaleString() : "—"}</td>
           <td class="muted">${formatShortDate(r.created_at) || "—"}</td>
@@ -122,6 +122,7 @@ function fillRecordForm(r) {
     }
     document.getElementById("recordPct").value = r ? r.percentage : 100;
     document.getElementById("recordAttempts").value = r?.attempts || "";
+    document.getElementById("recordVerifier").checked = !!r?.is_verifier;
     document.getElementById("recordVideo").value = r?.video_id || "";
     document.getElementById("recordVideoPreview").textContent = "";
     document.getElementById("recordModalTitle").textContent = r ? "Edit record" : "Add record";
@@ -154,6 +155,7 @@ async function saveRecord() {
         percentage: parseInt(document.getElementById("recordPct").value),
         attempts: attemptsRaw ? parseInt(attemptsRaw) : null,
         video_id: videoRaw ? extractYouTubeId(videoRaw) : null,
+        is_verifier: document.getElementById("recordVerifier").checked,
     };
     if (!payload.demon_id || !payload.player_id || isNaN(payload.percentage)) {
         toast("Fill in all fields", "error");

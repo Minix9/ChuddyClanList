@@ -36,22 +36,7 @@ function settleConfirm(result) {
 document.getElementById("confirmOk").addEventListener("click", () => settleConfirm(true));
 document.getElementById("confirmCancel").addEventListener("click", () => settleConfirm(false));
 
-// Small stat card, same markup as the public site's
-function statCard(iconName, tone, value, label) {
-    return `<div class="stat-card">
-      <div class="stat-icon ${tone}">${icon(iconName)}</div>
-      <div class="stat-text"><div class="stat-val">${value}</div><div class="stat-lbl">${label}</div></div>
-    </div>`;
-}
-
-// Medal / top-10 colour class for a list position (matches the public site)
-function rankClass(rank) {
-    if (rank === 1) return "rank-gold";
-    if (rank === 2) return "rank-silver";
-    if (rank === 3) return "rank-bronze";
-    if (rank <= 10) return "rank-top10";
-    return "";
-}
+// stat() and rankClass() live in js/shared/utils.js (shared with the public site)
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // PANEL SWITCHING

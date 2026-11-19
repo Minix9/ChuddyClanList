@@ -1,32 +1,33 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   SHARED BASE — design tokens, reset, scrollbar, keyframes
+   SHARED BASE — design tokens, reset, type scale, scrollbar, keyframes
    Used by both index.html and admin.html
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
-    --bg: #0a0a0d;
-    --surface: #111116;
-    --surface2: #17171e;
-    --surface3: #20202a;
-    --border: rgba(255, 255, 255, 0.07);
-    --border-hover: rgba(255, 255, 255, 0.14);
+    --bg: #0b0b0e;
+    --surface: #121217;
+    --surface2: #18181f;
+    --surface3: #22222b;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.16);
     --accent: #e8433a;
     --accent2: #ff6535;
-    --accent-glow: rgba(232, 67, 58, 0.25);
     --accent-soft: rgba(232, 67, 58, 0.12);
     --text: #f1f1f6;
-    --text-dim: #a6a6ba;
-    --text-muted: #727288;
+    --text-dim: #a8a8bb;
+    --text-muted: #74748a;
     --gold: #f5c842;
     --silver: #c2cbd8;
     --bronze: #d99566;
     --green: #4ade80;
     --red: #f87171;
+    --blue: #60a5fa;
 
-    --radius-sm: 6px;
-    --radius: 10px;
-    --radius-lg: 14px;
-    --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    /* Mostly square: small radii only where a shape needs softening */
+    --radius-sm: 2px;
+    --radius: 4px;
+    --radius-lg: 6px;
+    --shadow: 0 12px 32px rgba(0, 0, 0, 0.45); /* only for things floating above the page */
 
     --font-display: "Bebas Neue", sans-serif;
     --font-body: "DM Sans", sans-serif;
@@ -49,11 +50,44 @@ body {
     background: var(--bg);
     color: var(--text);
     font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.5;
     min-height: 100vh;
 }
 
-button {
-    font-family: inherit;
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+/* ── TYPE SCALE ─────────────────────────────────────────────────────────────
+   Two weights (400 / 600). One h1, one h2, one small label — nothing else
+   sets its own font size for headings. */
+h1 {
+    font-family: var(--font-display);
+    font-size: 2.75rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    overflow-wrap: anywhere;
+}
+h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+.label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+strong,
+b {
+    font-weight: 600;
 }
 
 :focus-visible {
@@ -79,7 +113,7 @@ button {
     width: 1.35em;
     height: 1em;
     object-fit: cover;
-    border-radius: 2px;
+    border-radius: 1px;
     flex-shrink: 0;
     display: inline-block;
     vertical-align: -0.12em;
@@ -107,14 +141,13 @@ button {
 }
 ::-webkit-scrollbar-thumb {
     background: var(--border-hover);
-    border-radius: 99px;
 }
 
 /* ── KEYFRAMES ──────────────────────────────────── */
 @keyframes fadeUp {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(6px);
     }
     to {
         opacity: 1;
@@ -129,6 +162,12 @@ button {
     }
     50% {
         opacity: 0.3;
+    }
+}
+
+@media (max-width: 680px) {
+    h1 {
+        font-size: 2.2rem;
     }
 }
 

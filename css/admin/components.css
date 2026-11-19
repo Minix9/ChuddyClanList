@@ -36,12 +36,10 @@
     color: var(--gold);
 }
 
-.text-input,
-.select-input {
+.text-input {
     width: 100%;
 }
-select.text-input,
-.select-input {
+select.text-input {
     appearance: none;
     padding-right: 34px;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23727288' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
@@ -127,7 +125,7 @@ input[type="date"].text-input {
     text-align: left;
     padding: 11px 14px;
     font-size: 0.68rem;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text-muted);
@@ -177,7 +175,7 @@ input[type="date"].text-input {
 .cell-thumb {
     width: 64px;
     height: 36px;
-    border-radius: 6px;
+    border-radius: var(--radius);
     object-fit: cover;
     flex-shrink: 0;
     background: var(--surface3);
@@ -210,7 +208,7 @@ input[type="date"].text-input {
     min-width: 34px;
     height: 24px;
     padding: 0 6px;
-    border-radius: 6px;
+    border-radius: var(--radius);
     font-family: var(--font-mono);
     font-size: 0.76rem;
     color: var(--text-dim);
@@ -273,7 +271,6 @@ input[type="date"].text-input {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
     z-index: 500;
     align-items: center;
     justify-content: center;
@@ -285,7 +282,7 @@ input[type="date"].text-input {
 .modal {
     background: var(--surface);
     border: 1px solid var(--border-hover);
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     width: 100%;
     max-width: 520px;
     max-height: 90vh;
@@ -309,12 +306,12 @@ input[type="date"].text-input {
     align-items: center;
     gap: 10px;
     font-size: 1.05rem;
-    font-weight: 700;
+    font-weight: 600;
 }
 .modal-title-icon {
     width: 32px;
     height: 32px;
-    border-radius: 9px;
+    border-radius: var(--radius);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -335,13 +332,9 @@ input[type="date"].text-input {
     padding: 1rem 1.25rem;
     border-top: 1px solid var(--border);
     background: var(--surface2);
-    border-radius: 0 0 16px 16px;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 .modal-form + .modal-footer,
-form.modal-body {
-    margin: 0;
-}
-
 /* Confirm dialog */
 .confirm-body {
     display: flex;
@@ -351,7 +344,7 @@ form.modal-body {
 .confirm-icon {
     width: 40px;
     height: 40px;
-    border-radius: 11px;
+    border-radius: var(--radius-lg);
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -361,7 +354,7 @@ form.modal-body {
     color: var(--red);
 }
 .confirm-title {
-    font-weight: 700;
+    font-weight: 600;
     margin-bottom: 4px;
 }
 .confirm-text {
@@ -390,7 +383,7 @@ form.modal-body {
     padding: 11px 16px 11px 12px;
     background: var(--surface2);
     border: 1px solid var(--border-hover);
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     box-shadow: var(--shadow);
     font-size: 0.84rem;
     color: var(--text);
@@ -427,5 +420,114 @@ form.modal-body {
     .form-grid,
     .filter-row {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Dashboard figures (shared .stats strip from the site components) */
+#dashStats {
+    margin-bottom: 1.75rem;
+}
+
+/* ── CHANGELOG EDITOR ───────────────────────────── */
+.cl-fields {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 1.25rem;
+}
+.cl-editor {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); /* the preview gets most room, close to the real page width */
+    gap: 1.5rem;
+    align-items: start;
+}
+.cl-write {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.cl-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+.cl-text {
+    height: auto;
+    min-height: 460px;
+    padding: 12px;
+    resize: vertical;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+.cl-cheatsheet {
+    display: block;
+    line-height: 1.9;
+}
+.cl-cheatsheet code {
+    font-family: var(--font-mono);
+    color: var(--text-dim);
+}
+/* Level search that drops down under the toolbar */
+.cl-picker {
+    position: absolute;
+    top: 36px;
+    left: 0;
+    z-index: 20;
+    width: min(420px, 100%);
+    padding: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border-hover);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+}
+.cl-picker .text-input {
+    width: 100%;
+}
+.cl-picker-list {
+    margin-top: 6px;
+}
+.cl-picker-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 7px 8px;
+    border: 0;
+    border-radius: var(--radius);
+    background: none;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+}
+.cl-picker-item:hover,
+.cl-picker-item:first-child {
+    background: var(--surface3);
+}
+.cl-picker-hint {
+    margin-left: auto;
+    font-size: 0.75rem;
+}
+.cl-picker-empty {
+    padding: 8px;
+    font-size: 0.85rem;
+}
+.cl-preview {
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--border);
+}
+.cl-preview .field-label {
+    margin-bottom: 12px;
+}
+@media (max-width: 1100px) {
+    .cl-editor,
+    .cl-fields {
+        grid-template-columns: 1fr;
+    }
+    .cl-preview {
+        padding-left: 0;
+        border-left: 0;
     }
 }

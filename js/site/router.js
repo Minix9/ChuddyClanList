@@ -19,7 +19,18 @@ const VIEWS = {
     profile: "profileTab",
 };
 
-let hasAppHistory = false; // true once the user has navigated inside the app
+// How many pages of this site are behind the current one in the browser history.
+// Stored in each history entry, so Back/Forward and reloads keep it right, and the
+// back button never sends anyone off the site.
+let navDepth = history.state?.depth ?? 0;
+let replacing = false; // the next hashchange swaps the current entry instead of adding one
+try {
+    history.replaceState({ depth: navDepth }, "");
+} catch {}
+
+function goBack() {
+    if (navDepth > 0) history.back();
+}
 
 function parseRoute() {
     const [page = "", ...rest] = location.hash.replace(/^#\/?/, "").split("/");
@@ -85,6 +96,8 @@ function renderRoute() {
         refreshRoulette();
         title = "Roulette";
     } else if (route.tab === "changelog") {
+        document.getElementById("changelogList").innerHTML =
+            CHANGELOG.map((e) => changelogEntryHTML(e)).join("") || `<div class="no-records">${icon("history")}No updates yet</div>`;
         title = "Changelog";
     } else if (route.tab === "profile") {
         renderProfilePage(route.player);
@@ -94,6 +107,7 @@ function renderRoute() {
     showView(route.tab);
     if (route.tab !== "list") document.getElementById("mainArea").scrollTop = 0;
     document.title = title ? `${title} — Chuddy List` : "Chuddy List";
+    document.getElementById("backBtn").disabled = navDepth === 0;
 }
 
 // replace=true swaps the current history entry (used for arrow-key browsing,
@@ -101,19 +115,33 @@ function renderRoute() {
 function navigate(hash, replace = false) {
     if (location.hash === hash) return renderRoute();
     // Both fire "hashchange", which calls renderRoute()
-    if (replace) location.replace(hash);
-    else location.hash = hash;
+    if (replace) {
+        replacing = true;
+        location.replace(hash);
+    } else location.hash = hash;
 }
 
+// The one place level / player URLs are built
+const levelHref = (rank) => `#/demon/${rank}`;
+const playerHref = (name) => `#/player/${encodeURIComponent(name)}`;
+
 function goToDemon(rank, replace = false) {
-    navigate(`#/demon/${rank}`, replace);
+    navigate(levelHref(rank), replace);
 }
 
 function goToPlayer(name) {
-    navigate(`#/player/${encodeURIComponent(name)}`);
+    navigate(playerHref(name));
 }
 
 window.addEventListener("hashchange", () => {
-    hasAppHistory = true;
+    const known = history.state?.depth;
+    if (known != null) navDepth = known; // Back / Forward to a page we've already been on
+    else {
+        if (!replacing) navDepth++; // a new page (link, nav button, typed URL)
+        try {
+            history.replaceState({ depth: navDepth }, "");
+        } catch {}
+    }
+    replacing = false;
     renderRoute();
 });

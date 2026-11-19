@@ -1,44 +1,23 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// DEMON DETAIL — hero, stats, verification video / records tabs
+// DEMON DETAIL — header with stats, verification video / records tabs
 // ═══════════════════════════════════════════════════════════════════════════════
-function playerLink(name) {
-    return `#/player/${encodeURIComponent(name)}`;
-}
-
-function statCard(iconName, tone, value, label) {
-    return `<div class="stat-card">
-      <div class="stat-icon ${tone}">${icon(iconName)}</div>
-      <div class="stat-text"><div class="stat-val">${value}</div><div class="stat-lbl">${label}</div></div>
-    </div>`;
-}
-
 function recordRow(d, r, pos) {
     const dateStr = formatShortDate(r.createdAt);
+    const sub = [r.attempts ? `${r.attempts.toLocaleString()} attempts` : "", dateStr].filter(Boolean).join(" · ");
     const watch = r.video
         ? `<button class="watch-icon-btn" data-video="${esc(r.video)}" data-title="${esc(`${d.name} — ${r.player}`)}" title="Watch completion" aria-label="Watch completion">${icon("play")}</button>`
         : "";
-    const meta = [
-        r.attempts ? `<span class="meta" title="Attempts">${icon("repeat")}${r.attempts.toLocaleString()}</span>` : "",
-        dateStr ? `<span class="meta" title="Date added">${icon("calendar")}${dateStr}</span>` : "",
-    ].join("");
     return `
-      <div class="record-row">
-        <div class="record-left">
-          <span class="record-pos">${pos}</span>
-          ${flagHTML(r.flag)}
-          <div class="record-who">
-            <div class="record-name-line">
-              <a class="rec-player" href="${esc(playerLink(r.player))}">${esc(r.player)}</a>
-              ${r.isFirstVictor ? `<span class="badge badge-first" title="First to beat this level">${icon("crown")}First</span>` : ""}
-            </div>
-            ${meta ? `<div class="record-meta">${meta}</div>` : ""}
-          </div>
-        </div>
-        <div class="record-right">
-          ${watch}
-          <span class="pct ${r.pct === 100 ? "full" : ""}">${r.pct}%</span>
-        </div>
-      </div>`;
+      <li class="row">
+        <span class="row-rank">${pos}</span>
+        ${flagHTML(r.flag)}
+        <span class="row-main">
+          <span class="row-title"><a class="text-link" href="${esc(playerHref(r.player))}">${esc(r.player)}</a>
+          ${recordBadge(r.verifier, r.isFirstVictor)}</span>
+          ${sub ? `<span class="row-sub">${sub}</span>` : ""}
+        </span>
+        <span class="row-end">${watch}<span class="pct ${r.pct === 100 ? "full" : ""}">${r.pct}%</span></span>
+      </li>`;
 }
 
 // Verification or records — stays the same while browsing between levels
@@ -58,35 +37,35 @@ function selectDemon(rank) {
     // Re-rendering would restart the embedded video, so skip if nothing changed
     if (!changed && detail.childElementCount) return true;
 
-    const completions = d.records.filter((r) => r.pct === 100);
-    const progress = d.records.filter((r) => r.pct < 100);
+    // The verifier gets their own section above the completions (hidden when there is none)
+    const verifiers = d.records.filter((r) => r.verifier);
+    const completions = d.records.filter((r) => r.pct === 100 && !r.verifier);
+    const progress = d.records.filter((r) => r.pct < 100 && !r.verifier);
     const firstVictor = d.records.find((r) => r.isFirstVictor);
     const idx = DEMONS.indexOf(d);
     const prev = DEMONS[idx - 1];
     const next = DEMONS[idx + 1];
 
-    let recsHTML = "";
-    if (completions.length) {
-        recsHTML += `<div class="records-group-label">Completions</div>` + completions.map((r, i) => recordRow(d, r, i + 1)).join("");
-    }
-    if (progress.length) {
-        recsHTML += `<div class="records-group-label">In progress</div>` + progress.map((r, i) => recordRow(d, r, i + 1)).join("");
-    }
-    if (!d.records.length) recsHTML = `<div class="no-records">${icon("trophy")}No records yet — be the first!</div>`;
+    const group = (title, list) =>
+        list.length ? `<li class="row-group label">${title}</li>` + list.map((r, i) => recordRow(d, r, i + 1)).join("") : "";
+    const recsHTML = d.records.length
+        ? `<ol class="rows">${group(verifiers.length > 1 ? "Verifiers" : "Verifier", verifiers)}${group("Completions", completions)}${group("In progress", progress)}</ol>`
+        : `<div class="no-records">${icon("trophy")}No records yet — be the first!</div>`;
 
     const levelIdHTML = d.levelId
         ? `<button class="copy-id" data-copy="${esc(d.levelId)}" title="Copy level ID">${esc(d.levelId)}${icon("copy")}</button>`
         : `<span class="muted">—</span>`;
-    const firstVictorHTML = firstVictor
-        ? `<a href="${esc(playerLink(firstVictor.player))}">${esc(firstVictor.player)}</a>`
-        : `<span class="muted">—</span>`;
+    const playerLinks = (list) => list.map((r) => `<a href="${esc(playerHref(r.player))}">${esc(r.player)}</a>`).join(", ");
+    const victorStat = verifiers.length
+        ? stat(verifiers.length > 1 ? "Verifiers" : "Verifier", playerLinks(verifiers))
+        : stat("First victor", firstVictor ? playerLinks([firstVictor]) : `<span class="muted">—</span>`);
 
     detail.innerHTML = `
     <div class="hero">
       <div class="hero-bg"></div>
       <div class="hero-inner">
         <div class="hero-top">
-          <div class="hero-crumb">Level <strong>${rank}</strong> of ${DEMONS.length}</div>
+          <span>Level <strong>${rank}</strong> of ${DEMONS.length}</span>
           <div class="hero-nav">
             <button class="icon-btn" ${prev ? `data-demon="${prev.rank}" title="Previous: ${esc(prev.name)}"` : "disabled"} aria-label="Previous level">${icon("chevron-left")}</button>
             <button class="icon-btn" ${next ? `data-demon="${next.rank}" title="Next: ${esc(next.name)}"` : "disabled"} aria-label="Next level">${icon("chevron-right")}</button>
@@ -94,26 +73,25 @@ function selectDemon(rank) {
         </div>
         <div class="hero-content">
           <div class="hero-main">
-            <div class="hero-rank"><span class="hero-rank-num ${rankClass(rank) || "rank-plain"}">#${rank}</span>${typeTag(d, true)}</div>
+            <div class="hero-tags"><span class="${rankClass(rank)}">#${rank}</span>${typeTag(d, true)}</div>
             <h1 class="hero-title">${esc(d.name)}</h1>
             <div class="hero-by">by <strong>${esc(d.creator)}</strong></div>
+            <dl class="stats">
+              ${stat("Points", calcScore(d.rank, 100))}
+              ${stat(completionCount(d) === 1 ? "Completion" : "Completions", completionCount(d))}
+              ${victorStat}
+              ${stat("Level ID", levelIdHTML)}
+            </dl>
           </div>
-          ${d.video ? `<a class="btn btn-primary hero-watch" href="https://youtu.be/${encodeURIComponent(d.video)}" target="_blank" rel="noopener">${icon("external")}YouTube</a>` : ""}
+          ${d.video ? `<a class="btn btn-ghost" href="https://youtu.be/${encodeURIComponent(d.video)}" target="_blank" rel="noopener">${icon("youtube")}YouTube</a>` : ""}
         </div>
       </div>
     </div>
 
-    <div class="detail-stats stat-grid">
-      ${statCard("star", "gold", calcScore(d.rank, 100), "Points")}
-      ${statCard("check-circle", "green", completions.length, `Completion${completions.length !== 1 ? "s" : ""}`)}
-      ${statCard("crown", "gold", firstVictorHTML, "First victor")}
-      ${statCard("hash", "neutral", levelIdHTML, "Level ID")}
-    </div>
-
-    <div class="detail-body card">
+    <div class="detail-body">
       <div class="detail-tabs" role="tablist">
-        <button class="detail-tab" role="tab" data-pane="video">${icon("video")}Verification</button>
-        <button class="detail-tab" role="tab" data-pane="records">${icon("trophy")}Records <span class="count">${d.records.length}</span></button>
+        <button class="detail-tab" role="tab" data-pane="video">Verification</button>
+        <button class="detail-tab" role="tab" data-pane="records">Records <span class="count">${d.records.length}</span></button>
       </div>
       <div class="detail-pane video-pane" role="tabpanel" data-pane="video">
         ${

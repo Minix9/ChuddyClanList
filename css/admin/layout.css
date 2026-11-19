@@ -7,14 +7,13 @@
 .logo-mark {
     width: 34px;
     height: 34px;
-    border-radius: 9px;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    border-radius: var(--radius);
+    background: var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     overflow: hidden;
-    box-shadow: 0 4px 14px var(--accent-glow);
 }
 .logo-mark img {
     width: 27px;
@@ -39,9 +38,7 @@
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    background:
-        radial-gradient(ellipse at 50% -10%, var(--accent-soft) 0%, transparent 55%),
-        var(--bg);
+    background: var(--bg);
 }
 .login-box {
     width: 100%;
@@ -61,7 +58,7 @@
 .login-head .logo-mark {
     width: 42px;
     height: 42px;
-    border-radius: 11px;
+    border-radius: var(--radius-lg);
 }
 .login-head .logo-mark img {
     width: 33px;
@@ -69,7 +66,7 @@
 }
 .login-title {
     font-size: 1.15rem;
-    font-weight: 700;
+    font-weight: 600;
 }
 .login-sub {
     font-size: 0.82rem;
@@ -103,7 +100,6 @@
     z-index: 100;
     height: 60px;
     background: rgba(10, 10, 13, 0.85);
-    backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -118,11 +114,11 @@
 }
 .admin-badge {
     font-size: 0.65rem;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     padding: 3px 8px;
-    border-radius: 6px;
+    border-radius: var(--radius);
     background: var(--accent-soft);
     color: var(--accent);
 }
@@ -137,7 +133,7 @@
     gap: 8px;
     height: 34px;
     padding: 0 12px;
-    border-radius: 99px;
+    border-radius: var(--radius);
     background: var(--surface);
     border: 1px solid var(--border);
     font-size: 0.75rem;
@@ -158,7 +154,6 @@
 }
 .connection-dot.live {
     background: var(--green);
-    box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
 }
 
 /* Square icon button (header + table actions) */
@@ -172,7 +167,7 @@
     padding: 0 10px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 9px;
+    border-radius: var(--radius);
     color: var(--text-dim);
     font-size: 0.8rem;
     font-weight: 600;
@@ -199,7 +194,7 @@
     height: 30px;
     min-width: 30px;
     padding: 0 8px;
-    border-radius: 8px;
+    border-radius: var(--radius);
 }
 .icon-btn.sm .icon {
     font-size: 0.9rem;
@@ -225,7 +220,7 @@
 }
 .nav-section-label {
     font-size: 0.65rem;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-muted);
@@ -244,7 +239,7 @@
     margin-bottom: 2px;
     background: none;
     border: 1px solid transparent;
-    border-radius: 9px;
+    border-radius: var(--radius);
     color: var(--text-dim);
     font-size: 0.86rem;
     font-weight: 600;
@@ -274,10 +269,10 @@
     margin-left: auto;
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    font-weight: 500;
+    font-weight: 400;
     color: var(--text-muted);
     background: var(--surface3);
-    border-radius: 5px;
+    border-radius: var(--radius);
     padding: 1px 7px;
 }
 

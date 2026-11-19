@@ -18,7 +18,7 @@ function renderSidebar(list) {
                 : `<span class="d-thumb"></span>`;
             return `
     <li>
-      <a class="demon-item ${currentRank === d.rank ? "active" : ""}" href="#/demon/${d.rank}" data-rank="${d.rank}">
+      <a class="demon-item ${currentRank === d.rank ? "active" : ""}" href="${levelHref(d.rank)}" data-rank="${d.rank}">
         <span class="d-rank ${rankClass(d.rank)}">${d.rank}</span>
         ${thumb}
         <span class="d-text">
